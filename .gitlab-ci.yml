@@ -1,0 +1,7 @@
+image: python:3.7-alpine
+
+py37:
+  image: python:3.7-alpine
+  script:
+    - pip install tox
+    - tox
