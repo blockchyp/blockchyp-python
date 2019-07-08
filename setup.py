@@ -21,7 +21,7 @@ setup(
     author_email="support@blockchyp.com",
     url="https://github.com/blockchyp/blockchyp-python",
     keywords="blockchyp",
-    # install_requires=requirements(),
+    install_requires=requirements(),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
