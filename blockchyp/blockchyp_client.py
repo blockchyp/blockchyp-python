@@ -3,6 +3,7 @@ This file defines the BlockChyp Client
 """
 
 
+from datetime import datetime
 import requests
 
 
@@ -16,7 +17,7 @@ class BlockChypClient:
         self.https = True
         self.route_cache_ttl = 60
         self.default_timeout = 60
-        self.route_cache = []
+        self._route_cache = []
 
     def tokenize(self, public_key, card):
         """
@@ -39,6 +40,10 @@ class BlockChypClient:
         """
         Tests connectivity with a terminal.
         """
+        route = self.__resolve_terminal_route(terminal)
+        reply = self.__terminal_post(route, "/test")
+
+        return reply
 
     def charge(self, auth_request):
         """
@@ -101,7 +106,9 @@ class BlockChypClient:
     def __gateway_get(self, path):
         url = self.gateway_host + "/api" + path
         gateway_config = self.__get_gateway_config()
-        return requests.get(url, gateway_config)
+        reply = requests.get(url, gateway_config)
+
+        return reply
 
     def __get_gateway_config(self):
         config = {}
@@ -111,18 +118,15 @@ class BlockChypClient:
             headers = {
                 "nonce": "",
                 "timestamp": "",
-                "auth_header": ""
+                "auth_header": "",
                 } # temporary until CryptoUtils is completed
             config["Headers"] = {
                 "Nonce": headers["nonce"],
                 "Timestamp": headers["timestamp"],
-                "Authorization": headers["auth_header"]
+                "Authorization": headers["auth_header"],
                 }
 
         return config
-
-    def __get_terminal_config(self):
-        pass
 
     def __gateway_post(self, path, payload):
         pass
@@ -130,14 +134,53 @@ class BlockChypClient:
     def __terminal_get(self, terminal, path, creds):
         pass
 
-    def __terminal_post(self, route, path, payload):
-        pass
+    def __terminal_post(self, route, path, payload=None):
+        url = self.__assemble_terminal_url(route, path)
+        config = {
+            "timeout": 90000,
+            "headers": {"Content-Type": "application/octet-stream"},
+        }
+        wrapper = {
+            "api_key": route.transient_credentials["api_key"],
+            "bearer_token": route.transient_credentials["bearer_token"],
+            "signing_key": route.transient_credentials["signing_key"],
+            "request": payload,
+        }
+        reply = requests.post(url, wrapper, config)
+
+        return reply
 
     def __assemble_terminal_url(self, route, path):
-        pass
+        result = "http"
+        if self.https:
+            result = result + "s"
+        result = result + "://"
+        result = result + route["ip_address"]
+        if self.https:
+            result = result + ":8443"
+        else:
+            result = result + ":8080"
+        result = result + "/api"
+        result = result + path
+
+        return result
 
     def __resolve_terminal_route(self, terminal_name):
-        pass
+        cache_entry = self._route_cache[terminal_name]
+
+        if cache_entry:
+            # check cache expiration
+            if cache_entry.ttl > datetime():
+                return cache_entry["route"]
+
+        route_response = self.__gateway_get("/terminal-route?terminal=" + terminal_name)
+        route = route_response["data"]
+        self._route_cache[terminal_name] = {
+            "ttl": datetime() + self.route_cache_ttl * 60000,
+            "route": route,
+        }
+
+        return route
 
 class BlockChypCredentials:
     """
