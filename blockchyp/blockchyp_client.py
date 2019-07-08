@@ -1,3 +1,5 @@
+import requests
+
 class BlockChypClient:
     def __init__(self, creds):
         self.gateway_host = "https://api.blockchyp.com"
@@ -11,7 +13,8 @@ class BlockChypClient:
         pass
 
     def heartbeat(self):
-        pass
+        reply = self.__gateway_get("/heartbeat", self.credentials)
+        return reply.json()
 
     def enroll(self, auth_request):
         pass
@@ -53,10 +56,18 @@ class BlockChypClient:
         pass
 
     def __gateway_get(self, path, creds):
-        pass
+        url = self.gateway_host + "/api" + path
+        return requests.get(url, self.__get_gateway_config())
 
     def __get_gateway_config(self):
-        pass
+        config = {}
+        if (self.credentials and self.credentials.api_key):
+            # TODO implement CryptoUtils
+            # headers = CryptoUtils.generate_gateway_headers(self.credentials) 
+            headers = {"nonce": "", "timestamp": "", "auth_header": ""} # temporary until CryptoUtils is completed
+            config["Headers"] = {"Nonce": headers["nonce"], "Timestamp": headers["timestamp"], "Authorization": headers["auth_header"]}
+        
+        return config
 
     def __get_terminal_config(self):
         pass
