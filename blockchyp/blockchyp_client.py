@@ -1,4 +1,15 @@
+"""
+This file defines the BlockChyp Client
+"""
+
+
+import requests
+
+
 class BlockChypClient:
+    """
+    Provides integration with the BlockChyp gateway and payment terminals for python developers
+    """
     def __init__(self, creds):
         self.gateway_host = "https://api.blockchyp.com"
         self.credentials = creds
@@ -6,57 +17,109 @@ class BlockChypClient:
         self.route_cache_ttl = 60
         self.default_timeout = 60
         self.route_cache = []
-    
-    def tokenize (self, public_key, card):
-        pass
+
+    def tokenize(self, public_key, card):
+        """
+        Creates a token and stores it in the token vault.
+        """
 
     def heartbeat(self):
-        pass
+        """
+        Checks for access to the gateway.
+        """
+        reply = self.__gateway_get("/heartbeat")
+        return reply.json()
 
     def enroll(self, auth_request):
-        pass
+        """
+        Collects a payment method and enrolls it in the token vault without authorization.
+        """
 
     def ping(self, terminal):
-        pass
+        """
+        Tests connectivity with a terminal.
+        """
 
     def charge(self, auth_request):
-        pass
+        """
+        This is a direct capture transaction in which a transaction is authorized
+        and captured in a single step. Most common.
+        """
 
     def return_validation_error(self, desc):
-        pass
+        """
+        Returns an error if validation fails.
+        """
 
     def validate_request(self, request):
-        pass
+        """
+        Validates a request.
+        """
 
     def validate_currency(self, val):
-        pass
+        """
+        Validates the entered currency and amount.
+        """
 
     def capture(self, request):
-        pass
+        """
+        Captures a previously authorized pre-authorization. (Did that sound repetitive?)
+        """
 
     def void(self, request):
-        pass
+        """
+        Cancels a pre-authorization.
+        """
 
     def close_batch(self, request):
-        pass
+        """
+        Closes the current batch. (Not required if batches auto close.)
+        """
 
     def gift_activate(self, request):
-        pass
+        """
+        Activates or recharges a BlockChyp gift card. (Terminal Only).
+        """
 
     def refund(self, auth_request):
-        pass
+        """
+        Executes a refund.
+        """
 
     def preauth(self, auth_request):
-        pass
+        """
+        This transaction authorizes a card and delays capture.
+        Used a lot in hospitality transactions where the final capture amount might be different
+        or if regulations require delaying capture until shipment.
+        """
 
     def is_terminal_routed(self, request):
-        pass
+        """
+        Checks whether a terminal has a valid route.
+        """
 
-    def __gateway_get(self, path, creds):
-        pass
+    def __gateway_get(self, path):
+        url = self.gateway_host + "/api" + path
+        gateway_config = self.__get_gateway_config()
+        return requests.get(url, gateway_config)
 
     def __get_gateway_config(self):
-        pass
+        config = {}
+        if (self.credentials and self.credentials.api_key):
+            # TODO implement CryptoUtils
+            # headers = CryptoUtils.generate_gateway_headers(self.credentials)
+            headers = {
+                "nonce": "",
+                "timestamp": "",
+                "auth_header": ""
+                } # temporary until CryptoUtils is completed
+            config["Headers"] = {
+                "Nonce": headers["nonce"],
+                "Timestamp": headers["timestamp"],
+                "Authorization": headers["auth_header"]
+                }
+
+        return config
 
     def __get_terminal_config(self):
         pass
@@ -77,6 +140,9 @@ class BlockChypClient:
         pass
 
 class BlockChypCredentials:
+    """
+    Stores the three credential components for easy access
+    """
     def __init__(self, api_key, bearer_token, signing_key):
         self.api_key = api_key
         self.bearer_token = bearer_token
