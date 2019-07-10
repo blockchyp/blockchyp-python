@@ -12,12 +12,13 @@ class BlockChypClient:
     Provides integration with the BlockChyp gateway and payment terminals for python developers
     """
     def __init__(self, creds):
-        self.gateway_host = "https://api.blockchyp.com"
+        self.gateway_host = "https://api.blockchyp.com" # live server
+        # self.gateway_host = "https://test.dev.blockchyp.com" # test server
         self.credentials = creds
         self.https = True
         self.route_cache_ttl = 60
         self.default_timeout = 60
-        self._route_cache = []
+        self._route_cache = {}
 
     def tokenize(self, public_key, card):
         """
@@ -140,10 +141,11 @@ class BlockChypClient:
             "timeout": 90000,
             "headers": {"Content-Type": "application/octet-stream"},
         }
+        transient_credentials = route["transientCredentials"]
         wrapper = {
-            "api_key": route.transient_credentials["api_key"],
-            "bearer_token": route.transient_credentials["bearer_token"],
-            "signing_key": route.transient_credentials["signing_key"],
+            "api_key": transient_credentials["apiKey"],
+            "bearer_token": transient_credentials["bearerToken"],
+            "signing_key": transient_credentials["signingKey"],
             "request": payload,
         }
         reply = requests.post(url, wrapper, config)
@@ -155,7 +157,7 @@ class BlockChypClient:
         if self.https:
             result = result + "s"
         result = result + "://"
-        result = result + route["ip_address"]
+        result = result + route["ipAddress"]
         if self.https:
             result = result + ":8443"
         else:
@@ -166,7 +168,8 @@ class BlockChypClient:
         return result
 
     def __resolve_terminal_route(self, terminal_name):
-        cache_entry = self._route_cache[terminal_name]
+        # this method will not work until CryptoUtils is implemented
+        cache_entry = self._route_cache.get(terminal_name, None)
 
         if cache_entry:
             # check cache expiration
@@ -174,9 +177,11 @@ class BlockChypClient:
                 return cache_entry["route"]
 
         route_response = self.__gateway_get("/terminal-route?terminal=" + terminal_name)
-        route = route_response["data"]
+        route = route_response.json()
+        time = int(datetime.today().timestamp()) * 1000
+        print(time)
         self._route_cache[terminal_name] = {
-            "ttl": datetime() + self.route_cache_ttl * 60000,
+            "ttl": time + self.route_cache_ttl * 60000,
             "route": route,
         }
 
