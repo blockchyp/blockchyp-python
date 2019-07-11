@@ -5,7 +5,7 @@ This file defines the BlockChyp Client
 
 from datetime import datetime
 import requests
-# from .blockchyp_crypto import CryptoUtils
+from .blockchyp_crypto import CryptoUtils
 
 
 class BlockChypClient:
@@ -13,8 +13,8 @@ class BlockChypClient:
     Provides integration with the BlockChyp gateway and payment terminals for python developers
     """
     def __init__(self, creds):
-        self.gateway_host = "https://api.blockchyp.com" # live server
-        # self.gateway_host = "https://test.dev.blockchyp.com" # test server
+        # self.gateway_host = "https://api.blockchyp.com" # live server
+        self.gateway_host = "https://test.dev.blockchyp.com" # test server
         self.credentials = creds
         self.https = True
         self.route_cache_ttl = 60
@@ -108,27 +108,21 @@ class BlockChypClient:
     def __gateway_get(self, path):
         url = self.gateway_host + "/api" + path
         gateway_config = self.__get_gateway_config()
-        reply = requests.get(url, gateway_config)
+        reply = requests.get(url, headers=gateway_config)
 
         return reply
 
     def __get_gateway_config(self):
-        config = {}
-        if (self.credentials and self.credentials.api_key):
-            # TODO implement CryptoUtils
-            # headers = CryptoUtils.generate_gateway_headers(self.credentials)
-            headers = {
-                "nonce": "",
-                "timestamp": "",
-                "auth_header": "",
-                } # temporary until CryptoUtils is completed
-            config["Headers"] = {
+        if (self.credentials and self.credentials["api_key"]):
+            crypto = CryptoUtils()
+            headers = crypto.generate_gateway_headers(self.credentials)
+            return {
                 "Nonce": headers["nonce"],
                 "Timestamp": headers["timestamp"],
                 "Authorization": headers["auth_header"],
                 }
 
-        return config
+        return {}
 
     def __gateway_post(self, path, payload):
         pass
@@ -149,7 +143,8 @@ class BlockChypClient:
             "signing_key": transient_credentials["signingKey"],
             "request": payload,
         }
-        reply = requests.post(url, wrapper, config)
+        print(url)
+        reply = requests.post(url, wrapper, config, verify="blockchyp.crt")
 
         return reply
 
@@ -169,7 +164,6 @@ class BlockChypClient:
         return result
 
     def __resolve_terminal_route(self, terminal_name):
-        # this method will not work until CryptoUtils is implemented
         cache_entry = self._route_cache.get(terminal_name, None)
 
         if cache_entry:
@@ -179,8 +173,7 @@ class BlockChypClient:
 
         route_response = self.__gateway_get("/terminal-route?terminal=" + terminal_name)
         route = route_response.json()
-        time = int(datetime.today().timestamp()) * 1000
-        print(time)
+        time = int(datetime.utcnow().timestamp()) * 1000
         self._route_cache[terminal_name] = {
             "ttl": time + self.route_cache_ttl * 60000,
             "route": route,
@@ -193,6 +186,11 @@ class BlockChypCredentials:
     Stores the three credential components for easy access
     """
     def __init__(self, api_key, bearer_token, signing_key):
-        self.api_key = api_key
-        self.bearer_token = bearer_token
-        self.signing_key = signing_key
+        self.creds = {
+            "api_key": api_key,
+            "bearer_token": bearer_token,
+            "signing_key": signing_key,
+        }
+
+    def __getitem__(self, item):
+        return self.creds[item]
