@@ -1,5 +1,5 @@
 """
-This file defines the BlockChyp Cryptography Services
+Helpers for cryptographic communication in the BlockChyp client
 """
 
 
@@ -24,28 +24,22 @@ class CryptoUtils:
 
         key = bytearray.fromhex(creds["signing_key"])
         sig = hmac.new(key, to_sign, hashlib.sha256).hexdigest()
-        results = {
-            "nonce": nonce,
-            "timestamp": time_stamp,
-            "auth_header": "Dual " + creds["bearer_token"] + ":" + creds["api_key"] + ":" + sig,
+        return{
+            "Nonce": nonce,
+            "Timestamp": time_stamp,
+            "Authorization": "Dual " + creds["bearer_token"] + ":" + creds["api_key"] + ":" + sig,
         }
-
-        return results
 
     @staticmethod
     def generate_nonce():
         """
         Generates a new nonce
         """
-        rand = base64.b32encode(os.urandom(32)).strip(b"=").decode("UTF-8")
-
-        return rand
+        return base64.b32encode(os.urandom(32)).strip(b"=").decode("UTF-8")
 
     @staticmethod
     def generate_iso_timestamp():
         """
         Generates a timestamp based on the current time in UTC
         """
-        time = datetime.utcnow().isoformat('T', "seconds") + 'Z'
-
-        return time
+        return datetime.utcnow().isoformat('T', 'seconds') + 'Z'

@@ -1,25 +1,30 @@
 """
-This file defines the BlockChyp Client
+The BlockChyp Client
 """
 
 
 from datetime import datetime
+
 import requests
+
 from .blockchyp_crypto import CryptoUtils
 
+GATEWAY_HOST = "https://api.blockchyp.com" # live server
+TEST_GATEWAY_HOST = "https://test.dev.blockchyp.com" # test server
+MS_PER_SECOND = 1000
+MS_PER_MINUTE = 60000
 
 class BlockChypClient:
     """
     Provides integration with the BlockChyp gateway and payment terminals for python developers
     """
-    def __init__(self, creds, https=False):
-        # self.gateway_host = "https://api.blockchyp.com" # live server
-        self.gateway_host = "https://test.dev.blockchyp.com" # test server
+    def __init__(self, creds, https=False, test=False):
         self.credentials = creds
         self.https = https
         self.route_cache_ttl = 60
         self.default_timeout = 60
         self._route_cache = {}
+        self.test = test
 
     def tokenize(self, public_key, card):
         """
@@ -45,7 +50,7 @@ class BlockChypClient:
         route = self.__resolve_terminal_route(terminal)
         reply = self.__terminal_post(route, "/test", payload={"terminalName": terminal})
 
-        return reply
+        return reply.json()
 
     def charge(self, auth_request):
         """
@@ -106,23 +111,18 @@ class BlockChypClient:
         """
 
     def __gateway_get(self, path):
-        url = self.gateway_host + "/api" + path
-        gateway_config = self.__get_gateway_config()
-        reply = requests.get(url, headers=gateway_config)
-
-        return reply
-
-    def __get_gateway_config(self):
-        if (self.credentials and self.credentials["api_key"]):
+        if self.test:
+            url = TEST_GATEWAY_HOST + "/api" + path
+        else:
+            url = GATEWAY_HOST + "/api" + path
+        if self.credentials and self.credentials["api_key"]:
             crypto = CryptoUtils()
             headers = crypto.generate_gateway_headers(self.credentials)
-            return {
-                "Nonce": headers["nonce"],
-                "Timestamp": headers["timestamp"],
-                "Authorization": headers["auth_header"],
-                }
+        else:
+            headers = {}
+        reply = requests.get(url, headers=headers)
 
-        return {}
+        return reply
 
     def __gateway_post(self, path, payload):
         pass
@@ -133,14 +133,13 @@ class BlockChypClient:
     def __terminal_post(self, route, path, payload=None):
         url = self.__assemble_terminal_url(route, path)
         transient_credentials = route["transientCredentials"]
-        data = {
+        request_wrapper = {
             "apiKey": transient_credentials["apiKey"],
             "bearerToken": transient_credentials["bearerToken"],
             "signingKey": transient_credentials["signingKey"],
             "request": payload
         }
-        print(data)
-        reply = requests.post(url, json=data)
+        reply = requests.post(url, json=request_wrapper)
 
         return reply
 
