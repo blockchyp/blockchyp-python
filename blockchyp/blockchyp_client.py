@@ -12,11 +12,11 @@ class BlockChypClient:
     """
     Provides integration with the BlockChyp gateway and payment terminals for python developers
     """
-    def __init__(self, creds):
+    def __init__(self, creds, https=False):
         # self.gateway_host = "https://api.blockchyp.com" # live server
         self.gateway_host = "https://test.dev.blockchyp.com" # test server
         self.credentials = creds
-        self.https = True
+        self.https = https
         self.route_cache_ttl = 60
         self.default_timeout = 60
         self._route_cache = {}
@@ -43,7 +43,7 @@ class BlockChypClient:
         Tests connectivity with a terminal.
         """
         route = self.__resolve_terminal_route(terminal)
-        reply = self.__terminal_post(route, "/test")
+        reply = self.__terminal_post(route, "/test", payload={"terminalName": terminal})
 
         return reply
 
@@ -132,19 +132,15 @@ class BlockChypClient:
 
     def __terminal_post(self, route, path, payload=None):
         url = self.__assemble_terminal_url(route, path)
-        config = {
-            "timeout": 90000,
-            "headers": {"Content-Type": "application/octet-stream"},
-        }
         transient_credentials = route["transientCredentials"]
-        wrapper = {
-            "api_key": transient_credentials["apiKey"],
-            "bearer_token": transient_credentials["bearerToken"],
-            "signing_key": transient_credentials["signingKey"],
-            "request": payload,
+        data = {
+            "apiKey": transient_credentials["apiKey"],
+            "bearerToken": transient_credentials["bearerToken"],
+            "signingKey": transient_credentials["signingKey"],
+            "request": payload
         }
-        print(url)
-        reply = requests.post(url, wrapper, config, verify="blockchyp.crt")
+        print(data)
+        reply = requests.post(url, json=data)
 
         return reply
 
@@ -168,7 +164,7 @@ class BlockChypClient:
 
         if cache_entry:
             # check cache expiration
-            if cache_entry.ttl > datetime():
+            if cache_entry.ttl > int(datetime.utcnow().timestamp()) * 1000:
                 return cache_entry["route"]
 
         route_response = self.__gateway_get("/terminal-route?terminal=" + terminal_name)

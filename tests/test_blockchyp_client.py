@@ -16,7 +16,6 @@ def test_heartbeat():
     assert reply["errors"] is None
     assert reply["merchantPk"]
 
-# Note: Ping test disabled until CryptoUtils is implemented.
 def test_ping():
     """This method tests functionality of the ping method"""
     creds = blockchyp.BlockChypCredentials(
@@ -26,4 +25,4 @@ def test_ping():
     client = blockchyp.BlockChypClient(creds)
     reply = client.ping("Test Terminal")
 
-    assert reply["success"]
+    assert reply.text[0]
