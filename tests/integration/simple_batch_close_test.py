@@ -16,6 +16,19 @@ def test_simple_batch_close():
 
     client = _get_test_client()
 
+    setup_request = {
+        "pan": "4111111111111111",
+        "amount": "25.55",
+        "test": True,
+        "transactionRef": ,
+    }
+
+    setup_response = client.charge(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("approved")
+
     request = {
         "test": True,
     }

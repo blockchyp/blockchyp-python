@@ -20,7 +20,7 @@ def test_terminal_ebt_charge():
         "terminalName": "Test Terminal",
         "amount": "25.00",
         "test": True,
-        "cardType": 2,
+        "cardType": blockchyp.CardType.EBT,
     }
 
     response = client.charge(request)
