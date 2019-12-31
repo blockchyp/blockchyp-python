@@ -1,0 +1,21 @@
+version: 1
+jobs:
+  build:
+    docker:
+      - image: alpine
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build
+          command: echo placeholder
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
