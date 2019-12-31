@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import io
 import os
 import sys
@@ -8,7 +6,7 @@ from setuptools.command.test import test as TestCommand
 
 def readme():
     with io.open("README.rst", encoding="utf-8") as f:
-        return f.readlines()
+        return f.read()
 
 class Unsupported(TestCommand):
     def run(self):

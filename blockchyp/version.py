@@ -3,6 +3,6 @@
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
-    _VERSION = get_distribution(__name__).version
+    VERSION = get_distribution(__name__).version
 except DistributionNotFound:
-    pass
+    VERSION = "unknown"

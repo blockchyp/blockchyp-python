@@ -2,14 +2,52 @@ version: 1
 jobs:
   build:
     docker:
-      - image: alpine
+      - image: circleci/python:3.7
 
     steps:
       - checkout
 
+      - restore_cache:
+          keys:
+            - pip-{{ checksum "requirements-dev.txt" }}
+
+      - run: pip install --user -r requirements-dev.txt
+
+      - save_cache:
+          paths:
+            - ~/.local/lib/python3.7
+            - ./tox
+          key: pip-{{ checksum "requirements-dev.txt" }}
+
       - run:
           name: Build
-          command: echo placeholder
+          command: make build
+
+      - run:
+          name: Test
+          command: make test
+
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - ./*
+
+  publish:
+    docker:
+      - image: circleci/python:3.7
+
+    steps:
+      - attach_workspace:
+          at: dist
+
+      - run: |
+          echo -e "[pypi]" > ~/.pypirc
+          echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
+          echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+
+      - run:
+          name: Publish
+          command: make publish
 
 workflows:
   version: 2
@@ -17,5 +55,13 @@ workflows:
     jobs:
       - build:
           filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+.*$/
+      - publish:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+.*$/
