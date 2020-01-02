@@ -201,7 +201,8 @@ Prompts the user to accept terms and conditions.
         "test": True,
         "terminalName": "Test Terminal",
 
-        # Alias for a T&C template configured in blockchyp.
+        # Alias for a Terms and Conditions template configured in the BlockChyp
+        # dashboard.
         "tcAlias": "hippa",
 
         # Name of the contract or document if not using an alias.
