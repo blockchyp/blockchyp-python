@@ -14,22 +14,27 @@ class Unsupported(TestCommand):
                          "Use 'pytest' or 'tox' to run the tests.\n")
         sys.exit(1)
 
-def _find_git():
+def _find_scm_version():
     root = os.path.abspath(os.sep)
 
     parent = "."
 
     while os.path.abspath(parent) != root:
         if os.path.isdir(os.path.join(parent, ".git")):
-            return parent
+            return {"root": parent, "relative_to": __file__}
 
         parent = os.path.join(parent, "..")
 
-    # TODO solve this clusterfuck
-    return os.path.join(os.getenv("HOME"), "github.com/blockchyp/sdk-generator")
+    return None
+
+scm_version = _find_scm_version()
+version = None
+if not scm_version:
+    version = "0.1.0"
 
 setup(
-    use_scm_version={"root": _find_git(), "relative_to": __file__},
+    version=version,
+    use_scm_version=_find_scm_version(),
     long_description=readme(),
     cmdclass={
         "test": Unsupported,
