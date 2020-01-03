@@ -21,7 +21,7 @@ import urllib.parse
 
 import requests
 
-from blockchyp import __version__, crypto
+from blockchyp import crypto, version
 from blockchyp.cache import TerminalRouteCache
 from blockchyp.error import BlockChypError
 from blockchyp.types import SignatureFormat
@@ -584,7 +584,7 @@ class Client:
         if not request.get("signatureFile") or not response.get("signatureFile"):
             return
 
-        raw = bytearray.fromhex(response["signatureFile"])
+        raw = bytearray.fromhex(response.get("signatureFile"))
 
         with io.open(request["signatureFile"], "wb") as f:
             f.write(raw)
@@ -607,4 +607,4 @@ class Client:
     @staticmethod
     def version():
         """Returns the version of the client."""
-        return __version__
+        return version.VERSION

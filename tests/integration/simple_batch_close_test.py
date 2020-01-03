@@ -3,11 +3,15 @@
 #
 # This file was generated automatically. Changes to this file will be lost every
 # time the code is regenerated.
+import os
+import time
+import uuid
+
 import pytest
 
 import blockchyp
 
-from .util import _get_test_client
+from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
@@ -16,11 +20,21 @@ def test_simple_batch_close():
 
     client = _get_test_client()
 
+    delay = os.environ.get("BC_TEST_DELAY")
+    if delay:
+        client.message({
+            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "test": True,
+            "message": f"Running simple_batch_close in {delay}s",
+        })
+        time.sleep(int(delay))
+
+
     setup_request = {
         "pan": "4111111111111111",
         "amount": "25.55",
         "test": True,
-        "transactionRef": ,
+        "transactionRef": str(uuid.uuid4()),
     }
 
     setup_response = client.charge(setup_request)

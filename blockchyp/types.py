@@ -2,10 +2,8 @@
 Request and response field types.
 """
 
-from enum import Enum, IntEnum
 
-
-class CardType(IntEnum):
+class CardType:
     """Used to differentiate credit, debit, EBT, and gift cards."""
 
     CREDIT = 0
@@ -14,7 +12,7 @@ class CardType(IntEnum):
     GIFT = 3
 
 
-class SignatureFormat(Enum):
+class SignatureFormat:
     """File formats for customer signatures."""
 
     NONE = "none"
@@ -23,7 +21,7 @@ class SignatureFormat(Enum):
     GIF = "gif"
 
 
-class PromptType(Enum):
+class PromptType:
     """Specifies the type of text input for a terminal prompt."""
 
     AMOUNT = "amount"

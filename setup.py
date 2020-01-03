@@ -5,7 +5,7 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 def readme():
-    with io.open("README.rst", encoding="utf-8") as f:
+    with io.open("README.md", encoding="utf-8") as f:
         return f.read()
 
 class Unsupported(TestCommand):

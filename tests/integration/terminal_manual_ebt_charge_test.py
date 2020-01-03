@@ -3,11 +3,15 @@
 #
 # This file was generated automatically. Changes to this file will be lost every
 # time the code is regenerated.
+import os
+import time
+import uuid
+
 import pytest
 
 import blockchyp
 
-from .util import _get_test_client
+from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
@@ -15,6 +19,16 @@ def test_terminal_manual_ebt_charge():
     """Can process an ebt direct charge with a terminal."""
 
     client = _get_test_client()
+
+    delay = os.environ.get("BC_TEST_DELAY")
+    if delay:
+        client.message({
+            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "test": True,
+            "message": f"Running terminal_manual_ebt_charge in {delay}s",
+        })
+        time.sleep(int(delay))
+
 
     request = {
         "terminalName": "Test Terminal",

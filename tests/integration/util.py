@@ -5,8 +5,8 @@ import os
 import blockchyp
 
 
-def _get_test_client():
-    # type: () -> blockchyp.Client
+def _get_test_config():
+    # type: () -> dict
 
     if os.name == "nt":
         config_home = os.getenv("USERPROFILE")
@@ -21,13 +21,21 @@ def _get_test_client():
     with io.open(config_file) as f:
         content = json.load(f)
 
+    return content
+
+
+def _get_test_client():
+    # type: () -> blockchyp.Client
+
+    config = _get_test_config()
+
     client = blockchyp.Client(
-        api_key=content["apiKey"],
-        bearer_token=content["bearerToken"],
-        signing_key=content["signingKey"],
+        api_key=config["apiKey"],
+        bearer_token=config["bearerToken"],
+        signing_key=config["signingKey"],
     )
 
-    client.api_url = content.get("gateway", content.get("gatewayHost"))
-    client.api_test_url = content.get("testGateway", content.get("testGatewayHost"))
+    client.api_url = config.get("gatewayHost")
+    client.api_test_url = config.get("testGatewayHost")
 
     return client
