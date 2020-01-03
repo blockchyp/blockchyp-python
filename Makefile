@@ -1,20 +1,18 @@
 # Executables
 DOCKER = docker
-PYLINT = pylint
 PYTHON = python
+PYLINT = $(PYTHON) -m pylint
 TOX = $(PYTHON) -m tox
-TWINE = twine
+TWINE = $(PYTHON) -m twine
 
 # Integration test config
+export BC_TEST_DELAY := 5
 IMAGE := python:3.7-buster
-DOCKERHOME := /root
-WORKSPACE := /tmp/workspace
+SCMROOT := $(shell git rev-parse --show-toplevel)
+PWD := $(shell pwd)
 CACHE := $(HOME)/.local/share/blockchyp/itest-cache
-CONFIGFILE := sdk-itest-config.json
-CERTFILE := blockchyp.crt
-LICENSEFILE := LICENSE
-HOSTCONFIGFILE := $(HOME)/.config/blockchyp/$(CONFIGFILE)
-HOSTCERTFILE := blockchyp/resources/$(CERTFILE)
+CONFIGFILE := $(HOME)/.config/blockchyp/sdk-itest-config.json
+CACHEPATHS := $(dir $(CONFIGFILE)) $(HOME)/.local $(HOME)/.cache $(HOME)/.tox
 ifeq ($(shell uname -s), Linux)
 HOSTIP = $(shell ip -4 addr show docker0 | grep -Po 'inet \K[\d.]+')
 else
@@ -44,23 +42,19 @@ test:
 .PHONY: integration
 integration:
 	$(if $(LOCALBUILD), \
-		$(PYTHON) -c "import tox" || $(PYTHON) -m pip install --user tox ; \
 		$(TOX) -e itest -- $(if $(TEST),-k $(TEST),-m itest), \
-		mkdir -p $(CACHE) ; \
-		sed 's/localhost/$(HOSTIP)/' $(HOSTCONFIGFILE) >$(CACHE)/$(CONFIGFILE) ; \
-		/bin/cp $(HOSTCERTFILE) $(CACHE)/$(CERTFILE) ; \
-		/bin/cp $(LICENSEFILE) $(CACHE)/$(LICENSEFILE) ; \
+		$(foreach path,$(CACHEPATHS),mkdir -p $(CACHE)/$(path) ; ) \
+		sed 's/localhost/$(HOSTIP)/' $(CONFIGFILE) >$(CACHE)/$(CONFIGFILE) ; \
 		$(DOCKER) run \
-		-v $(shell pwd):$(WORKSPACE):Z \
-		-v $(CACHE)/python3.7:$(DOCKERHOME)/.local:Z \
-		-v $(CACHE)/$(CERTFILE):$(WORKSPACE)/$(HOSTCERTFILE):Z \
-		-v $(CACHE)/$(CONFIGFILE):$(DOCKERHOME)/.config/blockchyp/sdk-itest-config.json:Z \
-		-v $(CACHE)/$(LICENSEFILE):$(WORKSPACE)/$(LICENSEFILE) \
-		-v $(CACHE)/.tox:$(WORKSPACE)/.tox \
+		-u $(shell id -u):$(shell id -g) \
+		-v $(SCMROOT):$(SCMROOT):Z \
+		-v /etc/passwd:/etc/passwd:ro \
+		$(foreach path,$(CACHEPATHS),-v $(CACHE)/$(path):$(path):Z) \
 		-e BC_TEST_DELAY=$(BC_TEST_DELAY) \
-		-w $(WORKSPACE) \
+		-e HOME=$(HOME) \
+		-w $(PWD) \
 		--rm -it $(IMAGE) \
-		$(MAKE) LOCALBUILD=1 TEST=$(TEST) integration)
+		bash -c "$(PYTHON) -m pip install --user tox && $(TOX) -e itest -- $(if $(TEST),-k $(TEST),-m itest)")
 
 # Performs any tasks necessary before a release build
 .PHONY: stage
