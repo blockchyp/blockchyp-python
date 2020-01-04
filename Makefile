@@ -4,6 +4,7 @@ PYTHON = python
 PYLINT = $(PYTHON) -m pylint
 TOX = $(PYTHON) -m tox
 TWINE = $(PYTHON) -m twine
+PYTEST = $(PYTHON) -m pytest
 
 # Integration test config
 export BC_TEST_DELAY := 5
@@ -36,7 +37,7 @@ build: lint
 # Runs unit tests
 .PHONY: test
 test:
-	$(TOX)
+	$(PYTEST) -m "not itest"
 
 # Runs integration tests
 .PHONY: integration
