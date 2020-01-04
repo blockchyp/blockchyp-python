@@ -2,6 +2,7 @@
 Request and response field types.
 """
 
+# pylint: disable=too-few-public-methods
 
 class CardType:
     """Used to differentiate credit, debit, EBT, and gift cards."""
