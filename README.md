@@ -2,7 +2,7 @@
 
 [![Build Status](https://circleci.com/gh/blockchyp/blockchyp-python/tree/master.svg?style=shield)](https://circleci.com/gh/blockchyp/blockchyp-python/tree/master)
 [![PyPI](https://img.shields.io/pypi/v/blockchyp.svg)](https://pypi.org/project/blockchyp/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/blockchyp/blockchyp-python/blob/master/LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/blockchyp/blockchyp-python/blob/master/LICENSE)
 
 The official library for accessing the [BlockChyp] Terminal and Gateway APIs
 from Python.
