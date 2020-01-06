@@ -28,19 +28,19 @@ jobs:
           command: make test
 
       - persist_to_workspace:
-          root: ./
+          root: ./dist
           paths:
-            - ./dist/*
-            - ./requirements-dev.txt
-            - Makefile
+            - ./*
 
   publish:
     docker:
       - image: circleci/python:3.7
 
     steps:
+      - checkout
+
       - attach_workspace:
-          at: ./
+          at: ./dist
 
       - restore_cache:
           keys:
