@@ -28,9 +28,11 @@ jobs:
           command: make test
 
       - persist_to_workspace:
-          root: dist
+          root: ./
           paths:
-            - ./*
+            - ./dist/*
+            - ./requirements-dev.txt
+            - Makefile
 
   publish:
     docker:
@@ -38,7 +40,11 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: dist
+          at: ./
+
+      - restore_cache:
+          keys:
+            - pip-{{ checksum "requirements-dev.txt" }}
 
       - run: |
           echo -e "[pypi]" > ~/.pypirc
