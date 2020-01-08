@@ -44,15 +44,26 @@ class Client:
         self.signing_key = signing_key
 
         # Default gateway configuration
-        self.api_url = "https://api.blockchyp.com"
-        self.api_test_url = "https://test.blockchyp.com"
+        self.gateway_url = "https://api.blockchyp.com"
+        self.gateway_test_url = "https://test.blockchyp.com"
+        self.gateway_timeout = 20
 
         # Default terminal configuration
         self.terminal_https = True
+        self.terminal_timeout = 60 * 2
 
         self.internet_session = self._build_session()
         self.terminal_session = self._build_session(crypto.TerminalAdapter())
         self.route_cache = TerminalRouteCache()
+
+    def heartbeat(self, test=False):
+        # type: (bool) -> dict
+        """Tests connection to the API gateway."""
+        return self._gateway_request(
+            method="GET",
+            path="/api/heartbeat",
+            test=test,
+        )
 
 
     def charge(self, request):
@@ -478,7 +489,15 @@ class Client:
             **credentials,
         }
 
-        response = self.terminal_session.request(method, url, params=query, json=term_request)
+        timeout = body.get("timeout", self.terminal_timeout)
+
+        response = self.terminal_session.request(
+            method,
+            url,
+            params=query,
+            json=term_request,
+            timeout=timeout,
+        )
 
         return self._decode_response(response)
 
@@ -544,15 +563,27 @@ class Client:
         url = self._assemble_gateway_url(path, test)
         auth = crypto.auth_headers(self.api_key, self.bearer_token, self.signing_key)
 
-        response = self.internet_session.request(method, url, params=query, json=body, headers=auth)
+        if body:
+            timeout = body.get("timeout", self.gateway_timeout)
+        else:
+            timeout = self.gateway_timeout
+
+        response = self.internet_session.request(
+            method,
+            url,
+            params=query,
+            json=body,
+            headers=auth,
+            timeout=timeout,
+        )
 
         return self._decode_response(response)
 
     def _assemble_gateway_url(self, path, test):
         # type: (str, bool) -> str
-        base = self.api_url
+        base = self.gateway_url
         if test:
-            base = self.api_test_url
+            base = self.gateway_test_url
 
         return urllib.parse.urljoin(base, path)
 

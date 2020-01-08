@@ -35,7 +35,7 @@ def _get_test_client():
         signing_key=config["signingKey"],
     )
 
-    client.api_url = config.get("gatewayHost")
-    client.api_test_url = config.get("testGatewayHost")
+    client.gateway_url = config.get("gatewayHost")
+    client.gateway_test_url = config.get("testGatewayHost")
 
     return client
