@@ -39,7 +39,7 @@ clean:
 # Compiles the package
 .PHONY: build
 build: lint
-	$(PYTHON) setup.py sdist
+	$(PYTHON) setup.py sdist bdist_wheel
 
 # Runs unit tests
 .PHONY: test
