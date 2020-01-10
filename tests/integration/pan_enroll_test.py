@@ -51,4 +51,3 @@ def test_pan_enroll():
     assert response.get("entryMethod")
     assert response.get("entryMethod") == "KEYED"
     assert response.get("token")
-

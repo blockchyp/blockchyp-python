@@ -50,4 +50,3 @@ def test_terminal_enroll():
     assert response.get("maskedPan")
     assert response.get("entryMethod")
     assert response.get("token")
-

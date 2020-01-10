@@ -40,4 +40,3 @@ def test_terminal_clear():
     print("Response: %r" % response)
 
     assert response.get("success") is True
-

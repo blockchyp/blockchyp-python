@@ -51,4 +51,3 @@ def test_terminal_charge():
     assert response.get("maskedPan")
     assert response.get("entryMethod")
     assert response.get("authorizedAmount") == "25.15"
-

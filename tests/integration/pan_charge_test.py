@@ -53,4 +53,3 @@ def test_pan_charge():
     assert response.get("entryMethod")
     assert response.get("authorizedAmount") == "25.55"
     assert response.get("entryMethod") == "KEYED"
-

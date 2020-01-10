@@ -59,4 +59,3 @@ def test_update_transaction_display():
     print("Response: %r" % response)
 
     assert response.get("success") is True
-

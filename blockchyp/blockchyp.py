@@ -46,11 +46,13 @@ class Client:
         # Default gateway configuration
         self.gateway_url = "https://api.blockchyp.com"
         self.gateway_test_url = "https://test.blockchyp.com"
-        self.gateway_timeout = 20
+
+        self.gateway_timeout = 20 # Seconds
 
         # Default terminal configuration
         self.terminal_https = True
-        self.terminal_timeout = 60 * 2
+
+        self.terminal_timeout = 60 * 2 # Seconds
 
         self.internet_session = self._build_session()
         self.terminal_session = self._build_session(crypto.TerminalAdapter())
@@ -85,6 +87,7 @@ class Client:
                 path="/api/charge",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -110,6 +113,7 @@ class Client:
                 path="/api/preauth",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -135,6 +139,7 @@ class Client:
                 path="/api/terminal-test",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -160,6 +165,7 @@ class Client:
                 path="/api/balance",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -185,6 +191,7 @@ class Client:
                 path="/api/terminal-clear",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -210,6 +217,7 @@ class Client:
                 path="/api/terminal-tc",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -238,6 +246,7 @@ class Client:
                 path="/api/terminal-txdisplay",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -263,6 +272,7 @@ class Client:
                 path="/api/terminal-txdisplay",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -288,6 +298,7 @@ class Client:
                 path="/api/text-prompt",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -313,6 +324,7 @@ class Client:
                 path="/api/boolean-prompt",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -338,6 +350,7 @@ class Client:
                 path="/api/message",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -363,6 +376,7 @@ class Client:
                 path="/api/refund",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -388,6 +402,7 @@ class Client:
                 path="/api/enroll",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -413,6 +428,7 @@ class Client:
                 path="/api/gift-activate",
                 body=request,
                 test=request.get("test", False),
+                relay=True,
             )
 
         self._handle_signature(request, response)
@@ -489,7 +505,7 @@ class Client:
             **credentials,
         }
 
-        timeout = body.get("timeout", self.terminal_timeout)
+        timeout = self._get_timeout(body, self.terminal_timeout)
 
         response = self.terminal_session.request(
             method,
@@ -558,15 +574,12 @@ class Client:
         route = self._resolve_terminal_route(terminal)
         return route and route.get("success") and not route.get("cloud_relay_enabled")
 
-    def _gateway_request(self, method, path, body=None, query=None, test=False):
+    def _gateway_request(self, method, path, body=None, query=None, test=False, relay=False):
         """Sends a request to the gateway."""
         url = self._assemble_gateway_url(path, test)
         auth = crypto.auth_headers(self.api_key, self.bearer_token, self.signing_key)
 
-        if body:
-            timeout = body.get("timeout", self.gateway_timeout)
-        else:
-            timeout = self.gateway_timeout
+        timeout = self._get_timeout(body, self.terminal_timeout if relay else self.gateway_timeout)
 
         response = self.internet_session.request(
             method,
@@ -600,6 +613,13 @@ class Client:
         })
 
         return session
+
+    @staticmethod
+    def _get_timeout(request, default):
+        try:
+            return request.get("timeout", default)
+        except AttributeError:
+            return default
 
     @staticmethod
     def _populate_signature_options(request):

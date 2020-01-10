@@ -41,4 +41,3 @@ def test_terminal_gift_card_balance():
 
     assert response.get("success") is True
     assert response.get("remainingBalance")
-

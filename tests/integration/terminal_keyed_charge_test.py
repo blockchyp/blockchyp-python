@@ -52,4 +52,3 @@ def test_terminal_keyed_charge():
     assert response.get("maskedPan")
     assert response.get("entryMethod")
     assert response.get("authorizedAmount") == "11.11"
-

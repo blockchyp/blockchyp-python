@@ -42,4 +42,3 @@ def test_simple_gift_activate():
 
     assert response.get("approved") is True
     assert response.get("publicKey")
-

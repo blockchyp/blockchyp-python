@@ -44,4 +44,3 @@ def test_boolean_prompt():
 
     assert response.get("success") is True
     assert response.get("response") is True
-

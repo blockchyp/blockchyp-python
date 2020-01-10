@@ -52,4 +52,3 @@ def test_pan_preauth():
     assert response.get("entryMethod")
     assert response.get("authorizedAmount") == "25.55"
     assert response.get("entryMethod") == "KEYED"
-

@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_simple_void():
-    """Can void a tranaction in the current batch."""
+def test_gateway_timeout():
+    """Can specify gateway request timeouts."""
 
     client = _get_test_client()
 
@@ -25,31 +25,18 @@ def test_simple_void():
         client.message({
             "terminalName": _get_test_config().get("defaultTerminalName"),
             "test": True,
-            "message": f"Running simple_void in {delay}s",
+            "message": f"Running gateway_timeout in {delay}s",
         })
         time.sleep(int(delay))
 
 
-    setup_request = {
-        "pan": "4111111111111111",
+    request = {
+        "timeout": 1,
+        "pan": "5555555555554444",
         "amount": "25.55",
         "test": True,
         "transactionRef": str(uuid.uuid4()),
     }
 
-    setup_response = client.charge(setup_request)
-
-    print("Setup response: %r" % setup_response)
-
-    assert setup_response.get("approved")
-
-    request = {
-        "transactionId": setup_response["transactionId"],
-        "test": True,
-    }
-
-    response = client.void(request)
-
-    print("Response: %r" % response)
-
-    assert response.get("approved") is True
+    with pytest.raises(IOError):
+        client.charge(request)

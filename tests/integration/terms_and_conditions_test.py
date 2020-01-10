@@ -45,4 +45,3 @@ def test_terms_and_conditions():
     print("Response: %r" % response)
 
     assert response.get("success") is True
-

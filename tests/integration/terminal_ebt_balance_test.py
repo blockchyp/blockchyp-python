@@ -42,4 +42,3 @@ def test_terminal_ebt_balance():
 
     assert response.get("success") is True
     assert response.get("remainingBalance")
-

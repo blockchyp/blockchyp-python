@@ -51,4 +51,3 @@ def test_terminal_preauth():
     assert response.get("maskedPan")
     assert response.get("entryMethod")
     assert response.get("authorizedAmount") == "15.15"
-

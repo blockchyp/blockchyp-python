@@ -54,4 +54,3 @@ def test_terminal_manual_ebt_charge():
     assert response.get("entryMethod")
     assert response.get("authorizedAmount") == "27.00"
     assert response.get("remainingBalance") == "73.00"
-

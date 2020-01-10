@@ -54,4 +54,3 @@ def test_simple_batch_close():
     assert response.get("success") is True
     assert response.get("capturedTotal")
     assert response.get("openPreauths")
-
