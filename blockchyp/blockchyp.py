@@ -623,21 +623,31 @@ class Client:
 
     @staticmethod
     def _populate_signature_options(request):
-        if (not request.get("signatureFile") or
-                request.get("signatureFormat") != SignatureFormat.NONE):
+        if (
+                not request.get("sigFile")
+                or request.get("sigFormat", SignatureFormat.NONE) != SignatureFormat.NONE
+        ):
             return
 
-        _, fmt = os.path.splitext(request["signatureFile"])
-        request["signatureFormat"] = SignatureFormat(fmt)
+        fmt = request["sigFile"].split(os.extsep)[-1]
+        if fmt not in (
+                SignatureFormat.NONE,
+                SignatureFormat.PNG,
+                SignatureFormat.JPG,
+                SignatureFormat.GIF
+        ):
+            raise ValueError("Invalid format: %s" % fmt)
+
+        request["sigFormat"] = fmt
 
     @staticmethod
     def _handle_signature(request, response):
-        if not request.get("signatureFile") or not response.get("signatureFile"):
+        if not request.get("sigFile") or not response.get("sigFile"):
             return
 
-        raw = bytearray.fromhex(response.get("signatureFile"))
+        raw = bytearray.fromhex(response.get("sigFile"))
 
-        with io.open(request["signatureFile"], "wb") as f:
+        with io.open(request["sigFile"], "wb") as f:
             f.write(raw)
 
     @staticmethod
