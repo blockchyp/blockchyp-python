@@ -435,6 +435,32 @@ class Client:
 
         return response
 
+    def terminal_status(self, request):
+        # type: (dict) -> dict
+        """Returns the current status of a terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/terminal-status",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/terminal-status",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
 
     def reverse(self, request):
         # type: (dict) -> dict
