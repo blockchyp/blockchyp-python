@@ -598,7 +598,7 @@ class Client:
 
     def _is_terminal_routed(self, terminal):
         route = self._resolve_terminal_route(terminal)
-        return route and route.get("success") and not route.get("cloud_relay_enabled")
+        return route and route.get("success") and not route.get("cloudRelayEnabled")
 
     def _gateway_request(self, method, path, body=None, query=None, test=False, relay=False):
         """Sends a request to the gateway."""
