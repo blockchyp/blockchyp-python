@@ -226,7 +226,7 @@ class Client:
 
     def update_transaction_display(self, request):
         # type: (dict) -> dict
-        """Appends items to an existing transaction display Subtotal, Tax, and Total are
+        """Appends items to an existing transaction display. Subtotal, Tax, and Total are
         overwritten by the request. Items with the same description are combined into
         groups.
         """
@@ -281,7 +281,7 @@ class Client:
 
     def text_prompt(self, request):
         # type: (dict) -> dict
-        """Asks the consumer text based question."""
+        """Asks the consumer a text based question."""
 
         self._populate_signature_options(request)
 

@@ -42,6 +42,7 @@ def test_terminal_manual_ebt_charge():
 
     print("Response: %r" % response)
 
+    assert response.get("success") is True
     assert response.get("approved") is True
     assert response.get("test") is True
     assert len(response.get("authCode")) == 6

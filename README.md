@@ -69,6 +69,7 @@ stuff you can do with the BlockChyp Python SDK and a few basic examples.
 
 Executes a standard direct preauth and capture.
 
+
 ```python
 import os
 
@@ -93,11 +94,13 @@ response = client.charge(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Preauthorization
 
 Executes a preauthorization intended to be captured later.
+
 
 ```python
 import os
@@ -123,11 +126,13 @@ response = client.preauth(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Terminal Ping
 
 Tests connectivity with a payment terminal.
+
 
 ```python
 import os
@@ -151,11 +156,13 @@ response = client.ping(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Balance
 
 Checks the remaining balance on a payment method.
+
 
 ```python
 import os
@@ -181,11 +188,13 @@ response = client.balance(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Terminal Clear
 
 Clears the line item display and any in progress transaction.
+
 
 ```python
 import os
@@ -210,11 +219,13 @@ response = client.clear(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Terms & Conditions Capture
 
 Prompts the user to accept terms and conditions.
+
 
 ```python
 import os
@@ -258,13 +269,15 @@ response = client.terms_and_conditions(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Update Transaction Display
 
-Appends items to an existing transaction display Subtotal, Tax, and Total are
+Appends items to an existing transaction display.  Subtotal, Tax, and Total are
 overwritten by the request. Items with the same description are combined into
 groups.
+
 
 ```python
 import os
@@ -308,11 +321,13 @@ response = client.update_transaction_display(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### New Transaction Display
 
 Displays a new transaction on the terminal.
+
 
 ```python
 import os
@@ -356,11 +371,13 @@ response = client.new_transaction_display(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Text Prompt
 
-Asks the consumer text based question.
+Asks the consumer a text based question.
+
 
 ```python
 import os
@@ -389,11 +406,13 @@ response = client.text_prompt(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Boolean Prompt
 
 Asks the consumer a yes/no question.
+
 
 ```python
 import os
@@ -421,11 +440,13 @@ response = client.boolean_prompt(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Display Message
 
 Displays a short message on the terminal.
+
 
 ```python
 import os
@@ -451,11 +472,13 @@ response = client.message(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Refund
 
 Executes a refund.
+
 
 ```python
 import os
@@ -483,11 +506,13 @@ response = client.refund(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Enroll
 
 Adds a new payment method to the token vault.
+
 
 ```python
 import os
@@ -512,11 +537,13 @@ response = client.enroll(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Gift Card Activation
 
 Activates or recharges a gift card.
+
 
 ```python
 import os
@@ -542,6 +569,7 @@ response = client.gift_activate(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Time Out Reversal
@@ -555,6 +583,7 @@ you build the original request. Otherwise, we have no real way of knowing which
 transaction you're trying to reverse because we may not have assigned it an id
 yet. And if we did assign it an id, you wouldn't know what it is because your
 request to the terminal timed out before you got a response.
+
 
 ```python
 import os
@@ -579,11 +608,13 @@ response = client.reverse(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Capture Preauthorization
 
 Captures a preauthorization.
+
 
 ```python
 import os
@@ -608,11 +639,13 @@ response = client.capture(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Close Batch
 
 Closes the current credit card batch.
+
 
 ```python
 import os
@@ -636,11 +669,13 @@ response = client.close_batch(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Void Transaction
 
 Discards a previous preauth transaction.
+
 
 ```python
 import os
@@ -665,11 +700,13 @@ response = client.void(request)
 
 print("Response: %r" % response)
 
+
 ```
 
 #### Terminal Status
 
 Returns the current status of a terminal.
+
 
 ```python
 import os
@@ -692,6 +729,7 @@ request = {
 response = client.terminal_status(request)
 
 print("Response: %r" % response)
+
 
 ```
 
