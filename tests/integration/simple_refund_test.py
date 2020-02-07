@@ -52,4 +52,5 @@ def test_simple_refund():
 
     print("Response: %r" % response)
 
+    assert response.get("success") is True
     assert response.get("approved") is True
