@@ -30,3 +30,15 @@ class PromptType:
     EMAIL = "email"
     PHONE = "phone"
     REWARDS_NUMBER = "rewards-number"
+
+
+class AVSResponse:
+    """Contains address verification results."""
+
+    NOT_APPLICABLE = ""
+    NOT_SUPPORTED = "not_supported"
+    RETRY = "retry"
+    NO_MATCH = "no_match"
+    ADDRESS_MATCH = "address_match"
+    POSTAL_CODE_MATCH = "zip_match"
+    ADDRESS_AND_POSTAL_CODE_MATCH = "match"
