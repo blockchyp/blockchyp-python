@@ -30,6 +30,8 @@ class PromptType:
     EMAIL = "email"
     PHONE = "phone"
     REWARDS_NUMBER = "rewards-number"
+    FIRST_NAME = "first-name"
+    LAST_NAME = "last-name"
 
 
 class AVSResponse:
