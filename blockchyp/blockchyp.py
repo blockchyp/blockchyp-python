@@ -541,6 +541,61 @@ class Client:
             test=request.get("test", False),
         )
 
+    def update_customer(self, request):
+        # type: (dict) -> dict
+        """Updates or creates a customer record."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/update-customer",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def customer(self, request):
+        # type: (dict) -> dict
+        """Retrieves a customer by id."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/customer",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def customer_search(self, request):
+        # type: (dict) -> dict
+        """Searches the customer database."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/customer-search",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def transaction_status(self, request):
+        # type: (dict) -> dict
+        """Retrieves the current status of a transaction."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/tx-status",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def send_payment_link(self, request):
+        # type: (dict) -> dict
+        """Creates and send a payment link to a customer."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/send-payment-link",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def _terminal_request(self, method, path, body, terminal, query=None):
         """Sends a request to a terminal."""
         route = self._resolve_terminal_route(terminal)
