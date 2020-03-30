@@ -41,7 +41,7 @@ def test_simple_reversal():
 
     print("Setup response: %r" % setup_response)
 
-    assert setup_response.get("approved")
+    assert setup_response.get("success")
 
     request = {
         "transactionRef": setup_response["transactionRef"],

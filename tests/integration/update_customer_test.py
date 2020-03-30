@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_simple_refund():
-    """Can execute a simple refund."""
+def test_update_customer():
+    """Can update a customer."""
 
     client = _get_test_client()
 
@@ -25,32 +25,23 @@ def test_simple_refund():
         client.message({
             "terminalName": _get_test_config().get("defaultTerminalName"),
             "test": True,
-            "message": f"Running simple_refund in {delay}s",
+            "message": f"Running update_customer in {delay}s",
         })
         time.sleep(int(delay))
 
 
-    setup_request = {
-        "pan": "4111111111111111",
-        "amount": "25.55",
-        "test": True,
-        "transactionRef": str(uuid.uuid4()),
-    }
-
-    setup_response = client.charge(setup_request)
-
-    print("Setup response: %r" % setup_response)
-
-    assert setup_response.get("success")
-
     request = {
-        "transactionId": setup_response["transactionId"],
-        "test": True,
+        "customer": {
+            "firstName": "Test",
+            "lastName": "Customer",
+            "companyName": "Test Company",
+            "emailAddress": "support@blockchyp.com",
+            "smsNumber": "(123) 123-1234",
+        },
     }
 
-    response = client.refund(request)
+    response = client.update_customer(request)
 
     print("Response: %r" % response)
 
     assert response.get("success") is True
-    assert response.get("approved") is True

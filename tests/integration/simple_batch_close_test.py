@@ -41,7 +41,7 @@ def test_simple_batch_close():
 
     print("Setup response: %r" % setup_response)
 
-    assert setup_response.get("approved")
+    assert setup_response.get("success")
 
     request = {
         "test": True,

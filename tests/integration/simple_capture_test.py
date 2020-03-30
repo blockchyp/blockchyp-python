@@ -40,7 +40,7 @@ def test_simple_capture():
 
     print("Setup response: %r" % setup_response)
 
-    assert setup_response.get("approved")
+    assert setup_response.get("success")
 
     request = {
         "transactionId": setup_response["transactionId"],
