@@ -574,6 +574,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def cash_discount(self, request):
+        # type: (dict) -> dict
+        """Calculates the discount for actual cash transactions."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/cash-discount",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def transaction_status(self, request):
         # type: (dict) -> dict
         """Retrieves the current status of a transaction."""

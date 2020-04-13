@@ -867,6 +867,36 @@ print("Response: %r" % response)
 
 ```
 
+#### Cash Discount
+
+Calculates the discount for actual cash transactions.
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "amount": "100.00",
+}
+
+# run the transaction.
+response = client.cash_discount(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Transaction Status
 
 Retrieves the current status of a transaction.
