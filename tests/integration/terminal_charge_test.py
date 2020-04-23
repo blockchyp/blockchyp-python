@@ -47,7 +47,7 @@ def test_terminal_charge():
     assert response.get("transactionId")
     assert response.get("timestamp")
     assert response.get("tickBlock")
-    assert response.get("responseDescription") == "Approved"
+    assert response.get("responseDescription") == "approved"
     assert response.get("paymentType")
     assert response.get("maskedPan")
     assert response.get("entryMethod")
