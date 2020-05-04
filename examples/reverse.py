@@ -11,7 +11,6 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "terminalName": "Test Terminal",
     "transactionRef": "<LAST TRANSACTION REF>",
 }
 

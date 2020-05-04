@@ -68,6 +68,32 @@ class Client:
         )
 
 
+    def ping(self, request):
+        # type: (dict) -> dict
+        """Tests connectivity with a payment terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/test",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/terminal-test",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
     def charge(self, request):
         # type: (dict) -> dict
         """Executes a standard direct preauth and capture."""
@@ -111,243 +137,6 @@ class Client:
             response = self._gateway_request(
                 method="POST",
                 path="/api/preauth",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def ping(self, request):
-        # type: (dict) -> dict
-        """Tests connectivity with a payment terminal."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/test",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/terminal-test",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def balance(self, request):
-        # type: (dict) -> dict
-        """Checks the remaining balance on a payment method."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/balance",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/balance",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def clear(self, request):
-        # type: (dict) -> dict
-        """Clears the line item display and any in progress transaction."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/clear",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/terminal-clear",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def terms_and_conditions(self, request):
-        # type: (dict) -> dict
-        """Prompts the user to accept terms and conditions."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/tc",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/terminal-tc",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def update_transaction_display(self, request):
-        # type: (dict) -> dict
-        """Appends items to an existing transaction display. Subtotal, Tax, and Total are
-        overwritten by the request. Items with the same description are combined into
-        groups.
-        """
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="PUT",
-                path="/api/txdisplay",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="PUT",
-                path="/api/terminal-txdisplay",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def new_transaction_display(self, request):
-        # type: (dict) -> dict
-        """Displays a new transaction on the terminal."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/txdisplay",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/terminal-txdisplay",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def text_prompt(self, request):
-        # type: (dict) -> dict
-        """Asks the consumer a text based question."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/text-prompt",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/text-prompt",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def boolean_prompt(self, request):
-        # type: (dict) -> dict
-        """Asks the consumer a yes/no question."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/boolean-prompt",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/boolean-prompt",
-                body=request,
-                test=request.get("test", False),
-                relay=True,
-            )
-
-        self._handle_signature(request, response)
-
-        return response
-
-    def message(self, request):
-        # type: (dict) -> dict
-        """Displays a short message on the terminal."""
-
-        self._populate_signature_options(request)
-
-        if self._is_terminal_routed(request.get("terminalName")):
-            response = self._terminal_request(
-                method="POST",
-                path="/api/message",
-                body=request,
-                terminal=request.get("terminalName"),
-            )
-        else:
-            response = self._gateway_request(
-                method="POST",
-                path="/api/message",
                 body=request,
                 test=request.get("test", False),
                 relay=True,
@@ -435,6 +224,58 @@ class Client:
 
         return response
 
+    def balance(self, request):
+        # type: (dict) -> dict
+        """Checks the remaining balance on a payment method."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/balance",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/balance",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def clear(self, request):
+        # type: (dict) -> dict
+        """Clears the line item display and any in progress transaction."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/clear",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/terminal-clear",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
     def terminal_status(self, request):
         # type: (dict) -> dict
         """Returns the current status of a terminal."""
@@ -452,6 +293,32 @@ class Client:
             response = self._gateway_request(
                 method="POST",
                 path="/api/terminal-status",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def terms_and_conditions(self, request):
+        # type: (dict) -> dict
+        """Prompts the user to accept terms and conditions."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/tc",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/terminal-tc",
                 body=request,
                 test=request.get("test", False),
                 relay=True,
@@ -487,6 +354,161 @@ class Client:
 
         return response
 
+    def new_transaction_display(self, request):
+        # type: (dict) -> dict
+        """Displays a new transaction on the terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/txdisplay",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/terminal-txdisplay",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def update_transaction_display(self, request):
+        # type: (dict) -> dict
+        """Appends items to an existing transaction display. Subtotal, Tax, and Total are
+        overwritten by the request. Items with the same description are combined into
+        groups.
+        """
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="PUT",
+                path="/api/txdisplay",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="PUT",
+                path="/api/terminal-txdisplay",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def message(self, request):
+        # type: (dict) -> dict
+        """Displays a short message on the terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/message",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/message",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def boolean_prompt(self, request):
+        # type: (dict) -> dict
+        """Asks the consumer a yes/no question."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/boolean-prompt",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/boolean-prompt",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def text_prompt(self, request):
+        # type: (dict) -> dict
+        """Asks the consumer a text based question."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/text-prompt",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/text-prompt",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+
+    def capture(self, request):
+        # type: (dict) -> dict
+        """Captures a preauthorization."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/capture",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def void(self, request):
+        # type: (dict) -> dict
+        """Discards a previous preauth transaction."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/void",
+            body=request,
+            test=request.get("test", False),
+        )
 
     def reverse(self, request):
         # type: (dict) -> dict
@@ -508,17 +530,6 @@ class Client:
             test=request.get("test", False),
         )
 
-    def capture(self, request):
-        # type: (dict) -> dict
-        """Captures a preauthorization."""
-
-        return self._gateway_request(
-            method="POST",
-            path="/api/capture",
-            body=request,
-            test=request.get("test", False),
-        )
-
     def close_batch(self, request):
         # type: (dict) -> dict
         """Closes the current credit card batch."""
@@ -530,13 +541,24 @@ class Client:
             test=request.get("test", False),
         )
 
-    def void(self, request):
+    def send_payment_link(self, request):
         # type: (dict) -> dict
-        """Discards a previous preauth transaction."""
+        """Creates and send a payment link to a customer."""
 
         return self._gateway_request(
             method="POST",
-            path="/api/void",
+            path="/api/send-payment-link",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def transaction_status(self, request):
+        # type: (dict) -> dict
+        """Retrieves the current status of a transaction."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/tx-status",
             body=request,
             test=request.get("test", False),
         )
@@ -581,28 +603,6 @@ class Client:
         return self._gateway_request(
             method="POST",
             path="/api/cash-discount",
-            body=request,
-            test=request.get("test", False),
-        )
-
-    def transaction_status(self, request):
-        # type: (dict) -> dict
-        """Retrieves the current status of a transaction."""
-
-        return self._gateway_request(
-            method="POST",
-            path="/api/tx-status",
-            body=request,
-            test=request.get("test", False),
-        )
-
-    def send_payment_link(self, request):
-        # type: (dict) -> dict
-        """Creates and send a payment link to a customer."""
-
-        return self._gateway_request(
-            method="POST",
-            path="/api/send-payment-link",
             body=request,
             test=request.get("test", False),
         )

@@ -12,6 +12,8 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "amount": "100.00",
+    "cashDiscount": True,
+    "surcharge": True,
 }
 
 # run the transaction.

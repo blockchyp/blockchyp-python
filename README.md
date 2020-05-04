@@ -65,9 +65,85 @@ You can also view a number of long form demos and learn more about us on our [Yo
 You don't want to read words. You want examples. Here's a quick rundown of the
 stuff you can do with the BlockChyp Python SDK and a few basic examples.
 
+#### Terminal Ping
+
+
+This simple test transaction helps ensure you have good communication with a payment terminal and is usually the first one you'll run in development.
+
+It tests communication with the terminal and returns a positive response if everything
+is okay.  It works the same way in local or cloud relay mode.
+
+If you get a positive response, you've successfully verified all of the following:
+
+* The terminal is online.
+* There is a valid route to the terminal.
+* The API Credential are valid.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.ping(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Charge
 
-Executes a standard direct preauth and capture.
+
+Our most popular transaction executes a standard authorization and capture.
+This is the most basic of
+basic payment transactions, typically used in conventional retail.
+
+Charge transactions can use a payment terminal to capture a payment or
+use a previously enrolled payment token.
+
+**Terminal Transactions**
+
+For terminal transactions, make sure you pass in the terminal name using the `terminalName` property.
+
+**Token Transactions**
+
+If you have a payment token, omit the `terminalName` property and pass in the token with the `token`
+property instead.
+
+**Card Numbers and Mag Stripes**
+
+You can also pass in PANs and Mag Stripes, but you probably shouldn't.  This will
+put you in PCI scope and the most common vector for POS breaches is key logging.
+If you use terminals for manual card entry, you'll bypass any key loggers that
+might be maliciously running on the point-of-sale system.
+
+**Common Variations**
+
+* **Gift Card Redemption**:  There's no special API for gift card redemption in BlockChyp.  Just execute a plain charge transaction and if the customer happens to swipe a gift card, our terminals will identify the gift card and run a gift card redemption.  Also note that if for some reason the gift card's original purchase transaction is associated with fraud or a chargeback, the transaction will be rejected.
+* **EBT**: Set the `ebt` flag to process an EBT SNAP transaction.  Note that test EBT transactions alway assume a balance of $100.00, so test EBT transactions over that amount may be declined.
+* **Cash Back**: To enable cash back for debit transactions, set the `cashBack` flag.  If the card presented isn't a debit card, the `cashBack` flag will be ignored.
+* **Manual Card Entry**: Set the `manual` flag to enable manual card entry.  Good as a backup when chips and MSR's don't work or for more secure phone orders.  You can even combine the `manual` flag with the `ebt` flag for manual EBT card entry.
+* **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
+* **Prompting for Tips**: Set the `promptForTips` flag if you'd like to prompt the customer for a tip before authorization.  Good for pay-at-the-table and other services related scenarios.
+* **Cash Discounting and Surcharging**:  The `surcharge` and `cashDiscount` flags can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
+
+
 
 
 ```python
@@ -99,7 +175,41 @@ print("Response: %r" % response)
 
 #### Preauthorization
 
-Executes a preauthorization intended to be captured later.
+
+A preauthorization puts a hold on funds and must be captured later.  This is used
+in scenarios where the final transaction amount might change.  Examples would
+be fine dining where a tip adjustment is required prior to capture or hotels
+
+Another use case for preauthorization is e-commerce.  Typically an online order
+is preauthorized at the time of the order and then captured when the order ships.
+
+Preauthorizations can use a payment terminal to capture a payment or
+use a previously enrolled payment token.
+
+**Terminal Transactions**
+
+For terminal transactions, make sure you pass in the terminal name using the `terminalName` property.
+
+**Token Transactions**
+
+If you have a payment token, omit the `terminalName` property and pass in the token with the `token`
+property instead.
+
+**Card Numbers and Mag Stripes**
+
+You can also pass in PANs and Mag Stripes, but you probably shouldn't.  This will
+put you in PCI scope and the most common vector for POS breaches is key logging.
+If you use terminals for manual card entry, you'll bypass any key loggers that
+might be maliciously running on the point-of-sale system.
+
+**Common Variations**
+
+* **Manual Card Entry**: Set the `manual` flag to enable manual card entry.  Good as a backup when chips and MSR's don't work or for more secure phone orders.  You can even combine the `manual` flag with the `ebt` flag for manual EBT card entry.
+* **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
+* **Prompting for Tips**: Set the `promptForTips` flag if you'd like to prompt the customer for a tip before authorization.  You can prompt for tips as part of a preauthorization, although it's not a very common approach.
+* **Cash Discounting and Surcharging**:  The `surcharge` and `cashDiscount` flags can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
+
+
 
 
 ```python
@@ -129,9 +239,97 @@ print("Response: %r" % response)
 
 ```
 
-#### Terminal Ping
+#### Capture Preauthorization
 
-Tests connectivity with a payment terminal.
+
+This API allows you to capture a previously approved preauthorization.
+
+You'll need to make sure you pass in the Transaction ID returned by the original preauth transaction so we know which transaction we're capturing.  If you want to capture the transaction for the
+exact amount of the preauth, the Transaction ID is all you need to pass in.
+
+You can adjust the total if you need to by passing in a new `amount`.  We
+also recommend you pass in updated amounts for `tax` and `tip` as it can
+reduce your interchange fees in some cases. (Level II Processing, for example.)
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "transactionId": "<PREAUTH TRANSACTION ID>",
+}
+
+# run the transaction.
+response = client.capture(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Refund
+
+
+It's not ideal, but sometimes customers want their money back.
+
+Our refund API allows you to confront this unpleasant reality by executing refunds in a few different scenarios.
+
+The most fraud resistent method is to execute refunds in the context of a previous transaction.  You should always keep track of the Transaction ID
+returned in a BlockChyp response.  To refund the full amount of the previous transaction, just pass in the original Transaction ID with the refund requests.
+
+**Partial Refunds**
+
+For a partial refund, just passing an amount along with the Transaction ID.
+The only rule is that the amount has to be equal to or less than the original
+transaction.  You can even execute multiple partial refunds against the same
+original transaction as long as the total refunded amount doesn't exceed the original transaction.
+
+**Tokenized Refunds**
+
+You can also use a token to execute a refund.  Just pass in a token instead
+of the Transaction ID along with the desired refund amount.
+
+**Free Range Refunds**
+
+When you execute a refund without referencing a previous transaction, we
+call this a *free range refund*.
+
+We don't recommend it, but it is permitted.  Just pass in a
+Terminal Name and an amount.
+
+You can even execute a manual or keyed refund by passing the `manual` flag
+to a free range refund request.
+
+**Gift Card Refunds**
+
+Gift card refunds are allowed in the context of a previous transaction, but
+free range gift card refunds are not allowed.  Use the gift card activation
+API if you need to add more funds to a gift card.
+
+**Store and Forward Support**
+
+Refunds are not permitted when a terminal falls back to store and forward mode.
+
+**Auto Voids**
+
+If a refund referencing a previous transaction is executed for the full amount
+before the original transaction's batch is closed, the refund is automatically
+converted to a void.  This saves the merchant a little bit of money.
+
+
 
 
 ```python
@@ -149,10 +347,233 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "terminalName": "Test Terminal",
+    "transactionId": "<PREVIOUS TRANSACTION ID>",
+
+    # Optional amount for partial refunds.
+    "amount": "5.00",
 }
 
 # run the transaction.
-response = client.ping(request)
+response = client.refund(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Enroll
+
+
+This API allows you to tokenize and enroll a payment method in the token
+vault.  You can also pass in customer information and associate the
+payment method with a customer record.
+
+A token is returned in the response that can be used in subsequent charge,
+preauth, and refund transactions.
+
+**Gift Cards and EBT**
+
+Gift Cards and EBT cards cannot be tokenized.
+
+**E-Commerce Tokens**
+
+The tokens returned by the enroll API and the e-commerce web tokenizer
+are the same tokens and can be used interchangably.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.enroll(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Void
+
+
+
+Mistakes happen.  If a transaction is made by mistake, you can void it
+with this API.  All that's needed is to pass in a Transaction ID and execute
+the void before the original transaction's batch closes.
+
+Voids work with EBT and gift card transactions with no additional parameters.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "transactionId": "<PREVIOUS TRANSACTION ID>",
+}
+
+# run the transaction.
+response = client.void(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Time Out Reversal
+
+
+
+Payment transactions require a stable network to function correctly and
+no network is stable all the time.  Time out reversals are a great line
+of defense against accidentally double charging consumers when payments
+are retried during shaky network conditions.
+
+We highly recommend developers use this API whenever a charge, preauth, or refund transaction times out.  If you don't receive a definitive response
+from BlockChyp, you can't be certain about whether or not the transaction went through.
+
+A best practice in this situation is to send a time out reversal request.  Time out reversals check for a transaction and void it if it exists.
+
+The only caveat is that developers must use the `transactionRef` property (`txRef` for the CLI) when executing charge, preauth, and refund transactions.
+
+The reason for this requirement is that if a system never receives a definitive
+response for a transaction, the system would never have received the BlockChyp
+generated Transaction ID.  We have to fallback to transaction ref to identify
+a transaction.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "transactionRef": "<LAST TRANSACTION REF>",
+}
+
+# run the transaction.
+response = client.reverse(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Gift Card Activation
+
+
+This API can be used to activate or add value to BlockChyp gift cards.
+Just pass in the terminal name and the amount to add to the card.
+Once the customer swipes their card, the terminal will use keys
+on the mag stripe to add value to the card.
+
+You don't need to handle a new gift card or a gift card recharge any
+differently.  The terminal firmware will figure out what to do on its
+own and also returns the new balance for the gift card.
+
+This is the part of the system where BlockChyp's blockchain DNA comes
+closest to the surface.  The BlockChyp gift card system doesn't really
+use gift card numbers.  This means they can't be stolen.
+
+BlockChyp identifies cards with an elliptic curve public key instead.
+Gift card transactions are actually blocks signed with the those keys.
+This means there are no shared secrets sent over the network with
+BlockChyp gift cards.
+To keep track of a BlockChyp gift card, hang on to the **public key** returned
+during gift card activation.  That's the gift card's elliptic curve public key.
+
+We sometimes print numbers on our gift cards, but these are actually
+decimal encoded hashes of a portion of the public key to make our gift
+cards seem *normal* to *normies*.  They can be used
+for balance checks and play a lookup role in online gift card
+authorization, but are of little use beyond that.
+
+**Voids and Reversals**
+
+Gift card activations can be voided and reversed just like any other
+BlockChyp transaction.  Use the Transaction ID or Transaction Ref
+to identify the gift activation transaction as you normally would for
+voiding or reversing a conventional payment transaction.
+
+**Importing Gift Cards**
+
+BlockChyp does have the ability to import gift card liability from
+conventional gift card platforms.  Unfortunately, BlockChyp does not
+support activating cards on third party systems, but you can import
+your outstanding gift cards and customerSearch can swipe them on the
+terminals just like BlockChyp's standard gift cards.
+
+No special coding is required to access this feature.  The gateway and
+terminal firmware handle everything for you.
+
+**Third Party Gift Card Networks**
+
+BlockChyp does not currently provide any native support for other gift card
+platforms beyond importing gift card liability.  We do have a white listing system however that be used support your own custom gift card implementations.  We have a security review
+process before we allow a BIN range to be white listed, so contact support@blockchyp.com if you need to white list a BIN range.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+    "amount": "50.00",
+}
+
+# run the transaction.
+response = client.gift_activate(request)
 
 print("Response: %r" % response)
 
@@ -161,7 +582,35 @@ print("Response: %r" % response)
 
 #### Balance
 
-Checks the remaining balance on a payment method.
+
+
+Checks a gift or EBT card balance.
+
+**Gift Card Balance Checks**
+
+For gift cards, just pass in a terminal name and the customer will be prompted
+to swipe a card on that terminal.  The remaining balance will be displayed
+briefly on the terminal screen and the API response will include the gift card's public key and the remaining balance.
+
+**EBT Balance Checks**
+
+All EBT transactions require a PIN, so in order to check an EBT card balance,
+you need to pass in the `ebt` flag just like you would for a normal EBT
+charge transaction.  The customer will be prompted to swipe their card and
+enter a PIN code.  If everything checks out, the remaining balance on the card will be displayed on terminal for the customer and returned in the API.
+
+**Testing Gift Card Balance Checks**
+
+Test gift card balance checks works no differently than live gift cards.  You
+must activate a test gift card first in order to test balance checks.  Test
+gift cards are real blockchain cards that live on our parallel test blockchain.
+
+**Testing EBT Gift Card Balance Checks**
+
+All test EBT transactions assume a starting balance of $100.00.  As a result,
+test EBT balance checks always return a balance of $100.00.
+
+
 
 
 ```python
@@ -191,9 +640,219 @@ print("Response: %r" % response)
 
 ```
 
+#### Close Batch
+
+
+This API will close the merchant's batch, if it's currently open.
+
+By default, merchant batches will close automatically at 3 AM in their
+local time zone.  The automatic batch closure time can be changed
+in the Merchant Profile or disabled completely.
+
+If automatic batch closure is disabled, you'll need to use this API to
+close the batch manually.
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.close_batch(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Send Payment Link
+
+
+
+This API allows you to send an invoice to a customer and capture payment
+via a BlockChyp hosted payment page.
+
+If you set the `autoSend` flag, BlockChyp will send a basic invoice email
+to the customer for you that includes the payment link.  If you'd rather have
+more control over the look of the email message, you can omit the `autoSend`
+flag and send the customer email yourself.
+
+There are a lot of optional parameters for this API, but at a minimum
+you'll need to pass in a total, customer name, and email address.
+
+**Customer Info**
+
+You must specify a customer, either by creating a new customer record inline
+or by passing in an existing Customer ID or Customer Ref.
+
+**Line Item Level Data**
+
+It's not strictly required, but we strongly recommend sending line item level
+data with every request.  It will make the invoice look a little more complete
+and the data format for line item level data is the exact same format used
+for terminal line item display, so the same code can be used to support both areas.
+
+**Descriptions**
+
+You can also send a free form description or message that's displayed near
+the bottom of the invoice.  Usually this is some kind of thank you note
+or instructions.
+
+**Terms and Conditions**
+
+You can include long form contract language with a request and capture
+terms and conditions acceptance at the same time payment is captured.
+
+The interface is identical to that used for the terminal based terms and
+conditions API in that you can pass in content directly via `tcContent` or via
+a preconfigured template via `tcAlias`.  The terms and conditions log will also be updated when
+terms and conditions acceptance is incorporated into a send link request.
+
+**Auto Send**
+
+By default, BlockChyp does not send the email notification automatically.  This is
+really just a safeguard to prevent real emails from going out when you may not expect it.
+If you want BlockChyp to send the email for you, just add the `autoSend` flag with
+all requests.
+
+**Payment Notifications**
+
+When a customer successfully submits payment, the merchant will receive an email
+notifying them that the payment was received.
+
+**Real Time Callback Notifications**
+
+Email notifications are fine, but you may also want your system to be informed
+immediately whenever a payment event occurs.  By using the optional `callbackUrl` request
+property, you can specify a URL to which the Authorization Response will be posted
+every time the user submits a payment, whether approved or otherwise.
+
+The response will be sent as a JSON encoded POST request and will be the exact
+same format as all BlockChyp charge and preauth transaction responses.
+
+**Status Polling**
+
+If real time callbacks aren't practical or necesary in your environment, you can
+always use the Transaction Status API described below.
+
+A common use case for the send link API with status polling is curbside pickup.
+You could have your system check the Transaction Status when a customer arrives to
+ensure it's been paid without necessarily needing to create background threads
+to constantly poll for status updates.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "amount": "199.99",
+    "description": "Widget",
+    "subject": "Widget invoice",
+    "transaction": {
+        "subtotal": "195.00",
+        "tax": "4.99",
+        "total": "199.99",
+        "items": [
+            {
+                "description": "Widget",
+                "price": "195.00",
+                "quantity": 1,
+            },
+        ],
+    },
+    "autoSend": True,
+    "customer": {
+        "customerRef": "Customer reference string",
+        "firstName": "FirstName",
+        "lastName": "LastName",
+        "companyName": "Company Name",
+        "emailAddress": "support@blockchyp.com",
+        "smsNumber": "(123) 123-1231",
+    },
+}
+
+# run the transaction.
+response = client.send_payment_link(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Transaction Status
+
+
+
+Returns the current status for any transaction.  You can lookup a transaction
+by its BlockChyp assigned Transaction ID or your own Transaction Ref.
+
+You should alway use globally unique Transaction Ref values, but in the event
+that you duplicate Transaction Refs, the most recent transaction matching your
+Transaction Ref is returned.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "transactionId": "ID of transaction to retrieve",
+}
+
+# run the transaction.
+response = client.transaction_status(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Terminal Clear
 
-Clears the line item display and any in progress transaction.
+
+
+This API interrupts whatever a terminal may be doing and returns it to the
+idle state.
+
+
+
 
 
 ```python
@@ -222,9 +881,92 @@ print("Response: %r" % response)
 
 ```
 
+#### Terminal Status
+
+
+
+Returns the current status of a payment terminal.  This is typically used
+as a way to determine if the terminal is busy before sending a new transaction.
+
+If the terminal is busy, `idle` will be false and the `status` field will return
+a short string indicating the transaction type currently in progress.  The system
+will also return the timestamp of the last status change in the `since` field.
+
+If the system is running a payment transaction and you wisely passed in a
+Transaction Ref, this API will also return the Transaction Ref of the in progress
+transaction in the response.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.terminal_status(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Terms & Conditions Capture
 
-Prompts the user to accept terms and conditions.
+
+
+This API allows you to prompt a customer to accept a legal agreement on the terminal
+and optionally capture their signature.
+
+Content for the agreement can be specified in two ways.  You can reference a
+previously configured T&C template or pass in the full agreement text with every request.
+
+**Using Templates**
+
+If your application doesn't keep track of agreements you can leverage BlockChyp's
+template system.  You can create any number of T&C Templates in the merchant dashboard
+and pass in the `tcAlias` flag to specify which one to display.
+
+**Raw Content**
+
+If your system keeps track of the agreement language or executes complicated merging
+and rendering logic, you can bypass our template system and pass in the full text with
+every transaction.  Use the `tcName` to pass in the agreement name and `tcContent` to
+pass in the contract text.  Note that only plain text is supported.
+
+**Bypassing Signatures**
+
+Signature images are captured by default.  If for some reason this doesn't fit your
+use case and you'd like to capture acceptance without actually capturing a signature image set
+the `disableSignature` flag in the request.
+
+**Terms & Conditions Log**
+
+Every time a user accepts an agreement on the terminal the signature image (if captured),
+will be uploaded to the gateway and added to the log along with the full text of the
+agreement.  This preserves the historical record in the event that standard agreements
+or templates change over time.
+
+**Associating Agreements with Transactions**
+
+To associate a Terms & Conditions log entry with a transaction, just pass in the
+Transaction ID or Transaction Ref for the associated transaction.
+
+
+
 
 
 ```python
@@ -272,11 +1014,30 @@ print("Response: %r" % response)
 
 ```
 
-#### Update Transaction Display
+#### Capture Signature
 
-Appends items to an existing transaction display.  Subtotal, Tax, and Total are
-overwritten by the request. Items with the same description are combined into
-groups.
+
+
+This endpoint captures a written signature from the terminal and returns the
+image.
+
+Unlike the Terms & Conditions API, this endpoint performs basic signature
+capture with no agreement display or signature archival.
+
+Under the hood, signatures are captured in a proprietary vector format and
+must be converted to a common raster format in order to be useful to most
+applications.  At a minimum, you must specify an image format using the
+`sigFormat` parameter.  As of this writing JPG and PNG are supported.
+
+By default, images are returned in the JSON response as hex encoded binary.
+You can redirect the binary image output to a file using the `sigFile`
+parameter.
+
+You can also scale the output image to your preferred width by
+passing in a `sigWidth` parameter.  The image will be scaled to that
+width, preserving the aspect ratio of the original image.
+
+
 
 
 ```python
@@ -293,31 +1054,17 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "test": True,
     "terminalName": "Test Terminal",
-    "transaction": {
-        "subtotal": "60.00",
-        "tax": "5.00",
-        "total": "65.00",
-        "items": [
-            {
-                "description": "Leki Trekking Poles",
-                "price": "35.00",
-                "quantity": 2,
-                "extended": "70.00",
-                "discounts": [
-                    {
-                        "description": "memberDiscount",
-                        "amount": "10.00",
-                    },
-                ],
-            },
-        ],
-    },
+
+    # File format for the signature image.
+    "sigFormat": blockchyp.SignatureFormat.PNG,
+
+    # Width of the signature image in pixels.
+    "sigWidth": 200,
 }
 
 # run the transaction.
-response = client.update_transaction_display(request)
+response = client.capture_signature(request)
 
 print("Response: %r" % response)
 
@@ -326,7 +1073,29 @@ print("Response: %r" % response)
 
 #### New Transaction Display
 
-Displays a new transaction on the terminal.
+
+
+Sends totals and line item level data to the terminal.
+
+At a minimum, you should send total information as part of a display request,
+including `total`, `tax`, and `subtotal`.
+
+You can also send line item level data and each line item can have a `description`,
+`qty`, `price`, and `extended` price.
+
+If you fail to send an extended price, BlockChyp will multiply the `qty` by the
+`price`, but we strongly recommend you precalculate all the fields yourself
+to ensure consistency.  Your treatment of floating point multiplication and rounding
+may differe slightly from BlockChyp's, for example.
+
+**Discounts**
+
+You have the option to show discounts on the display as individual line items
+with negative values or you can associate discounts with a specific line item.
+You can apply any number of discounts to an invidiual line item with a description
+and amount.
+
+
 
 
 ```python
@@ -374,9 +1143,200 @@ print("Response: %r" % response)
 
 ```
 
+#### Update Transaction Display
+
+
+
+Similiar to *New Transaction Display*, this variant allows developers to update
+line item level data currently being displayed on the terminal.
+
+This is designed for situations where you want to update the terminal display as
+items are scanned.  This variant means you only have to send information to the
+terminal that's changed, which usually means the new line item and updated totals.
+
+If the terminal is not in line item display mode and you invoke this endpoint,
+the first invocation will behave like a *New Transaction Display* call.
+
+At a minimum, you should send total information as part of a display request,
+including `total`, `tax`, and `subtotal`.
+
+You can also send line item level data and each line item can have a `description`,
+`qty`, `price`, and `extended` price.
+
+If you fail to send an extended price, BlockChyp will multiply the `qty` by the
+`price`, but we strongly recommend you precalculate all the fields yourself
+to ensure consistency.  Your treatment of floating point multiplication and rounding
+may differe slightly from BlockChyp's, for example.
+
+**Discounts**
+
+You have the option to show discounts on the display as individual line items
+with negative values or you can associate discounts with a specific line item.
+You can apply any number of discounts to an invidiual line item with a description
+and amount.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+    "transaction": {
+        "subtotal": "60.00",
+        "tax": "5.00",
+        "total": "65.00",
+        "items": [
+            {
+                "description": "Leki Trekking Poles",
+                "price": "35.00",
+                "quantity": 2,
+                "extended": "70.00",
+                "discounts": [
+                    {
+                        "description": "memberDiscount",
+                        "amount": "10.00",
+                    },
+                ],
+            },
+        ],
+    },
+}
+
+# run the transaction.
+response = client.update_transaction_display(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Display Message
+
+
+
+Displays a message on the payment terminal.
+
+Just specify the target terminal and the message using the `message` parameter.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+    "message": "Thank you for your business.",
+}
+
+# run the transaction.
+response = client.message(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Boolean Prompt
+
+
+
+Prompts the customer to answer a yes or no question.
+
+You can specify the question or prompt with the `prompt` parameter and
+the response is returned in the `response` field.
+
+This can be used for a number of use cases including starting a loyalty enrollment
+workflow or customer facing suggestive selling prompts.
+
+**Custom Captions**
+
+You can optionally override the "YES" and "NO" button captions by
+using the `yesCaption` and `noCaption` request parameters.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+    "prompt": "Would you like to become a member?",
+    "yesCaption": "Yes",
+    "noCaption": "No",
+}
+
+# run the transaction.
+response = client.boolean_prompt(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Text Prompt
 
-Asks the consumer a text based question.
+
+
+Prompts the customer to enter numeric or alphanumeric data.
+
+Due to PCI rules, free form prompts are not permitted when the response
+could be any valid string.  The reason for this is that a malicious
+developer (not you, of course) could use text prompts to ask the customer to
+input a card number or PIN code.
+
+This means that instead of providing a prompt, you provide a `promptType` instead.
+
+The prompt types currently supported are listed below:
+
+* **phone**: Captures a phone number.
+* **email**: Captures an email address.
+* **first-name**: Captures a first name.
+* **last-name**: Captures a last name.
+* **customer-number**: Captures a customer number.
+* **rewards-number**: Captures a rewards number.
+
+You can specify the prompt with the `promptType` parameter and
+the response is returned in the `response` field.
+
+
+
 
 
 ```python
@@ -409,369 +1369,35 @@ print("Response: %r" % response)
 
 ```
 
-#### Boolean Prompt
-
-Asks the consumer a yes/no question.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "terminalName": "Test Terminal",
-    "prompt": "Would you like to become a member?",
-    "yesCaption": "Yes",
-    "noCaption": "No",
-}
-
-# run the transaction.
-response = client.boolean_prompt(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Display Message
-
-Displays a short message on the terminal.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "terminalName": "Test Terminal",
-    "message": "Thank you for your business.",
-}
-
-# run the transaction.
-response = client.message(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Refund
-
-Executes a refund.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-    "transactionId": "<PREVIOUS TRANSACTION ID>",
-
-    # Optional amount for partial refunds.
-    "amount": "5.00",
-}
-
-# run the transaction.
-response = client.refund(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Enroll
-
-Adds a new payment method to the token vault.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "terminalName": "Test Terminal",
-}
-
-# run the transaction.
-response = client.enroll(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Gift Card Activation
-
-Activates or recharges a gift card.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "terminalName": "Test Terminal",
-    "amount": "50.00",
-}
-
-# run the transaction.
-response = client.gift_activate(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Time Out Reversal
-
-Executes a manual time out reversal.
-
-We love time out reversals. Don't be afraid to use them whenever a request to a
-BlockChyp terminal times out. You have up to two minutes to reverse any
-transaction. The only caveat is that you must assign transactionRef values when
-you build the original request. Otherwise, we have no real way of knowing which
-transaction you're trying to reverse because we may not have assigned it an id
-yet. And if we did assign it an id, you wouldn't know what it is because your
-request to the terminal timed out before you got a response.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-    "transactionRef": "<LAST TRANSACTION REF>",
-}
-
-# run the transaction.
-response = client.reverse(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Capture Preauthorization
-
-Captures a preauthorization.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "transactionId": "<PREAUTH TRANSACTION ID>",
-}
-
-# run the transaction.
-response = client.capture(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Close Batch
-
-Closes the current credit card batch.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-}
-
-# run the transaction.
-response = client.close_batch(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Void Transaction
-
-Discards a previous preauth transaction.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "transactionId": "<PREVIOUS TRANSACTION ID>",
-}
-
-# run the transaction.
-response = client.void(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Terminal Status
-
-Returns the current status of a terminal.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-}
-
-# run the transaction.
-response = client.terminal_status(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Capture Signature.
-
-Captures and returns a signature.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-
-    # File format for the signature image.
-    "sigFormat": blockchyp.SignatureFormat.PNG,
-
-    # Width of the signature image in pixels.
-    "sigWidth": 200,
-}
-
-# run the transaction.
-response = client.capture_signature(request)
-
-print("Response: %r" % response)
-
-
-```
-
 #### Update Customer
 
-Updates or creates a customer record.
+
+
+Adds or updates a customer record.
+
+If you pass in customer information including `firstName`, `lastName`, `email`,
+`email`, or `sms` without any Customer ID or Customer Ref, a new record will
+be created.
+
+If you pass in `customerRef` and `customerId`, the customer record will be updated
+if it exists.
+
+**Customer Ref**
+
+The `customerRef` field is optional, but highly recommended as this allows you
+to use your own customer identifiers instead of storing BlockChyp's Customer IDs
+in your systems.
+
+**Creating Customer Records With Payment Transactions**
+
+If you have customer information available at the time a payment transaction is
+executed, you can pass all the same customer information directly into a payment transaction and
+create a customer record at the same time payment is captured.  The advantage of this approach is
+that the customer's payment card is automatically associated with the customer record in a single step.
+If the customer uses the payment card in the future, the customer data will automatically
+be returned without needing to ask the customer to provide any additional information.
+
+
 
 
 ```python
@@ -809,7 +1435,14 @@ print("Response: %r" % response)
 
 #### Retrieve Customer
 
-Retrieves a customer by id.
+
+
+Retrieves detailed information about a customer record, including saved payment
+methods if available.
+
+Customers can be looked up by `customerId` or `customerRef`.
+
+
 
 
 ```python
@@ -839,7 +1472,14 @@ print("Response: %r" % response)
 
 #### Search Customer
 
-Searches the customer database.
+
+
+Searches the customer database and returns matching results.
+
+Use `query` to pass in a search string amd the system will return all results whose
+first or last names contain the query string.
+
+
 
 
 ```python
@@ -869,7 +1509,15 @@ print("Response: %r" % response)
 
 #### Cash Discount
 
-Calculates the discount for actual cash transactions.
+
+
+Calculates the surcharge, cash discount, and total amounts for cash transactions.
+
+If you're using BlockChyp's cash discounting features, you can use this endpoint
+to make sure the numbers and receipts for true cash transactions are consistent
+with transactions processed by BlockChyp.
+
+
 
 
 ```python
@@ -887,93 +1535,12 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "amount": "100.00",
+    "cashDiscount": True,
+    "surcharge": True,
 }
 
 # run the transaction.
 response = client.cash_discount(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Transaction Status
-
-Retrieves the current status of a transaction.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "transactionId": "ID of transaction to retrieve",
-}
-
-# run the transaction.
-response = client.transaction_status(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Send Payment Link
-
-Creates and send a payment link to a customer.
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "amount": "199.99",
-    "description": "Widget",
-    "subject": "Widget invoice",
-    "transaction": {
-        "subtotal": "195.00",
-        "tax": "4.99",
-        "total": "199.99",
-        "items": [
-            {
-                "description": "Widget",
-                "price": "195.00",
-                "quantity": 1,
-            },
-        ],
-    },
-    "autoSend": True,
-    "customer": {
-        "customerRef": "Customer reference string",
-        "firstName": "FirstName",
-        "lastName": "LastName",
-        "companyName": "Company Name",
-        "emailAddress": "support@blockchyp.com",
-        "smsNumber": "(123) 123-1231",
-    },
-}
-
-# run the transaction.
-response = client.send_payment_link(request)
 
 print("Response: %r" % response)
 
