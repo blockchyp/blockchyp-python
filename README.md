@@ -180,7 +180,7 @@ A preauthorization puts a hold on funds and must be captured later.  This is use
 in scenarios where the final transaction amount might change.  Examples would
 be fine dining where a tip adjustment is required prior to capture or hotels
 
-Another use case for preauthorization is e-commerce.  Typically an online order
+Another use case for preauthorization is e-commerce.  Typically, an online order
 is preauthorized at the time of the order and then captured when the order ships.
 
 Preauthorizations can use a payment terminal to capture a payment or
@@ -205,7 +205,7 @@ might be maliciously running on the point-of-sale system.
 **Common Variations**
 
 * **Manual Card Entry**: Set the `manual` flag to enable manual card entry.  Good as a backup when chips and MSR's don't work or for more secure phone orders.  You can even combine the `manual` flag with the `ebt` flag for manual EBT card entry.
-* **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
+* **Inline Tokenization**: You can enroll the payment method in the token vault in line with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
 * **Prompting for Tips**: Set the `promptForTips` flag if you'd like to prompt the customer for a tip before authorization.  You can prompt for tips as part of a preauthorization, although it's not a very common approach.
 * **Cash Discounting and Surcharging**:  The `surcharge` and `cashDiscount` flags can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
 
@@ -378,7 +378,7 @@ Gift Cards and EBT cards cannot be tokenized.
 **E-Commerce Tokens**
 
 The tokens returned by the enroll API and the e-commerce web tokenizer
-are the same tokens and can be used interchangably.
+are the same tokens and can be used interchangeably.
 
 
 
@@ -514,7 +514,7 @@ closest to the surface.  The BlockChyp gift card system doesn't really
 use gift card numbers.  This means they can't be stolen.
 
 BlockChyp identifies cards with an elliptic curve public key instead.
-Gift card transactions are actually blocks signed with the those keys.
+Gift card transactions are actually blocks signed with those keys.
 This means there are no shared secrets sent over the network with
 BlockChyp gift cards.
 To keep track of a BlockChyp gift card, hang on to the **public key** returned
@@ -1085,14 +1085,14 @@ You can also send line item level data and each line item can have a `descriptio
 
 If you fail to send an extended price, BlockChyp will multiply the `qty` by the
 `price`, but we strongly recommend you precalculate all the fields yourself
-to ensure consistency.  Your treatment of floating point multiplication and rounding
-may differe slightly from BlockChyp's, for example.
+to ensure consistency.  Your treatment of floating-point multiplication and rounding
+may differ slightly from BlockChyp's, for example.
 
 **Discounts**
 
 You have the option to show discounts on the display as individual line items
 with negative values or you can associate discounts with a specific line item.
-You can apply any number of discounts to an invidiual line item with a description
+You can apply any number of discounts to an individual line item with a description
 and amount.
 
 
@@ -1147,7 +1147,7 @@ print("Response: %r" % response)
 
 
 
-Similiar to *New Transaction Display*, this variant allows developers to update
+Similar to *New Transaction Display*, this variant allows developers to update
 line item level data currently being displayed on the terminal.
 
 This is designed for situations where you want to update the terminal display as
@@ -1165,14 +1165,14 @@ You can also send line item level data and each line item can have a `descriptio
 
 If you fail to send an extended price, BlockChyp will multiply the `qty` by the
 `price`, but we strongly recommend you precalculate all the fields yourself
-to ensure consistency.  Your treatment of floating point multiplication and rounding
-may differe slightly from BlockChyp's, for example.
+to ensure consistency.  Your treatment of floating-point multiplication and rounding
+may differ slightly from BlockChyp's, for example.
 
 **Discounts**
 
 You have the option to show discounts on the display as individual line items
 with negative values or you can associate discounts with a specific line item.
-You can apply any number of discounts to an invidiual line item with a description
+You can apply any number of discounts to an individual line item with a description
 and amount.
 
 
@@ -1476,7 +1476,7 @@ print("Response: %r" % response)
 
 Searches the customer database and returns matching results.
 
-Use `query` to pass in a search string amd the system will return all results whose
+Use `query` to pass in a search string and the system will return all results whose
 first or last names contain the query string.
 
 
