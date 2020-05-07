@@ -668,23 +668,24 @@ more control over the look of the email message, you can omit the `autoSend`
 flag and send the customer email yourself.
 
 There are a lot of optional parameters for this API, but at a minimum
-you'll need to pass in a total, customer name, and email address.
+you'll need to pass in a total, customer name, and email address. (Unless
+you use the `cashier` flag.)
 
 **Customer Info**
 
-You must specify a customer, either by creating a new customer record inline
-or by passing in an existing Customer ID or Customer Ref.
+Unless you're using the `cashier` flag, you must specify a customer, either by
+creating a new customer record inline or by passing in an existing Customer ID or Customer Ref.
 
 **Line Item Level Data**
 
 It's not strictly required, but we strongly recommend sending line item level
-data with every request.  It will make the invoice look a little more complete
+detail with every request.  It will make the invoice look a little more complete
 and the data format for line item level data is the exact same format used
 for terminal line item display, so the same code can be used to support both areas.
 
 **Descriptions**
 
-You can also send a free form description or message that's displayed near
+You can also provide a free form description or message that's displayed near
 the bottom of the invoice.  Usually this is some kind of thank you note
 or instructions.
 
@@ -704,6 +705,16 @@ By default, BlockChyp does not send the email notification automatically.  This 
 really just a safeguard to prevent real emails from going out when you may not expect it.
 If you want BlockChyp to send the email for you, just add the `autoSend` flag with
 all requests.
+
+**Cashier Facing Card Entry**
+
+BlockChyp can be used to generate internal/cashier facing links as well.  This is
+designed for situations where you might need to take a phone order and you don't
+have a terminal.
+
+If you pass in the `cashier` flag, no email will be sent and you'll be be able to
+load the link in a browser or iframe for payment entry.  When the `cashier` flag
+is used, the `autoSend` flag will be ignored.
 
 **Payment Notifications**
 
