@@ -16,35 +16,11 @@ pip install blockchyp
 ```
 
 
-## The Rest APIs
+## Additional Documentation
 
-All BlockChyp SDKs provide a convenient way of accessing the BlockChyp REST APIs.
-You can checkout the REST API documentation via the links below.
+Complete documentation can be found on our [Developer Documentation Portal].
 
-[Terminal REST API Docs](https://docs.blockchyp.com/rest-api/terminal/index.html)
-
-[Gateway REST API Docs](https://docs.blockchyp.com/rest-api/gateway/index.html)
-
-## Other SDKs
-
-BlockChyp has officially supported SDKs for eight different development platforms and counting.
-Here's the full list with links to their GitHub repositories.
-
-[Go SDK](https://github.com/blockchyp/blockchyp-go)
-
-[Node.js/JavaScript SDK](https://github.com/blockchyp/blockchyp-js)
-
-[Java SDK](https://github.com/blockchyp/blockchyp-java)
-
-[.net/C# SDK](https://github.com/blockchyp/blockchyp-csharp)
-
-[Ruby SDK](https://github.com/blockchyp/blockchyp-ruby)
-
-[PHP SDK](https://github.com/blockchyp/blockchyp-php)
-
-[Python SDK](https://github.com/blockchyp/blockchyp-python)
-
-[iOS (Objective-C/Swift) SDK](https://github.com/blockchyp/blockchyp-ios)
+[Developer Documentation Portal]: https://docs.blockchyp.com/
 
 ## Getting a Developer Kit
 
@@ -1587,3 +1563,24 @@ Copyright BlockChyp, Inc., 2019
 Distributed under the terms of the [MIT] license, blockchyp-python is free and open source software.
 
 [MIT]: https://github.com/blockchyp/blockchyp-python/blob/master/LICENSE
+
+## Other SDKs
+
+BlockChyp has officially supported SDKs for eight different development platforms and counting.
+Here's the full list with links to their GitHub repositories.
+
+[Go SDK](https://github.com/blockchyp/blockchyp-go)
+
+[Node.js/JavaScript SDK](https://github.com/blockchyp/blockchyp-js)
+
+[Java SDK](https://github.com/blockchyp/blockchyp-java)
+
+[.net/C# SDK](https://github.com/blockchyp/blockchyp-csharp)
+
+[Ruby SDK](https://github.com/blockchyp/blockchyp-ruby)
+
+[PHP SDK](https://github.com/blockchyp/blockchyp-php)
+
+[Python SDK](https://github.com/blockchyp/blockchyp-python)
+
+[iOS (Objective-C/Swift) SDK](https://github.com/blockchyp/blockchyp-ios)
