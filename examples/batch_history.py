@@ -11,13 +11,11 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "transactionId": "<PREVIOUS TRANSACTION ID>",
-
-    # Optional amount for partial refunds.
-    "amount": "5.00",
+    "maxResults": 250,
+    "startIndex": 1,
 }
 
 # run the transaction.
-response = client.refund(request)
+response = client.batch_history(request)
 
 print("Response: %r" % response)

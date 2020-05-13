@@ -11,13 +11,10 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "transactionId": "<PREVIOUS TRANSACTION ID>",
-
-    # Optional amount for partial refunds.
-    "amount": "5.00",
+    "batchId": "BATCHID",
 }
 
 # run the transaction.
-response = client.refund(request)
+response = client.batch_details(request)
 
 print("Response: %r" % response)
