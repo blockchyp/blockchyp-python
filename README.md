@@ -53,7 +53,7 @@ If you get a positive response, you've successfully verified all of the followin
 
 * The terminal is online.
 * There is a valid route to the terminal.
-* The API Credential are valid.
+* The API Credentials are valid.
 
 
 
@@ -573,7 +573,7 @@ briefly on the terminal screen and the API response will include the gift card's
 All EBT transactions require a PIN, so in order to check an EBT card balance,
 you need to pass in the `ebt` flag just like you would for a normal EBT
 charge transaction.  The customer will be prompted to swipe their card and
-enter a PIN code.  If everything checks out, the remaining balance on the card will be displayed on terminal for the customer and returned in the API.
+enter a PIN code.  If everything checks out, the remaining balance on the card will be displayed on the terminal for the customer and returned in the API.
 
 **Testing Gift Card Balance Checks**
 
@@ -733,7 +733,7 @@ same format as all BlockChyp charge and preauth transaction responses.
 
 **Status Polling**
 
-If real time callbacks aren't practical or necesary in your environment, you can
+If real time callbacks aren't practical or necessary in your environment, you can
 always use the Transaction Status API described below.
 
 A common use case for the send link API with status polling is curbside pickup.
