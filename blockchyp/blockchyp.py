@@ -640,6 +640,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def merchant_profile(self, request):
+        # type: (dict) -> dict
+        """Returns profile information for a merchant."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/merchant-profile",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def _terminal_request(self, method, path, body, terminal, query=None):
         """Sends a request to a terminal."""
         route = self._resolve_terminal_route(terminal)
