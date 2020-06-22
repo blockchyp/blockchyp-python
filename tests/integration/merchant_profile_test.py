@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_simple_batch_close():
-    """Can close the current batch."""
+def test_merchant_profile():
+    """Can retrieve merchant profile."""
 
     client = _get_test_client()
 
@@ -25,29 +25,15 @@ def test_simple_batch_close():
         client.message({
             "terminalName": _get_test_config().get("defaultTerminalName"),
             "test": True,
-            "message": f"Running simple_batch_close in {delay}s",
+            "message": f"Running merchant_profile in {delay}s",
         })
         time.sleep(int(delay))
 
 
-    setup_request = {
-        "pan": "4111111111111111",
-        "amount": "25.55",
-        "test": True,
-        "transactionRef": str(uuid.uuid4()),
-    }
-
-    setup_response = client.charge(setup_request)
-
-    print("Setup response: %r" % setup_response)
-
-    assert setup_response.get("success")
-
     request = {
-        "test": True,
     }
 
-    response = client.close_batch(request)
+    response = client.merchant_profile(request)
 
     print("Response: %r" % response)
 
