@@ -31,6 +31,7 @@ def test_merchant_profile():
 
 
     request = {
+        "test": True,
     }
 
     response = client.merchant_profile(request)
