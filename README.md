@@ -706,6 +706,11 @@ a safeguard to prevent real emails from going out when you may not expect it.
 If you want BlockChyp to send the email for you, just add the `autoSend` flag with
 all requests.
 
+**Tokenization**
+
+Add the `enroll` flag to a send link request to enroll the payment method
+in the token vault.
+
 **Cashier Facing Card Entry**
 
 BlockChyp can be used to generate internal/cashier facing card entry pages as well.  This is
