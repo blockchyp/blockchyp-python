@@ -32,6 +32,8 @@ def test_simple_batch_close():
 
     setup_request = {
         "pan": "4111111111111111",
+        "expMonth": "12",
+        "expYear": "2025",
         "amount": "25.55",
         "test": True,
         "transactionRef": str(uuid.uuid4()),

@@ -33,6 +33,8 @@ def test_gateway_timeout():
     request = {
         "timeout": 1,
         "pan": "5555555555554444",
+        "expMonth": "12",
+        "expYear": "2025",
         "amount": "25.55",
         "test": True,
         "transactionRef": str(uuid.uuid4()),
