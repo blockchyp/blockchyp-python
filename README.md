@@ -112,7 +112,7 @@ might be maliciously running on the point-of-sale system.
 **Common Variations**
 
 * **Gift Card Redemption**:  There's no special API for gift card redemption in BlockChyp.  Just execute a plain charge transaction and if the customer happens to swipe a gift card, our terminals will identify the gift card and run a gift card redemption.  Also note that if for some reason the gift card's original purchase transaction is associated with fraud or a chargeback, the transaction will be rejected.
-* **EBT**: Set the `ebt` flag to process an EBT SNAP transaction.  Note that test EBT transactions alway assume a balance of $100.00, so test EBT transactions over that amount may be declined.
+* **EBT**: Set the `ebt` flag to process an EBT SNAP transaction.  Note that test EBT transactions always assume a balance of $100.00, so test EBT transactions over that amount may be declined.
 * **Cash Back**: To enable cash back for debit transactions, set the `cashBack` flag.  If the card presented isn't a debit card, the `cashBack` flag will be ignored.
 * **Manual Card Entry**: Set the `manual` flag to enable manual card entry.  Good as a backup when chips and MSR's don't work or for more secure phone orders.  You can even combine the `manual` flag with the `ebt` flag for manual EBT card entry.
 * **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
