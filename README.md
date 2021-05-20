@@ -1646,7 +1646,7 @@ most recent transactions.
 
 **Limiting Results**
 
-This API will return a maximum of 250 results in a single query.  Use the `maxResults` property
+This API will return a maximum of 50 results in a single query.  Use the `maxResults` property
 to limit maximum results even further and use the `startIndex` property to
 page through results that span multiple queries.
 

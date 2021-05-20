@@ -501,7 +501,7 @@ class Client:
 
     def void(self, request):
         # type: (dict) -> dict
-        """Discards a previous preauth transaction."""
+        """Discards a previous transaction."""
 
         return self._gateway_request(
             method="POST",
