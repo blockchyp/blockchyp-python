@@ -44,3 +44,12 @@ class AVSResponse:
     ADDRESS_MATCH = "address_match"
     POSTAL_CODE_MATCH = "zip_match"
     ADDRESS_AND_POSTAL_CODE_MATCH = "match"
+
+class CVMType:
+    """Contains customer verification methods."""
+
+    SIGNATURE = "Signature"
+    OFFLINE_PIN = "Offline PIN"
+    ONLINE_PIN = "Online PIN"
+    CDCVM = "CDCVM"
+    NO_CVM = "No CVM"
