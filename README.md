@@ -104,20 +104,20 @@ property instead.
 
 **Card Numbers and Mag Stripes**
 
-You can also pass in PANs and Mag Stripes, but you probably shouldn't.  This will
+You can also pass in PANs and Mag Stripes, but you probably shouldn't. This will
 put you in PCI scope and the most common vector for POS breaches is key logging.
 If you use terminals for manual card entry, you'll bypass any key loggers that
 might be maliciously running on the point-of-sale system.
 
 **Common Variations**
 
-* **Gift Card Redemption**:  There's no special API for gift card redemption in BlockChyp.  Just execute a plain charge transaction and if the customer happens to swipe a gift card, our terminals will identify the gift card and run a gift card redemption.  Also note that if for some reason the gift card's original purchase transaction is associated with fraud or a chargeback, the transaction will be rejected.
-* **EBT**: Set the `ebt` flag to process an EBT SNAP transaction.  Note that test EBT transactions always assume a balance of $100.00, so test EBT transactions over that amount may be declined.
-* **Cash Back**: To enable cash back for debit transactions, set the `cashBack` flag.  If the card presented isn't a debit card, the `cashBack` flag will be ignored.
-* **Manual Card Entry**: Set the `manual` flag to enable manual card entry.  Good as a backup when chips and MSR's don't work or for more secure phone orders.  You can even combine the `manual` flag with the `ebt` flag for manual EBT card entry.
-* **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
-* **Prompting for Tips**: Set the `promptForTips` flag if you'd like to prompt the customer for a tip before authorization.  Good for pay-at-the-table and other service related scenarios.
-* **Cash Discounting and Surcharging**:  The `surcharge` and `cashDiscount` flags can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
+* **Gift Card Redemption**:  There's no special API for gift card redemption in BlockChyp. Just execute a plain charge transaction and if the customer happens to swipe a gift card, our terminals will identify the gift card and run a gift card redemption. Also note that if for some reason the gift card's original purchase transaction is associated with fraud or a chargeback, the transaction will be rejected.
+* **EBT**: Set the `card_type` field to `blockchyp.CardType.EBT` to process an EBT SNAP transaction. Note that test EBT transactions always assume a balance of $100.00, so test EBT transactions over that amount may be declined.
+* **Cash Back**: To enable cash back for debit transactions, set the `cash_back` field. If the card presented isn't a debit card, the `cash_back` field will be ignored.
+* **Manual Card Entry**: Set the `manual_entry` field to enable manual card entry. Good as a backup when chips and MSR's don't work or for more secure phone orders. You can even combine the `manual_entry` field with the `card_type` field set to `blockchyp.CardType.EBT` for manual EBT card entry.
+* **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` field. You'll get a token back in the response. You can even bind the token to a customer record if you also pass in customer data.
+* **Prompting for Tips**: Set the `prompt_for_tip` field if you'd like to prompt the customer for a tip before authorization. Good for pay-at-the-table and other service related scenarios.
+* **Cash Discounting and Surcharging**:  The `surcharge` and `cash_discount` fields can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
 
 
 
@@ -180,10 +180,10 @@ might be maliciously running on the point-of-sale system.
 
 **Common Variations**
 
-* **Manual Card Entry**: Set the `manual` flag to enable manual card entry.  Good as a backup when chips and MSR's don't work or for more secure phone orders.  You can even combine the `manual` flag with the `ebt` flag for manual EBT card entry.
-* **Inline Tokenization**: You can enroll the payment method in the token vault in line with a charge transaction by setting the `enroll` flag.  You'll get a token back in the response.  You can even bind the token to a customer record if you also pass in customer data.
-* **Prompting for Tips**: Set the `promptForTips` flag if you'd like to prompt the customer for a tip before authorization.  You can prompt for tips as part of a preauthorization, although it's not a very common approach.
-* **Cash Discounting and Surcharging**:  The `surcharge` and `cashDiscount` flags can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
+* **Manual Card Entry**: Set the `manual_entry` field to enable manual card entry. Good as a backup when chips and MSR's don't work or for more secure phone orders. You can even combine the `manual_entry` field with `card_type` set to `blockchyp.CardType.EBT` for manual EBT card entry.
+* **Inline Tokenization**: You can enroll the payment method in the token vault in line with a charge transaction by setting the `enroll` field. You'll get a token back in the response. You can even bind the token to a customer record if you also pass in customer data.
+* **Prompting for Tips**: Set the `prompt_for_tip` field if you'd like to prompt the customer for a tip before authorization. You can prompt for tips as part of a preauthorization, although it's not a very common approach.
+* **Cash Discounting and Surcharging**: The `surcharge` and `cash_discount` fields can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
 
 
 
@@ -286,7 +286,7 @@ call this a *free range refund*.
 We don't recommend it, but it is permitted.  If you absolutely insist on
 doing it, pass in a Terminal Name and an amount.
 
-You can execute a manual or keyed refund by passing the `manual` flag
+You can execute a manual or keyed refund by passing the `manual_entry` field
 to a free range refund request.
 
 **Gift Card Refunds**
