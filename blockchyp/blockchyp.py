@@ -487,6 +487,58 @@ class Client:
 
         return response
 
+    def list_queued_transactions(self, request):
+        # type: (dict) -> dict
+        """Returns a list of queued transactions on a terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="GET",
+                path="/api/queue/list",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="GET",
+                path="/api/queue/list",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
+    def delete_queued_transaction(self, request):
+        # type: (dict) -> dict
+        """Deletes a queued transaction from the terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/queue/delete",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/queue/delete",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
 
     def capture(self, request):
         # type: (dict) -> dict

@@ -1739,6 +1739,79 @@ print("Response: %r" % response)
 
 ```
 
+#### List Queued Transactions
+
+
+
+Returns a list of transaction refs of transactions queued on a terminal.
+Details about the transactions can be retrieved using the Transaction Status
+API.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.list_queued_transactions(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Queued Transaction
+
+
+
+Deletes one or all queued transactions from a terminal. If `*` is passed as
+a transaction ref, then the entire terminal queue will be cleared. An error is
+returned if the passed transaction ref is not queued on the terminal.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+    "transactionRef": "*",
+}
+
+# run the transaction.
+response = client.delete_queued_transaction(request)
+
+print("Response: %r" % response)
+
+
+```
+
 ## Running Integration Tests
 
 If you'd like to run the integration tests, create a new file on your system
