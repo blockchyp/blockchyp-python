@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_simple_capture():
-    """Can capture a preauthorization."""
+def test_delete_customer():
+    """Can delete a customer."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,33 +26,33 @@ def test_simple_capture():
         client.message({
             "terminalName": terminal,
             "test": True,
-            "message": f"Running simple_capture in {delay}s",
+            "message": f"Running delete_customer in {delay}s",
         })
         time.sleep(int(delay))
 
 
     setup_request = {
-        "pan": "4111111111111111",
-        "expMonth": "12",
-        "expYear": "2025",
-        "amount": "25.55",
-        "test": True,
+        "customer": {
+            "firstName": "Test",
+            "lastName": "Customer",
+            "companyName": "Test Company",
+            "emailAddress": "support@blockchyp.com",
+            "smsNumber": "(123) 123-1234",
+        },
     }
 
-    setup_response = client.preauth(setup_request)
+    setup_response = client.update_customer(setup_request)
 
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
 
     request = {
-        "transactionId": setup_response["transactionId"],
-        "test": True,
+        "customerId": setup_response.get("customer", {}).get("id"),
     }
 
-    response = client.capture(request)
+    response = client.delete_customer(request)
 
     print("Response: %r" % response)
 
     assert response.get("success") is True
-    assert response.get("approved") is True

@@ -19,11 +19,12 @@ def test_simple_message():
     """Can display a message on the terminal."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running simple_message in {delay}s",
         })
@@ -32,7 +33,7 @@ def test_simple_message():
 
     request = {
         "test": True,
-        "terminalName": "Test Terminal",
+        "terminalName": terminal,
         "message": "Thank You For Your Business",
     }
 

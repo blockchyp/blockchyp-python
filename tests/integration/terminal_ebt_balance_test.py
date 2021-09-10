@@ -19,11 +19,12 @@ def test_terminal_ebt_balance():
     """Can check the balance of an EBT card."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running terminal_ebt_balance in {delay}s",
         })
@@ -32,7 +33,7 @@ def test_terminal_ebt_balance():
 
     request = {
         "test": True,
-        "terminalName": "Test Terminal",
+        "terminalName": terminal,
         "cardType": blockchyp.CardType.EBT,
     }
 

@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_simple_capture():
-    """Can capture a preauthorization."""
+def test_delete_token():
+    """Can delete a token."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,33 +26,28 @@ def test_simple_capture():
         client.message({
             "terminalName": terminal,
             "test": True,
-            "message": f"Running simple_capture in {delay}s",
+            "message": f"Running delete_token in {delay}s",
         })
         time.sleep(int(delay))
 
 
     setup_request = {
         "pan": "4111111111111111",
-        "expMonth": "12",
-        "expYear": "2025",
-        "amount": "25.55",
         "test": True,
     }
 
-    setup_response = client.preauth(setup_request)
+    setup_response = client.enroll(setup_request)
 
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
 
     request = {
-        "transactionId": setup_response["transactionId"],
-        "test": True,
+        "token": setup_response["token"],
     }
 
-    response = client.capture(request)
+    response = client.delete_token(request)
 
     print("Response: %r" % response)
 
     assert response.get("success") is True
-    assert response.get("approved") is True

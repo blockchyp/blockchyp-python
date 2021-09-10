@@ -19,11 +19,12 @@ def test_partial_refund():
     """Can execute a partial refund."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running partial_refund in {delay}s",
         })

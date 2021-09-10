@@ -495,14 +495,14 @@ class Client:
 
         if self._is_terminal_routed(request.get("terminalName")):
             response = self._terminal_request(
-                method="GET",
+                method="POST",
                 path="/api/queue/list",
                 body=request,
                 terminal=request.get("terminalName"),
             )
         else:
             response = self._gateway_request(
-                method="GET",
+                method="POST",
                 path="/api/queue/list",
                 body=request,
                 test=request.get("test", False),
@@ -699,6 +699,28 @@ class Client:
         return self._gateway_request(
             method="POST",
             path="/api/public-merchant-profile",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def delete_customer(self, request):
+        # type: (dict) -> dict
+        """Deletes a customer record."""
+
+        return self._gateway_request(
+            method="DELETE",
+            path="/api/customer/" + request["customerId"],
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def delete_token(self, request):
+        # type: (dict) -> dict
+        """Deletes a payment token."""
+
+        return self._gateway_request(
+            method="DELETE",
+            path="/api/token/" + request["token"],
             body=request,
             test=request.get("test", False),
         )

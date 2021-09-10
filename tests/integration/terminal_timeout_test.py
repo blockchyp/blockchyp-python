@@ -19,11 +19,12 @@ def test_terminal_timeout():
     """Can specify terminal request timeouts."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running terminal_timeout in {delay}s",
         })
@@ -32,7 +33,7 @@ def test_terminal_timeout():
 
     request = {
         "timeout": 1,
-        "terminalName": "Test Terminal",
+        "terminalName": terminal,
         "amount": "25.15",
         "test": True,
     }

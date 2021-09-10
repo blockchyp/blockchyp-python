@@ -1812,6 +1812,74 @@ print("Response: %r" % response)
 
 ```
 
+#### Delete Customer
+
+
+
+Deletes a customer record.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "customerId": "ID of the customer to delete",
+}
+
+# run the transaction.
+response = client.delete_customer(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Token
+
+
+
+Deletes a payment token from the gateway.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to delete",
+}
+
+# run the transaction.
+response = client.delete_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
 ## Running Integration Tests
 
 If you'd like to run the integration tests, create a new file on your system

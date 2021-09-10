@@ -19,11 +19,12 @@ def test_text_prompt():
     """Can prompt the consumer for text input."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running text_prompt in {delay}s",
         })
@@ -32,7 +33,7 @@ def test_text_prompt():
 
     request = {
         "test": True,
-        "terminalName": "Test Terminal",
+        "terminalName": terminal,
         "promptType": blockchyp.PromptType.EMAIL,
     }
 

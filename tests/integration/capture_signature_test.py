@@ -19,11 +19,12 @@ def test_capture_signature():
     """Can capture a signature and return it."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running capture_signature in {delay}s",
         })
@@ -31,7 +32,7 @@ def test_capture_signature():
 
 
     request = {
-        "terminalName": "Test Terminal",
+        "terminalName": terminal,
         "sigFormat": blockchyp.SignatureFormat.PNG,
         "sigWidth": 200,
     }

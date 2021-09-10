@@ -19,11 +19,12 @@ def test_simple_ping():
     """Can test communication with a terminal."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running simple_ping in {delay}s",
         })
@@ -32,7 +33,7 @@ def test_simple_ping():
 
     request = {
         "test": True,
-        "terminalName": "Test Terminal",
+        "terminalName": "$testTerminal",
     }
 
     response = client.ping(request)

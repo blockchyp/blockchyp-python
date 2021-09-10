@@ -19,11 +19,12 @@ def test_pan_preauth():
     """Can process a preauthorization by PAN."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running pan_preauth in {delay}s",
         })

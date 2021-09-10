@@ -19,11 +19,12 @@ def test_pan_enroll():
     """Can enroll the consumer in the payment token vault by PAN."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running pan_enroll in {delay}s",
         })

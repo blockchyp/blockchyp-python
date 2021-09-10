@@ -19,11 +19,12 @@ def test_terminal_enroll():
     """Can enroll the user in the token vault via the terminal."""
 
     client = _get_test_client()
+    terminal = _get_test_config().get("defaultTerminalName")
 
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
-            "terminalName": _get_test_config().get("defaultTerminalName"),
+            "terminalName": terminal,
             "test": True,
             "message": f"Running terminal_enroll in {delay}s",
         })
@@ -31,7 +32,7 @@ def test_terminal_enroll():
 
 
     request = {
-        "terminalName": "Test Terminal",
+        "terminalName": terminal,
         "test": True,
     }
 
