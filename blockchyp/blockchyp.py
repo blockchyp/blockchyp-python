@@ -604,6 +604,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def cancel_payment_link(self, request):
+        # type: (dict) -> dict
+        """Cancels a payment link."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/cancel-payment-link",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def transaction_status(self, request):
         # type: (dict) -> dict
         """Retrieves the current status of a transaction."""
