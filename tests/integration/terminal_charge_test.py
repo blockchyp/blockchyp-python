@@ -32,7 +32,7 @@ def test_terminal_charge():
 
 
     request = {
-        "terminalName": "$testTerminal",
+        "terminalName": terminal,
         "amount": "25.15",
         "test": True,
     }

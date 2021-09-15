@@ -33,7 +33,7 @@ def test_simple_ping():
 
     request = {
         "test": True,
-        "terminalName": "$testTerminal",
+        "terminalName": terminal,
     }
 
     response = client.ping(request)
