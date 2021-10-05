@@ -1710,6 +1710,15 @@ None of the above filters are mutually exclusive.  You can combine any of the
 above properties in a single request to restrict transaction results to a
 narrower set of results.
 
+**Searching Transaction History**
+
+You can search transaction history by passing in search criteria with the 
+`query` option.  The search system will match on amount (requested and authorized),
+last four of the card number, cardholder name, and the auth code.
+
+Note that when search queries are used, terminalName or 
+batch id filters are not supported.
+
 
 
 
@@ -1908,6 +1917,120 @@ request = {
 
 # run the transaction.
 response = client.delete_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Token Metadata
+
+
+
+Retrieves status and metadata information about a token, 
+including any links to customer records.  
+
+This will also return any customer records related to the card
+behind the token.  If the underlying card has been tokenized
+multiple times, all customers related to the card will be returned,
+even if those customer associations are related to other tokens.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to retrieve",
+}
+
+# run the transaction.
+response = client.token_metadata(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Link Token
+
+
+
+Links a payment token with a customer record.  Usually this would only be used
+to reverse a previous unlink operation.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to link",
+    "customerId": "Customer to link",
+}
+
+# run the transaction.
+response = client.link_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Unlink Token
+
+
+
+Removes a payment token link from a customer record.
+
+This will remove links between the customer record and all tokens
+for the same underlying card.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to unlink",
+    "customerId": "Customer to unlink",
+}
+
+# run the transaction.
+response = client.unlink_token(request)
 
 print("Response: %r" % response)
 

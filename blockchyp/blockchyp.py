@@ -736,6 +736,39 @@ class Client:
             test=request.get("test", False),
         )
 
+    def token_metadata(self, request):
+        # type: (dict) -> dict
+        """Retrieves payment token metadata."""
+
+        return self._gateway_request(
+            method="GET",
+            path="/api/token/" + request["token"],
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def link_token(self, request):
+        # type: (dict) -> dict
+        """Links a token to a customer record."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/link-token",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def unlink_token(self, request):
+        # type: (dict) -> dict
+        """Removes a link between a customer and a token."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/unlink-token",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def _terminal_request(self, method, path, body, terminal, query=None):
         """Sends a request to a terminal."""
         route = self._resolve_terminal_route(terminal)
