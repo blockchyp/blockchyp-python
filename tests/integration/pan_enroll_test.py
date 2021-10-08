@@ -34,6 +34,11 @@ def test_pan_enroll():
     request = {
         "pan": "4111111111111111",
         "test": True,
+        "customer": {
+            "customerRef": "TESTCUSTOMER",
+            "firstName": "Test",
+            "lastName": "Customer",
+        },
     }
 
     response = client.enroll(request)

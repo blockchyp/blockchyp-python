@@ -34,6 +34,11 @@ def test_unlink_token():
     setup_request = {
         "pan": "4111111111111111",
         "test": True,
+        "customer": {
+            "customerRef": "TESTCUSTOMER",
+            "firstName": "Test",
+            "lastName": "Customer",
+        },
     }
 
     setup_response = client.enroll(setup_request)
@@ -44,7 +49,7 @@ def test_unlink_token():
 
     request = {
         "token": setup_response["token"],
-        "customerId": "$customerId",
+        "customerId": setup_response.get("customer", {}).get("id"),
     }
 
     response = client.unlink_token(request)

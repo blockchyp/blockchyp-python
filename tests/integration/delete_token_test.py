@@ -34,6 +34,11 @@ def test_delete_token():
     setup_request = {
         "pan": "4111111111111111",
         "test": True,
+        "customer": {
+            "customerRef": "TESTCUSTOMER",
+            "firstName": "Test",
+            "lastName": "Customer",
+        },
     }
 
     setup_response = client.enroll(setup_request)
