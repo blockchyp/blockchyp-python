@@ -540,6 +540,17 @@ class Client:
         return response
 
 
+    def locate(self, request):
+        # type: (dict) -> dict
+        """Returns routing and location data for a payment terminal."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/terminal-locate",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def capture(self, request):
         # type: (dict) -> dict
         """Captures a preauthorization."""

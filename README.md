@@ -83,6 +83,44 @@ print("Response: %r" % response)
 
 ```
 
+#### Terminal Locate
+
+
+This endpoint returns routing and location information for a terminal.
+
+The result will indicate whether or not the terminal is in cloud relay mode and will
+return the local IP address if the terminal is in local mode.
+
+The terminal will also return the public key for the terminal.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.locate(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Charge
 
 
