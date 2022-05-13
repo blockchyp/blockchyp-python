@@ -2075,6 +2075,148 @@ print("Response: %r" % response)
 
 ```
 
+#### Add Test Merchant
+
+
+
+This is a partner level API that can be used to create test merchant accounts.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "dbaName": "DBA name.",
+    "companyName": "test merchant customer name.",
+}
+
+# run the transaction.
+response = client.add_test_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Get Merchants
+
+
+
+This is a partner or organization level API that can be used to return the merchant portfolio.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.get_merchants(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Or Create Merchant
+
+
+
+This API can be used to update or create merchant accounts.
+
+Merchant scoped API credentials can be used to update merchant account settings.
+
+Partner scoped API credentials can be used to update merchants, create new test 
+merchants or board new gateway merchants. 
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.update_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Test Merchant
+
+
+
+This partner API can be used to deleted unused test merchant accounts.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "ID for the test merchant being deleted.",
+}
+
+# run the transaction.
+response = client.delete_test_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
 ## Running Integration Tests
 
 If you'd like to run the integration tests, create a new file on your system
