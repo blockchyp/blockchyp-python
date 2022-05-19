@@ -2902,6 +2902,380 @@ print("Response: %r" % response)
 
 ```
 
+#### Upload Status
+
+
+
+This API returns the status of a file upload.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.upload_status(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Media Library
+
+
+
+This API returns the media library associated with the API credentials.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.media(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Get Media Asset
+
+
+
+This API returns a detailed media asset.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.media_asset(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Media Asset
+
+
+
+This API deletes a media asset.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.delete_media_asset(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Slide Show
+
+
+
+This API updates or creates a slide show.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.update_slide_show(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Slide Shows
+
+
+
+This API returns all slide shows.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.slide_shows(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Slide Show
+
+
+
+This API returns a single slide show.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.slide_show(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Slide Show
+
+
+
+This API deletes a single slide show.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.delete_slide_show(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Terminal Branding
+
+
+
+This API returns the terminal branding stack for a given API scope.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.terminal_branding(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Branding Asset
+
+
+
+This API updates a single branding asset.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.update_branding_asset(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Branding Asset
+
+
+
+This API deletes a branding asset.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.delete_branding_asset(request)
+
+print("Response: %r" % response)
+
+
+```
+
 ## Running Integration Tests
 
 If you'd like to run the integration tests, create a new file on your system
