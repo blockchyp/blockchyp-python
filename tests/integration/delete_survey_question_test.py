@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_create_test_merchant():
-    """Can create a test merchant."""
+def test_delete_survey_question():
+    """Delete a survey question."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,17 +26,15 @@ def test_create_test_merchant():
         client.message({
             "terminalName": terminal,
             "test": True,
-            "message": f"Running create_test_merchant in {delay}s",
+            "message": f"Running delete_survey_question in {delay}s",
         })
         time.sleep(int(delay))
 
 
     request = {
-        "dbaName": "Test Merchant",
-        "companyName": "Test Merchant",
     }
 
-    response = client.create_test_merchant(request)
+    response = client.delete_survey_question(request)
 
     print("Response: %r" % response)
 

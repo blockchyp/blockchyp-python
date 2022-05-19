@@ -2217,6 +2217,691 @@ print("Response: %r" % response)
 
 ```
 
+#### Invite Merchant User
+
+
+
+Invites a new user to join a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "email": "Email address for the invite",
+}
+
+# run the transaction.
+response = client.invite_merchant_user(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Merchant Users
+
+
+
+This API returns all users and pending invites associated with a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "XXXXXXXXXXXXX",
+}
+
+# run the transaction.
+response = client.merchant_users(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Merchant Platforms
+
+
+
+This API is available to Gateway Partners only and can be used to pull down current boarding platform configurations for a given merchant.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "XXXXXXXXXXXXX",
+}
+
+# run the transaction.
+response = client.merchant_platforms(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Merchant Platform
+
+
+
+This API allows Gateway Partners to board merchants.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "XXXXXXXXXXXXX",
+}
+
+# run the transaction.
+response = client.update_merchant_platforms(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Merchant Platform
+
+
+
+This is a partner level API that can be used to delete merchant platforms.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "platformId": "XXXXXXXXXXXXX",
+}
+
+# run the transaction.
+response = client.delete_merchant_platforms(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### List Terminals
+
+
+
+This API returns details about terminals associated with a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.terminals(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Deactivate Terminal
+
+
+
+This API deactivates a payment terminal.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalId": "XXXXXXX",
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.deactivate_terminal(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Activate Terminal
+
+
+
+This API activates payment terminals.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.activate_terminal(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Terms and Conditions Template
+
+
+
+This API updates or creates terms and conditions templates.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "alias": "HIPPA",
+    "name": "HIPPA Disclosure",
+    "content": "Lorem ipsum dolor sit amet.",
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_update_template(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### List Terms and Conditions Templates
+
+
+
+This API returns all terms and conditions templates associated with a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_templates(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Get Terms and Conditions Template
+
+
+
+This API returns as single terms and conditions template.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_template(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Terms and Conditions Template
+
+
+
+This API deletes a terms and conditions template.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_delete_template(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Terms and Conditions Log
+
+
+
+This API pulls down Terms and Conditions log entries.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_log(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Terms and Conditions Details
+
+
+
+This API returns details for a terms and conditions log entry.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_entry(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Survey Questions
+
+
+
+This API returns all survey questions.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.survey_questions(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Survey Question
+
+
+
+This API returns a single survey question with response data.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.survey_question(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Survey Results
+
+
+
+This API returns survey results for a single question.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.survey_results(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Survey Question
+
+
+
+This API updates survey questions.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.update_survey_question(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Survey Question
+
+
+
+This API deletes survey questions.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.delete_survey_question(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Upload Media
+
+
+
+This API supports media library uploads.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.upload_media(request)
+
+print("Response: %r" % response)
+
+
+```
+
 ## Running Integration Tests
 
 If you'd like to run the integration tests, create a new file on your system
