@@ -1,8 +1,8 @@
-# Copyright 2019 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2022 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
-# This file was generated automatically. Changes to this file will be lost every
-# time the code is regenerated.
+# This file was generated automatically by the BlockChyp SDK Generator. Changes
+# to this file will be lost every time the code is regenerated.
 """
 This library allows you to interact with the BlockChyp Terminal and
 Gateway APIs.
@@ -736,17 +736,6 @@ class Client:
             test=request.get("test", False),
         )
 
-    def delete_token(self, request):
-        # type: (dict) -> dict
-        """Deletes a payment token."""
-
-        return self._gateway_request(
-            method="DELETE",
-            path="/api/token/" + request["token"],
-            body=request,
-            test=request.get("test", False),
-        )
-
     def token_metadata(self, request):
         # type: (dict) -> dict
         """Retrieves payment token metadata."""
@@ -776,6 +765,17 @@ class Client:
         return self._gateway_request(
             method="POST",
             path="/api/unlink-token",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def delete_token(self, request):
+        # type: (dict) -> dict
+        """Deletes a payment token."""
+
+        return self._gateway_request(
+            method="DELETE",
+            path="/api/token/" + request["token"],
             body=request,
             test=request.get("test", False),
         )

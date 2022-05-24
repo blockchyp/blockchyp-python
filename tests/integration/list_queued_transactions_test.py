@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_delete_slide_show():
-    """Returns a single slide show."""
+def test_list_queued_transactions():
+    """Lists queued transactions on terminal."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,15 +26,31 @@ def test_delete_slide_show():
         client.message({
             "terminalName": terminal,
             "test": True,
-            "message": f"Running delete_slide_show in {delay}s",
+            "message": f"Running list_queued_transactions in {delay}s",
         })
         time.sleep(int(delay))
 
 
-    request = {
+    setup_request = {
+        "terminalName": terminal,
+        "transactionRef": str(uuid.uuid4()),
+        "description": "1060 West Addison",
+        "amount": "25.15",
+        "test": True,
+        "queue": True,
     }
 
-    response = client.delete_slide_show(request)
+    setup_response = client.charge(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
+    request = {
+        "terminalName": terminal,
+    }
+
+    response = client.list_queued_transactions(request)
 
     print("Response: %r" % response)
 

@@ -41,85 +41,12 @@ You can also view a number of long form demos and learn more about us on our [Yo
 You don't want to read words. You want examples. Here's a quick rundown of the
 stuff you can do with the BlockChyp Python SDK and a few basic examples.
 
-#### Terminal Ping
+### Payment Endpoints
 
 
-This simple test transaction helps ensure you have good communication with a payment terminal and is usually the first one you'll run in development.
-
-It tests communication with the terminal and returns a positive response if everything
-is okay.  It works the same way in local or cloud relay mode.
-
-If you get a positive response, you've successfully verified all of the following:
-
-* The terminal is online.
-* There is a valid route to the terminal.
-* The API Credentials are valid.
+These are the core payment APIs used to execute and work with payment transaction in BlockChyp.
 
 
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-}
-
-# run the transaction.
-response = client.ping(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Terminal Locate
-
-
-This endpoint returns routing and location information for a terminal.
-
-The result will indicate whether or not the terminal is in cloud relay mode and will
-return the local IP address if the terminal is in local mode.
-
-The terminal will also return the public key for the terminal.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-}
-
-# run the transaction.
-response = client.locate(request)
-
-print("Response: %r" % response)
-
-
-```
 
 #### Charge
 
@@ -156,7 +83,7 @@ might be maliciously running on the point-of-sale system.
 * **Inline Tokenization**: You can enroll the payment method in the token vault inline with a charge transaction by setting the `enroll` field. You'll get a token back in the response. You can even bind the token to a customer record if you also pass in customer data.
 * **Prompting for Tips**: Set the `prompt_for_tip` field if you'd like to prompt the customer for a tip before authorization. Good for pay-at-the-table and other service related scenarios.
 * **Cash Discounting and Surcharging**:  The `surcharge` and `cash_discount` fields can be used together to support cash discounting or surcharge problems. Consult the Cash Discount documentation for more details.
-
+* **Cryptocurrency** The `cryptocurrency` field can be used to switch the standard present card screen to a cryptocurrency screen.  The field value can be `ANY` to enable any supported cryptocurrency or a single currency code such as `BTC` for Bitcoin.
 
 
 
@@ -215,6 +142,10 @@ You can also pass in PANs and Mag Stripes, but you probably shouldn't.  This wil
 put you in PCI scope and the most common vector for POS breaches is key logging.
 If you use terminals for manual card entry, you'll bypass any key loggers that
 might be maliciously running on the point-of-sale system.
+
+**Cryptocurrency**
+
+Note that preauths are not supported for cryptocurrency.
 
 **Common Variations**
 
@@ -343,6 +274,11 @@ If a refund referencing a previous transaction is executed for the full amount
 before the original transaction's batch is closed, the refund is automatically
 converted to a void.  This saves the merchant a little bit of money.
 
+**Cryptocurrency**
+
+Note that refunds are not supported for cryptocurrency.  You must refund crypto transactions
+manually from your cryptocurrency wallet.
+
 
 
 
@@ -374,54 +310,6 @@ print("Response: %r" % response)
 
 ```
 
-#### Enroll
-
-
-This API allows you to tokenize and enroll a payment method in the token
-vault.  You can also pass in customer information and associate the
-payment method with a customer record.
-
-A token is returned in the response that can be used in subsequent charge,
-preauth, and refund transactions.
-
-**Gift Cards and EBT**
-
-Gift Cards and EBT cards cannot be tokenized.
-
-**E-Commerce Tokens**
-
-The tokens returned by the enroll API and the e-commerce web tokenizer
-are the same tokens and can be used interchangeably.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "terminalName": "Test Terminal",
-}
-
-# run the transaction.
-response = client.enroll(request)
-
-print("Response: %r" % response)
-
-
-```
-
 #### Void
 
 
@@ -431,6 +319,11 @@ with this API.  All that's needed is to pass in a Transaction ID and execute
 the void before the original transaction's batch closes.
 
 Voids work with EBT and gift card transactions with no additional parameters.
+
+**Cryptocurrency**
+
+Note that voids are not supported for cryptocurrency.  You must refund crypto transactions
+manually from your cryptocurrency wallet.
 
 
 
@@ -481,6 +374,11 @@ The reason for this requirement is that if a system never receives a definitive
 response for a transaction, the system would never have received the BlockChyp
 generated Transaction ID.  We have to fallback to Transaction Ref to identify
 a transaction.
+
+**Cryptocurrency**
+
+Note that refunds are not supported for cryptocurrency.  You must refund crypto transactions
+manually from your cryptocurrency wallet.
 
 
 
@@ -744,6 +642,11 @@ a safeguard to prevent real emails from going out when you may not expect it.
 If you want BlockChyp to send the email for you, just add the `autoSend` flag with
 all requests.
 
+**Cryptocurrency**
+
+If the merchant is configured to support cryptocurrency transactions, the payment page will
+display additional UI widgets that will allow the customers to switch to a crypto payment method.
+
 **Tokenization**
 
 Add the `enroll` flag to a send link request to enroll the payment method
@@ -758,6 +661,8 @@ have a terminal.
 If you pass in the `cashier` flag, no email will be sent and you'll be be able to
 load the link in a browser or iframe for payment entry.  When the `cashier` flag
 is used, the `autoSend` flag will be ignored.
+
+Note that cryptocurrency is not supported for cashier facing payment entry.
 
 **Payment Notifications**
 
@@ -908,6 +813,382 @@ print("Response: %r" % response)
 
 ```
 
+#### Cash Discount
+
+
+
+Calculates the surcharge, cash discount, and total amounts for cash transactions.
+
+If you're using BlockChyp's cash discounting features, you can use this endpoint
+to make sure the numbers and receipts for true cash transactions are consistent
+with transactions processed by BlockChyp.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "amount": "100.00",
+    "cashDiscount": True,
+    "surcharge": True,
+}
+
+# run the transaction.
+response = client.cash_discount(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Batch History
+
+
+
+This endpoint allows developers to query the gateway for the merchant's batch history.
+The data will be returned in descending order of open date with the most recent
+batch returned first.  The results will include basic information about the batch.
+For more detail about a specific batch, consider using the Batch Details API.
+
+**Limiting Results**
+
+This API will return a maximum of 250 results.  Use the `maxResults` property to
+limit maximum results even further and use the `startIndex` property to
+page through results that span multiple queries.
+
+For example, if you want the ten most recent batches, just pass in a value of
+`10` for `maxResults`.  Also note that `startIndex` is zero based. Use a value of `0` to
+get the first batch in the dataset.
+
+**Filtering By Date Range**
+
+You can also filter results by date.  Use the `startDate` and `endDate`
+properties to return only those batches opened between those dates.
+You can use either `startDate` and `endDate` and you can use date filters
+in conjunction with `maxResults` and `startIndex`
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "maxResults": 250,
+    "startIndex": 1,
+}
+
+# run the transaction.
+response = client.batch_history(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Batch Details
+
+
+
+This endpoint allows developers to pull down details for a specific batch,
+including captured volume, gift card activity, expected deposit, and
+captured volume broken down by terminal.
+
+The only required request parameter is `batchId`.  Batch IDs are returned
+with every transaction response and can also be discovered using the Batch
+History API.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "batchId": "BATCHID",
+}
+
+# run the transaction.
+response = client.batch_details(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Transaction History
+
+
+
+This endpoint provides a number of different methods to sift through
+transaction history.
+
+By default with no filtering properties, this endpoint will return the 250
+most recent transactions.
+
+**Limiting Results**
+
+This API will return a maximum of 50 results in a single query.  Use the `maxResults` property
+to limit maximum results even further and use the `startIndex` property to
+page through results that span multiple queries.
+
+For example, if you want the ten most recent batches, just pass in a value of
+`10` for `maxResults`.  Also note that `startIndex` is zero based. Use a value of `0` to
+get the first transaction in the dataset.
+
+**Filtering By Date Range**
+
+You can also filter results by date.  Use the `startDate` and `endDate`
+properties to return only transactions run between those dates.
+You can use either `startDate` or `endDate` and you can use date filters
+in conjunction with `maxResults` and `startIndex`
+
+**Filtering By Batch**
+
+To restrict results to a single batch, pass in the `batchId` parameter.
+
+**Filtering By Terminal**
+
+To restrict results to those executed on a single terminal, just
+pass in the terminal name.
+
+**Combining Filters**
+
+None of the above filters are mutually exclusive.  You can combine any of the
+above properties in a single request to restrict transaction results to a
+narrower set of results.
+
+**Searching Transaction History**
+
+You can search transaction history by passing in search criteria with the 
+`query` option.  The search system will match on amount (requested and authorized),
+last four of the card number, cardholder name, and the auth code.
+
+Note that when search queries are used, terminalName or 
+batch id filters are not supported.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "maxResults": 10,
+}
+
+# run the transaction.
+response = client.transaction_history(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### List Queued Transactions
+
+
+
+Returns a list of transaction refs of transactions queued on a terminal.
+Details about the transactions can be retrieved using the Transaction Status
+API.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.list_queued_transactions(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Queued Transaction
+
+
+
+Deletes one or all queued transactions from a terminal. If `*` is passed as
+a transaction ref, then the entire terminal queue will be cleared. An error is
+returned if the passed transaction ref is not queued on the terminal.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+    "transactionRef": "*",
+}
+
+# run the transaction.
+response = client.delete_queued_transaction(request)
+
+print("Response: %r" % response)
+
+
+```
+
+### Terminal Management Endpoints
+
+
+These APIs support terminal management functions and additional terminal 
+features such as line item display, messages, and prompts that can be used
+to extend the functionality of a point of sale systems.
+
+
+
+#### Terminal Ping
+
+
+This simple test transaction helps ensure you have good communication with a payment terminal and is usually the first one you'll run in development.
+
+It tests communication with the terminal and returns a positive response if everything
+is okay.  It works the same way in local or cloud relay mode.
+
+If you get a positive response, you've successfully verified all of the following:
+
+* The terminal is online.
+* There is a valid route to the terminal.
+* The API Credentials are valid.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.ping(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Terminal Locate
+
+
+This endpoint returns routing and location information for a terminal.
+
+The result will indicate whether or not the terminal is in cloud relay mode and will
+return the local IP address if the terminal is in local mode.
+
+The terminal will also return the public key for the terminal.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.locate(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Terminal Clear
 
 
@@ -982,96 +1263,6 @@ request = {
 
 # run the transaction.
 response = client.terminal_status(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Terms & Conditions Capture
-
-
-
-This API allows you to prompt a customer to accept a legal agreement on the terminal
-and (usually) capture their signature.
-
-Content for the agreement can be specified in two ways.  You can reference a
-previously configured T&C template or pass in the full agreement text with every request.
-
-**Using Templates**
-
-If your application doesn't keep track of agreements you can leverage BlockChyp's
-template system.  You can create any number of T&C Templates in the merchant dashboard
-and pass in the `tcAlias` flag to specify which one to display.
-
-**Raw Content**
-
-If your system keeps track of the agreement language or executes complicated merging
-and rendering logic, you can bypass our template system and pass in the full text with
-every transaction.  Use the `tcName` to pass in the agreement name and `tcContent` to
-pass in the contract text.  Note that only plain text is supported.
-
-**Bypassing Signatures**
-
-Signature images are captured by default.  If for some reason this doesn't fit your
-use case and you'd like to capture acceptance without actually capturing a signature image, set
-the `disableSignature` flag in the request.
-
-**Terms & Conditions Log**
-
-Every time a user accepts an agreement on the terminal, the signature image (if captured),
-will be uploaded to the gateway and added to the log along with the full text of the
-agreement.  This preserves the historical record in the event that standard agreements
-or templates change over time.
-
-**Associating Agreements with Transactions**
-
-To associate a Terms & Conditions log entry with a transaction, just pass in the
-Transaction ID or Transaction Ref for the associated transaction.
-
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-    "terminalName": "Test Terminal",
-
-    # Alias for a Terms and Conditions template configured in the BlockChyp
-    # dashboard.
-    "tcAlias": "hippa",
-
-    # Name of the contract or document if not using an alias.
-    "tcName": "HIPPA Disclosure",
-
-    # Full text of the contract or disclosure if not using an alias.
-    "tcContent": "Full contract text",
-
-    # File format for the signature image.
-    "sigFormat": blockchyp.SignatureFormat.PNG,
-
-    # Width of the signature image in pixels.
-    "sigWidth": 200,
-
-    # Whether or not a signature is required. Defaults to true.
-    "sigRequired": True,
-}
-
-# run the transaction.
-response = client.terms_and_conditions(request)
 
 print("Response: %r" % response)
 
@@ -1433,6 +1624,692 @@ print("Response: %r" % response)
 
 ```
 
+#### List Terminals
+
+
+
+This API returns details about terminals associated with a merchant account.
+
+Status and resource information is returned for all terminals along with a preview of the 
+current branding image displayed on the terminal
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.terminals(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Deactivate Terminal
+
+
+
+This API deactivates a payment terminal.
+
+If the terminal exists and is currently online, the terminal will be removed from the merchant's 
+terminal inventory and the terminal will be remotely cleared and factory reset.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalId": str(uuid.uuid4()),
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.deactivate_terminal(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Activate Terminal
+
+
+
+This API activates a payment terminal.
+
+If successful, the payment terminal will restart, generate new encryption keys, and download any active
+branding assets for the merchant account it's been added to.
+
+Activation requests require an activation code and a unique terminal name.  Terminal names must be unique across
+a merchant account.
+
+Optional Parameters
+
+* **merchantId:** For partner scoped API credentials, a merchant ID is required.  For merchant scoped API credentials, the merchant ID is implicit and cannot be overriden.
+* **cloudRelay:** Activates the terminal in cloud relay mode.
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "terminalName": "Test Terminal",
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.activate_terminal(request)
+
+print("Response: %r" % response)
+
+
+```
+
+### Terms & Conditions Endpoints
+
+
+Developers can use BlockChyp to display and capture acceptance of contracts or agreements related to transactions.
+These agreements can be any long form contract ranging from rental agreements to HIPPA disclosures.
+
+There are two basic approaches to terms and conditions capture.  Merchants can store contract templates in 
+BlockChyp or they can send the full agreement text as part of every API call.  The right approach will largely 
+depend on whether or not the system being integrated with BlockChyp already has a mechanism for organizing 
+and managing agreements.  For systems that already have this feature built in, it's probably not necessary 
+to use Terms and Conditions.
+
+When agreements are displayed on a terminal, the consumer can scroll through and read the entire agreement,
+and provide a signature.  Results are returned as part of the API response, but BlockChyp also stores a 
+record of the agreement including the signature image, timestamp, and the full text of the agreement that was 
+agreed to.
+
+The Terms and Conditions Log APIs can be used to search and retrieve acceptance records and acceptance records
+can also be linked to a transaction if a transaction id is provided with the original API request.
+
+
+
+#### Terms & Conditions Capture
+
+
+
+This API allows you to prompt a customer to accept a legal agreement on the terminal
+and (usually) capture their signature.
+
+Content for the agreement can be specified in two ways.  You can reference a
+previously configured T&C template or pass in the full agreement text with every request.
+
+**Using Templates**
+
+If your application doesn't keep track of agreements you can leverage BlockChyp's
+template system.  You can create any number of T&C Templates in the merchant dashboard
+and pass in the `tcAlias` flag to specify which one to display.
+
+**Raw Content**
+
+If your system keeps track of the agreement language or executes complicated merging
+and rendering logic, you can bypass our template system and pass in the full text with
+every transaction.  Use the `tcName` to pass in the agreement name and `tcContent` to
+pass in the contract text.  Note that only plain text is supported.
+
+**Bypassing Signatures**
+
+Signature images are captured by default.  If for some reason this doesn't fit your
+use case and you'd like to capture acceptance without actually capturing a signature image, set
+the `disableSignature` flag in the request.
+
+**Terms & Conditions Log**
+
+Every time a user accepts an agreement on the terminal, the signature image (if captured),
+will be uploaded to the gateway and added to the log along with the full text of the
+agreement.  This preserves the historical record in the event that standard agreements
+or templates change over time.
+
+**Associating Agreements with Transactions**
+
+To associate a Terms & Conditions log entry with a transaction, just pass in the
+Transaction ID or Transaction Ref for the associated transaction.
+
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+
+    # Alias for a Terms and Conditions template configured in the BlockChyp
+    # dashboard.
+    "tcAlias": "hippa",
+
+    # Name of the contract or document if not using an alias.
+    "tcName": "HIPPA Disclosure",
+
+    # Full text of the contract or disclosure if not using an alias.
+    "tcContent": "Full contract text",
+
+    # File format for the signature image.
+    "sigFormat": blockchyp.SignatureFormat.PNG,
+
+    # Width of the signature image in pixels.
+    "sigWidth": 200,
+
+    # Whether or not a signature is required. Defaults to true.
+    "sigRequired": True,
+}
+
+# run the transaction.
+response = client.terms_and_conditions(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### List Templates
+
+
+
+This API returns all terms and conditions templates associated with a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_templates(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Get Template
+
+
+
+This API returns as single terms and conditions template.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_template(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Template
+
+
+
+This API updates or creates a terms and conditions template.
+
+Terms and conditions templates are fairly simple and essentially consist of a name, content, and alias.
+
+The name is the caption that will be display at the top of the screen.  The alias is a code or short
+description that will be used in subsequence API calls to refere to the template.
+
+Content is the full text of the contract or agreement.  As of this writing, no special formatting or
+merge behavior is supported.  Only plain text is supported.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "alias": "HIPPA",
+    "name": "HIPPA Disclosure",
+    "content": "Lorem ipsum dolor sit amet.",
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_update_template(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Template
+
+
+
+This API deletes a terms and conditions template.
+
+If a template is deleted, its alias can be reused and any previous Terms & Conditions log entry
+derived from the template being deleted is fully preserved since log entries always include
+a complete independent copy of the agreement text.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_delete_template(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Terms & Conditions Log
+
+
+
+This API allows developers to search and sort through terms and conditions log entries.
+
+The default API call with no parameters will return the last 250 log entries in descending order.
+
+Optional parameters can be used to filter and query the data set.
+
+* **transactionId:** If provided, returns only those log entries associated with a specific transactions.  Paging and date filters are ignored if this parameter is used.
+* **maxResults:** The max number of results to return in a single page.  Defaults to 250 and 250 is the maximum value.
+* **startIndex** The zero based start index of results within the full result set to return.  Used to advance pages.  For example, if the page size is 10 and you wish to return the second page of results, send a startIndex of 10. 
+* **startDate**: An optional start date for results provided as an ISO 8601 timestamp. (e.g. 2022-05-24T13:51:38+00:00)
+* **endDate**: An optional end date for results provided as an ISO 8601 timestamp. (e.g. 2022-05-24T13:51:38+00:00)
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_log(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Terms & Conditions Details
+
+
+
+This API returns details for a single terms and conditions log entry.  The `logEntryId` of the record to be returned is the only required parameter.
+
+The signature image is returned as Base 64 encoded binary in the image format specified by the `sigFormat` field. 
+The default format is PNG.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "timeout": 120,
+}
+
+# run the transaction.
+response = client.tc_entry(request)
+
+print("Response: %r" % response)
+
+
+```
+
+### Token Management
+
+
+BlockChyp supports saved payments and recurring payments through the use of tokens.  Tokens can be created
+via the Enroll API or the web tokenizer.  Once created, these tokens can be used for subsequent payments 
+or associated with customer records as saved payment methods.
+
+Tokens are limited to a single merchant by default, but can be shared across an organization for multi-location 
+merchants by special arrangement with BlockChyp.  Contact your BlockChyp rep to setup token sharing.
+
+
+
+#### Enroll
+
+
+This API allows you to tokenize and enroll a payment method in the token
+vault.  You can also pass in customer information and associate the
+payment method with a customer record.
+
+A token is returned in the response that can be used in subsequent charge,
+preauth, and refund transactions.
+
+**Gift Cards and EBT**
+
+Gift Cards and EBT cards cannot be tokenized.
+
+**E-Commerce Tokens**
+
+The tokens returned by the enroll API and the e-commerce web tokenizer
+are the same tokens and can be used interchangeably.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.enroll(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Token Metadata
+
+
+
+Retrieves status and metadata information about a token, 
+including any links to customer records.  
+
+This will also return any customer records related to the card
+behind the token.  If the underlying card has been tokenized
+multiple times, all customers related to the card will be returned,
+even if those customer associations are related to other tokens.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to retrieve",
+}
+
+# run the transaction.
+response = client.token_metadata(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Link Token
+
+
+
+Links a payment token with a customer record.  Usually this would only be used
+to reverse a previous unlink operation.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to link",
+    "customerId": "Customer to link",
+}
+
+# run the transaction.
+response = client.link_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Unlink Token
+
+
+
+Removes a payment token link from a customer record.
+
+This will remove links between the customer record and all tokens
+for the same underlying card.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to unlink",
+    "customerId": "Customer to unlink",
+}
+
+# run the transaction.
+response = client.unlink_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Token
+
+
+
+Deletes a payment token from the gateway.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "Token to delete",
+}
+
+# run the transaction.
+response = client.delete_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
+### Customer Endpoints
+
+
+These APIs allow developers to create and manage customer records in BlockChyp.  Developers who wish to use
+BlockChyp for tokenized recurring payments can use tokens directly if they have their own customer management
+system, but BlockChyp provides additional tools for managing customer and keeping track of a customer's saved
+payment tokens.
+
+In addition, if customer features are used, BlockChyp can detect a payment method associated with an existing
+customer, and return customer data with payment transactions.  This can be used as a passive method to detect
+repeat customers.
+
+
+
 #### Update Customer
 
 
@@ -1571,328 +2448,6 @@ print("Response: %r" % response)
 
 ```
 
-#### Cash Discount
-
-
-
-Calculates the surcharge, cash discount, and total amounts for cash transactions.
-
-If you're using BlockChyp's cash discounting features, you can use this endpoint
-to make sure the numbers and receipts for true cash transactions are consistent
-with transactions processed by BlockChyp.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "amount": "100.00",
-    "cashDiscount": True,
-    "surcharge": True,
-}
-
-# run the transaction.
-response = client.cash_discount(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Batch History
-
-
-
-This endpoint allows developers to query the gateway for the merchant's batch history.
-The data will be returned in descending order of open date with the most recent
-batch returned first.  The results will include basic information about the batch.
-For more detail about a specific batch, consider using the Batch Details API.
-
-**Limiting Results**
-
-This API will return a maximum of 250 results.  Use the `maxResults` property to
-limit maximum results even further and use the `startIndex` property to
-page through results that span multiple queries.
-
-For example, if you want the ten most recent batches, just pass in a value of
-`10` for `maxResults`.  Also note that `startIndex` is zero based. Use a value of `0` to
-get the first batch in the dataset.
-
-**Filtering By Date Range**
-
-You can also filter results by date.  Use the `startDate` and `endDate`
-properties to return only those batches opened between those dates.
-You can use either `startDate` and `endDate` and you can use date filters
-in conjunction with `maxResults` and `startIndex`
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "maxResults": 250,
-    "startIndex": 1,
-}
-
-# run the transaction.
-response = client.batch_history(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Batch Details
-
-
-
-This endpoint allows developers to pull down details for a specific batch,
-including captured volume, gift card activity, expected deposit, and
-captured volume broken down by terminal.
-
-The only required request parameter is `batchId`.  Batch IDs are returned
-with every transaction response and can also be discovered using the Batch
-History API.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "batchId": "BATCHID",
-}
-
-# run the transaction.
-response = client.batch_details(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Transaction History
-
-
-
-This endpoint provides a number of different methods to sift through
-transaction history.
-
-By default with no filtering properties, this endpoint will return the 250
-most recent transactions.
-
-**Limiting Results**
-
-This API will return a maximum of 50 results in a single query.  Use the `maxResults` property
-to limit maximum results even further and use the `startIndex` property to
-page through results that span multiple queries.
-
-For example, if you want the ten most recent batches, just pass in a value of
-`10` for `maxResults`.  Also note that `startIndex` is zero based. Use a value of `0` to
-get the first transaction in the dataset.
-
-**Filtering By Date Range**
-
-You can also filter results by date.  Use the `startDate` and `endDate`
-properties to return only transactions run between those dates.
-You can use either `startDate` or `endDate` and you can use date filters
-in conjunction with `maxResults` and `startIndex`
-
-**Filtering By Batch**
-
-To restrict results to a single batch, pass in the `batchId` parameter.
-
-**Filtering By Terminal**
-
-To restrict results to those executed on a single terminal, just
-pass in the terminal name.
-
-**Combining Filters**
-
-None of the above filters are mutually exclusive.  You can combine any of the
-above properties in a single request to restrict transaction results to a
-narrower set of results.
-
-**Searching Transaction History**
-
-You can search transaction history by passing in search criteria with the 
-`query` option.  The search system will match on amount (requested and authorized),
-last four of the card number, cardholder name, and the auth code.
-
-Note that when search queries are used, terminalName or 
-batch id filters are not supported.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "maxResults": 10,
-}
-
-# run the transaction.
-response = client.transaction_history(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Merchant Profile
-
-
-
-Returns detailed metadata about the merchant's configuraton, including
-basic identity information, terminal settings, store and forward settings,
-and bank account information for merchants that support split settlement.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-}
-
-# run the transaction.
-response = client.merchant_profile(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### List Queued Transactions
-
-
-
-Returns a list of transaction refs of transactions queued on a terminal.
-Details about the transactions can be retrieved using the Transaction Status
-API.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-}
-
-# run the transaction.
-response = client.list_queued_transactions(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Delete Queued Transaction
-
-
-
-Deletes one or all queued transactions from a terminal. If `*` is passed as
-a transaction ref, then the entire terminal queue will be cleared. An error is
-returned if the passed transaction ref is not queued on the terminal.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-    "transactionRef": "*",
-}
-
-# run the transaction.
-response = client.delete_queued_transaction(request)
-
-print("Response: %r" % response)
-
-
-```
-
 #### Delete Customer
 
 
@@ -1927,776 +2482,19 @@ print("Response: %r" % response)
 
 ```
 
-#### Delete Token
+### Survey Reference
 
 
+These APIs are used to work with post transaction surveys and survey data.
 
-Deletes a payment token from the gateway.
+Merchants can optionally configure scaled (1-5) or yes/no questions that can be presented to consumers
+after every approved Charge and Preauth transactions.  Surveys do not require any custom programming and
+can simply be configured by a merchant without the point-of-sale system needing any additional customization.
 
+However, these APIs allow point-of-sale or third party system developers to integrate survey question configuration
+or result visualization into their own systems.
 
 
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "token": "Token to delete",
-}
-
-# run the transaction.
-response = client.delete_token(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Token Metadata
-
-
-
-Retrieves status and metadata information about a token, 
-including any links to customer records.  
-
-This will also return any customer records related to the card
-behind the token.  If the underlying card has been tokenized
-multiple times, all customers related to the card will be returned,
-even if those customer associations are related to other tokens.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "token": "Token to retrieve",
-}
-
-# run the transaction.
-response = client.token_metadata(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Link Token
-
-
-
-Links a payment token with a customer record.  Usually this would only be used
-to reverse a previous unlink operation.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "token": "Token to link",
-    "customerId": "Customer to link",
-}
-
-# run the transaction.
-response = client.link_token(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Unlink Token
-
-
-
-Removes a payment token link from a customer record.
-
-This will remove links between the customer record and all tokens
-for the same underlying card.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "token": "Token to unlink",
-    "customerId": "Customer to unlink",
-}
-
-# run the transaction.
-response = client.unlink_token(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Add Test Merchant
-
-
-
-This is a partner level API that can be used to create test merchant accounts.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "dbaName": "DBA name.",
-    "companyName": "test merchant customer name.",
-}
-
-# run the transaction.
-response = client.add_test_merchant(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Get Merchants
-
-
-
-This is a partner or organization level API that can be used to return the merchant portfolio.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-}
-
-# run the transaction.
-response = client.get_merchants(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Update Or Create Merchant
-
-
-
-This API can be used to update or create merchant accounts.
-
-Merchant scoped API credentials can be used to update merchant account settings.
-
-Partner scoped API credentials can be used to update merchants, create new test 
-merchants or board new gateway merchants. 
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-}
-
-# run the transaction.
-response = client.update_merchant(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Delete Test Merchant
-
-
-
-This partner API can be used to deleted unused test merchant accounts.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "merchantId": "ID for the test merchant being deleted.",
-}
-
-# run the transaction.
-response = client.delete_test_merchant(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Invite Merchant User
-
-
-
-Invites a new user to join a merchant account.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "email": "Email address for the invite",
-}
-
-# run the transaction.
-response = client.invite_merchant_user(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Merchant Users
-
-
-
-This API returns all users and pending invites associated with a merchant account.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "merchantId": "XXXXXXXXXXXXX",
-}
-
-# run the transaction.
-response = client.merchant_users(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Merchant Platforms
-
-
-
-This API is available to Gateway Partners only and can be used to pull down current boarding platform configurations for a given merchant.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "merchantId": "XXXXXXXXXXXXX",
-}
-
-# run the transaction.
-response = client.merchant_platforms(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Update Merchant Platform
-
-
-
-This API allows Gateway Partners to board merchants.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "merchantId": "XXXXXXXXXXXXX",
-}
-
-# run the transaction.
-response = client.update_merchant_platforms(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Delete Merchant Platform
-
-
-
-This is a partner level API that can be used to delete merchant platforms.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "platformId": "XXXXXXXXXXXXX",
-}
-
-# run the transaction.
-response = client.delete_merchant_platforms(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### List Terminals
-
-
-
-This API returns details about terminals associated with a merchant account.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.terminals(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Deactivate Terminal
-
-
-
-This API deactivates a payment terminal.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalId": "XXXXXXX",
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.deactivate_terminal(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Activate Terminal
-
-
-
-This API activates payment terminals.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "terminalName": "Test Terminal",
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.activate_terminal(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Update Terms and Conditions Template
-
-
-
-This API updates or creates terms and conditions templates.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "alias": "HIPPA",
-    "name": "HIPPA Disclosure",
-    "content": "Lorem ipsum dolor sit amet.",
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.tc_update_template(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### List Terms and Conditions Templates
-
-
-
-This API returns all terms and conditions templates associated with a merchant account.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.tc_templates(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Get Terms and Conditions Template
-
-
-
-This API returns as single terms and conditions template.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.tc_template(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Delete Terms and Conditions Template
-
-
-
-This API deletes a terms and conditions template.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.tc_delete_template(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Terms and Conditions Log
-
-
-
-This API pulls down Terms and Conditions log entries.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.tc_log(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Terms and Conditions Details
-
-
-
-This API returns details for a terms and conditions log entry.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "timeout": 120,
-}
-
-# run the transaction.
-response = client.tc_entry(request)
-
-print("Response: %r" % response)
-
-
-```
 
 #### Survey Questions
 
@@ -2867,6 +2665,15 @@ print("Response: %r" % response)
 
 
 ```
+
+### Media and Branding Control
+
+
+BlockChyp has a sophisticated terminal media and branding control platform.  Terminals can be configured to
+display logos, images, videos, and slide shows when a terminal is idle.  Branding assets can be configured
+at the partner, organization, and merchant level with fine-grained hour by hour schedules, if desired. 
+
+
 
 #### Upload Media
 
@@ -3275,6 +3082,262 @@ print("Response: %r" % response)
 
 
 ```
+
+### Merchant Management
+
+
+These APIs allow partners to manage and configure their merchant portfolios.
+
+
+
+#### Merchant Profile
+
+
+
+Returns detailed metadata about the merchant's configuraton, including
+basic identity information, terminal settings, store and forward settings,
+and bank account information for merchants that support split settlement.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.merchant_profile(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Add Test Merchant
+
+
+
+This is a partner level API that can be used to create test merchant accounts.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "dbaName": "DBA name.",
+    "companyName": "test merchant customer name.",
+}
+
+# run the transaction.
+response = client.add_test_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Get Merchants
+
+
+
+This is a partner or organization level API that can be used to return the merchant portfolio.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.get_merchants(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Or Create Merchant
+
+
+
+This API can be used to update or create merchant accounts.
+
+Merchant scoped API credentials can be used to update merchant account settings.
+
+Partner scoped API credentials can be used to update merchants, create new test 
+merchants or board new gateway merchants. 
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.update_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Delete Test Merchant
+
+
+
+This partner API can be used to deleted unused test merchant accounts.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "ID for the test merchant being deleted.",
+}
+
+# run the transaction.
+response = client.delete_test_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Invite Merchant User
+
+
+
+Invites a new user to join a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "email": "Email address for the invite",
+}
+
+# run the transaction.
+response = client.invite_merchant_user(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Merchant Users
+
+
+
+This API returns all users and pending invites associated with a merchant account.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "XXXXXXXXXXXXX",
+}
+
+# run the transaction.
+response = client.merchant_users(request)
+
+print("Response: %r" % response)
+
+
+```
+
+
+
+
 
 ## Running Integration Tests
 

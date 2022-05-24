@@ -1,8 +1,8 @@
-# Copyright 2019 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2022 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
-# This file was generated automatically. Changes to this file will be lost every
-# time the code is regenerated.
+# This file was generated automatically by the BlockChyp SDK Generator. Changes
+# to this file will be lost every time the code is regenerated.
 import os
 import time
 import uuid
@@ -31,7 +31,20 @@ def test_tc_template():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "alias": str(uuid.uuid4()),
+        "name": "HIPPA Disclosure",
+        "content": "Lorem ipsum dolor sit amet.",
+    }
+
+    setup_response = client.tc_update_template(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "templateId": ,
     }
 
     response = client.tc_template(request)
@@ -39,3 +52,5 @@ def test_tc_template():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("name") == "HIPPA Disclosure"
+    assert response.get("content") == "Lorem ipsum dolor sit amet."
