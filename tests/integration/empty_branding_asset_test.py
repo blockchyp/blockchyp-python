@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_delete_branding_asset():
-    """Deletes a terminal branding asset."""
+def test_empty_branding_asset():
+    """Creates an empty terminal branding asset."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,27 +26,17 @@ def test_delete_branding_asset():
         client.message({
             "terminalName": terminal,
             "test": True,
-            "message": f"Running delete_branding_asset in {delay}s",
+            "message": f"Running empty_branding_asset in {delay}s",
         })
         time.sleep(int(delay))
 
 
-    setup_request = {
+    request = {
         "notes": "Empty Asset",
         "enabled": False,
     }
 
-    setup_response = client.update_branding_asset(setup_request)
-
-    print("Setup response: %r" % setup_response)
-
-    assert setup_response.get("success")
-
-    request = {
-        "assetId": ,
-    }
-
-    response = client.delete_branding_asset(request)
+    response = client.update_branding_asset(request)
 
     print("Response: %r" % response)
 

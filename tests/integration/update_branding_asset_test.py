@@ -31,7 +31,29 @@ def test_update_branding_asset():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "fileName": "aviato.png",
+        "fileSize": 18843,
+        "uploadId": str(uuid.uuid4()),
+    }
+
+    setup_response = client.upload_media(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "mediaId": ,
+        "padded": True,
+        "ordinal": 10,
+        "startDate": "01/06/2021",
+        "startTime": "14:00",
+        "endDate": "11/05/2024",
+        "endTime": "16:00",
+        "notes": "Test Branding Asset",
+        "preview": False,
+        "enabled": True,
     }
 
     response = client.update_branding_asset(request)
