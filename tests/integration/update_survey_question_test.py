@@ -32,6 +32,9 @@ def test_update_survey_question():
 
 
     request = {
+        "ordinal": 1,
+        "questionText": "Would you shop here again?",
+        "questionType": "yes_no",
     }
 
     response = client.update_survey_question(request)
@@ -39,3 +42,5 @@ def test_update_survey_question():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("questionText") == "Would you shop here again?"
+    assert response.get("questionType") == "yes_no"

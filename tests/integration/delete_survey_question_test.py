@@ -31,7 +31,20 @@ def test_delete_survey_question():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "ordinal": 1,
+        "questionText": "Would you shop here again?",
+        "questionType": "yes_no",
+    }
+
+    setup_response = client.update_survey_question(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "questionId": ,
     }
 
     response = client.delete_survey_question(request)

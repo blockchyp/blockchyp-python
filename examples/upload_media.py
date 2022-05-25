@@ -11,7 +11,9 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "fileName": "aviato.png",
+    "fileSize": 18843,
+    "uploadId": "<RANDOM ID>",
 }
 
 # run the transaction.

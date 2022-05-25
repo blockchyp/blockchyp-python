@@ -11,7 +11,10 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "ordinal": 1,
+    "questionText": "Would you shop here again?",
+    "questionType": "yes_no",
+    "enabled": True,
 }
 
 # run the transaction.

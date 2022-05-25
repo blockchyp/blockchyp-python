@@ -31,7 +31,26 @@ def test_update_slide_show():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "fileName": "aviato.png",
+        "fileSize": 18843,
+        "uploadId": str(uuid.uuid4()),
+    }
+
+    setup_response = client.upload_media(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "name": "Test Slide Show",
+        "delay": 5,
+        "slides": [
+            {
+                "mediaId": ,
+            },
+        ],
     }
 
     response = client.update_slide_show(request)

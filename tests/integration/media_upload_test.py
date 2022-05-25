@@ -32,6 +32,9 @@ def test_media_upload():
 
 
     request = {
+        "fileName": "aviato.png",
+        "fileSize": 18843,
+        "uploadId": str(uuid.uuid4()),
     }
 
     response = client.upload_media(request)
@@ -39,3 +42,7 @@ def test_media_upload():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("id")
+    assert response.get("originalFile") == "aviato.png"
+    assert response.get("fileUrl")
+    assert response.get("thumbnailUrl")

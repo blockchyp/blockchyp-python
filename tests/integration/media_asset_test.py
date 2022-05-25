@@ -31,7 +31,20 @@ def test_media_asset():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "fileName": "aviato.png",
+        "fileSize": 18843,
+        "uploadId": str(uuid.uuid4()),
+    }
+
+    setup_response = client.upload_media(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "mediaId": ,
     }
 
     response = client.media_asset(request)
@@ -39,3 +52,7 @@ def test_media_asset():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("id")
+    assert response.get("originalFile") == "aviato.png"
+    assert response.get("fileUrl")
+    assert response.get("thumbnailUrl")

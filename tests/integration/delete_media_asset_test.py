@@ -31,7 +31,20 @@ def test_delete_media_asset():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "fileName": "aviato.png",
+        "fileSize": 18843,
+        "uploadId": str(uuid.uuid4()),
+    }
+
+    setup_response = client.upload_media(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "mediaId": ,
     }
 
     response = client.delete_media_asset(request)

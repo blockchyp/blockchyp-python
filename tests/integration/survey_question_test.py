@@ -31,7 +31,17 @@ def test_survey_question():
         time.sleep(int(delay))
 
 
+    setup_request = {
+    }
+
+    setup_response = client.survey_questions(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "questionId": ,
     }
 
     response = client.survey_question(request)
