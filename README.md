@@ -2984,7 +2984,10 @@ print("Response: %r" % response)
 
 
 
-This API returns a single slide show.
+This API returns a single slide show.  Slide level detail is returned with the fully qualified thumbnail URL
+for each slide.
+
+`slideShowId` is the only required parameter.
 
 
 
@@ -3003,7 +3006,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "slideShowId": "<SLIDE SHOW ID>",
 }
 
 # run the transaction.
@@ -3065,7 +3068,7 @@ print("Response: %r" % response)
 
 
 
-This API deletes a single slide show.
+This API deletes a slide show  `slideShowId` is the only required parameter.
 
 
 
@@ -3084,7 +3087,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "slideShowId": "<SLIDE SHOW ID>",
 }
 
 # run the transaction.

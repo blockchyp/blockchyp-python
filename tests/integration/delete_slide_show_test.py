@@ -16,7 +16,7 @@ from .util import _get_test_client, _get_test_config
 
 @pytest.mark.itest
 def test_delete_slide_show():
-    """Returns a single slide show."""
+    """Deletes a single slide show."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -31,7 +31,19 @@ def test_delete_slide_show():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "name": "Test Slide Show",
+        "delay": 5,
+    }
+
+    setup_response = client.update_slide_show(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "slideShowId": ,
     }
 
     response = client.delete_slide_show(request)

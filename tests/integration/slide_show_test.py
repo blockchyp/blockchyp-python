@@ -31,7 +31,19 @@ def test_slide_show():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "name": "Test Slide Show",
+        "delay": 5,
+    }
+
+    setup_response = client.update_slide_show(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "slideShowId": ,
     }
 
     response = client.slide_show(request)
@@ -39,3 +51,4 @@ def test_slide_show():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("name") == "Test Slide Show"

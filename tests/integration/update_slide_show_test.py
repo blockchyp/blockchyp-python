@@ -58,3 +58,4 @@ def test_update_slide_show():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("name") == "Test Slide Show"
