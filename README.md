@@ -2949,7 +2949,9 @@ print("Response: %r" % response)
 
 
 
-This API returns all slide shows.
+This API returns all slide shows.  
+
+Note that slide level data is not returned with this API.   Use the Get Slide Show API to get slide level detail.
 
 
 
@@ -2968,7 +2970,6 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
 }
 
 # run the transaction.
@@ -3023,6 +3024,8 @@ The slides property is an array of slides.  The Slide data structure has ordinal
 but these are not required when updating or creating a slide show.  Only the `mediaId` field is required
 when updating or creating a slide show.
 
+When using the CLI, slides can be specified by sending a comma separated list of media id's via the `-mediaId`
+parameter.
 
 
 

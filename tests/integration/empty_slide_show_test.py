@@ -15,8 +15,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_slide_shows():
-    """Returns a collection of slide shows."""
+def test_empty_slide_show():
+    """Updates or creates an empty slide show."""
 
     client = _get_test_client()
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,26 +26,17 @@ def test_slide_shows():
         client.message({
             "terminalName": terminal,
             "test": True,
-            "message": f"Running slide_shows in {delay}s",
+            "message": f"Running empty_slide_show in {delay}s",
         })
         time.sleep(int(delay))
 
 
-    setup_request = {
+    request = {
         "name": "Test Slide Show",
         "delay": 5,
     }
 
-    setup_response = client.update_slide_show(setup_request)
-
-    print("Setup response: %r" % setup_response)
-
-    assert setup_response.get("success")
-
-    request = {
-    }
-
-    response = client.slide_shows(request)
+    response = client.update_slide_show(request)
 
     print("Response: %r" % response)
 
