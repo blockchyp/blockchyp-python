@@ -3144,7 +3144,70 @@ print("Response: %r" % response)
 
 
 
-This API updates a single branding asset.
+This API updates or creates a single Branding Asset.
+
+Branding Assets represent a single element of the terminal branding stack.  A Branding Asset can be a video or image,
+in which case a `mediaId` referencing an asset from the media library must be provided.  A Branding Asset can also
+be a slide show, in which case `slideShowId` must be provided.  Branding Assets must have a valid `mediaId` or a valid
+`slideShowId`.  The optional `notes` field can be used to provide short notes and descriptions for a Branding asset.
+
+**Visibility Flags**
+
+In order for a Branding Asset to be visible on a terminal, the `enabled` flag must be set to true and the `preview`
+must be turned off.  `preview` is intended to assist with showing how a proposed Branding Asset will behave
+without pushing it to live terminals.  The Publish button in the BlockChyp merchant portal effectively turns
+the `preview` setting off.
+
+**Order and Sequencing**
+
+The `ordinal` field is used to specify priority for a Branding Asset.  Assets with a higher value for `ordinal`
+will be prioritized first.
+
+**Padding Images**
+
+For plain images, it's sometimes helpful to add margins to images.  This is especially helpful with logos
+or any image file rendered without any white space or margins between the image content and edge of image file.
+Set the `padded` flag to true if you'd like BlockChyp to auto apply margins when displaying an image on 
+the terminal.
+
+**Scheduling**
+
+By default, a Branding Asset placed on the top of the Branding Stack, if it's `enabled` and not in `preview`
+mode, will immediately be displayed on the terminal round the clock.
+
+Branding Assets can be scheduled with effective start and stop dates for seasonal campaigns.  Branding Assets can
+also be scheduled for specific times of day and specific days of the week.
+
+* **startDate:** Optional date after which the Branding Asset is eligible for display.  Can be provided in MM/DD/YYYY or YYYY-MM-DD format.
+* **endDate:** Optional date before which the Branding Asset is eligible for display.  Can be provided in MM/DD/YYYY or YYYY-MM-DD format.
+* **startTime** Optional time of day after which the branding asset is eligible for display.  Must be provided in 24 hour time: HH:MM.
+* **endTime** Optional time of day before which the branding asset is eligible for display.  Must be provided in 24 hour time format: HH:MM
+* **daysOfWeek** For branding assets that should only be displayed on certain days of the week, this field is an array of day of the week constants. (Constants vary by SDK platform.)
+
+**Read Only Fields**
+
+The Branding Asset data structure has a number of read only fields that are returned when Branding Assets are 
+retrieved, but these fields are ignored when you try to send them as part of an update.  These are derived
+or calculated fields and are helpful for displaying branding assets in a management user interface, but 
+cannot be changed via an API call.
+
+These fields are:
+
+* ownerId
+* merchantId
+* organizationId
+* partnerId
+* userId
+* userName
+* thumbnail
+* lastModified
+* editable
+* assetType
+* ownerType
+* ownerTypeCaption
+* previewImage
+* narrativeEffectiveDates
+* narrativeDisplayPeriod
 
 
 
@@ -3178,7 +3241,10 @@ print("Response: %r" % response)
 
 
 
-This API deletes a branding asset.
+This API deletes a Branding Asset from the branding stack.
+
+Note that deleting a Branding Asset does not delete the underlying media from the media library or slide
+show from the slide show library.
 
 
 
@@ -3213,6 +3279,12 @@ print("Response: %r" % response)
 
 These APIs allow partners to manage and configure their merchant portfolios.
 
+Use of these APIs (other than the Merchant Profile API) requires partner scoped API credentials
+with special roles and permissions that may require a special arrangement with BlockChyp.
+
+For example, Partners can usually not board merchants directly, but must board merchants using
+the standard underwriting process via offer codes and invitations.
+
 
 
 #### Merchant Profile
@@ -3222,6 +3294,68 @@ These APIs allow partners to manage and configure their merchant portfolios.
 Returns detailed metadata about the merchant's configuraton, including
 basic identity information, terminal settings, store and forward settings,
 and bank account information for merchants that support split settlement.
+
+Some of these fields can be updated via the Update Merchant API, but many of these
+fields are controlled by underwriting and cannot be altered outside of the 
+underwriting and risk processes.
+
+**Merchant Descriptive Fields**
+
+The following fields are basic descriptive fields that can be used to describe and identify merchants.
+
+* **companyName:** The merchant's official corporate entity name.
+* **dbaName:** The businesses DBA (doing business as) name.
+* **contactName:** Name of the merchant's primary control contact.
+* **contactNumber:** Primary control contact's phone number.
+* **locationName:** Optional location name for multi location operators.
+* **storeNumber:** Optional store number for multi location operators.
+* **partnerRef:** Optional reference number partners can add to a merchant record.  Usually the partner's own identifier for the merchant.
+* **timeZone:** Unix style local time zone for the merchant. Example: America/New_York.
+* **publicKey:** Read only field.  The merchant's blockchain public key.  Generated and assigned when a merchant account is first created.
+* **billingAddress:** Address for billing and written correspondence.
+* **shippingAddress:** Physical shipping address. Usually the actual street address of the business.
+* **status:** Current status of the merchant account.
+* **tcDisabled:** Disables all terms and conditions features in the merchant dashboard.  Used to hide the feature if a partner has not chosen to support it.
+* **gatewayOnly:** Indicates that a merchant has been boarded in gateway only mode.  Not common.
+
+**Batch and Terminal Settings**
+
+The following fields are used to control batch closure and high level terminal configuration.
+
+* **batchCloseTime:** Time in 24 hour HH:MM format when batches will automatically close in the merchant's local time.  Defaults to 3 AM.
+* **autoBatchClose:** Flag the determines whether or not batches will automatically close.  Defaults to true.
+* **disableBatchEmails:** Flag that optionally turns off automatic batch closure notification emails.
+* **cooldownTimeout:** The amount of time in seconds after a transactions for which the transaction response is displayed on the terminal.  After the cooldown period elapses, the terminal will revert to the idle state and display the currently active terminal branding.
+* **surveyTimeout:** The amount of time in seconds a survey question should be displayed on a terminal before reverting to the idle screen.
+* **pinEnabled:** Enables pin code entry for debit cards, EBT cards, and EMV cards with pin CVMs.  Will be ignored if terminals are not injected with the proper encryption keys.
+* **pinBypassEnabled:** Enable pin bypass for debit transactions.
+* **cashBackEnabled:** Enables cash back for debit transactions.
+* **cashbackPresets:** An array of four default values for cashback amounts when cashback is enabled.
+* **storeAndForwardEnabled:** Enables automatic store and forward during network outages.  Store and Forward does not support cash back, refunds, EBT, or gift card transactions.
+* **storeAndForwardFloorLimit:** Maximum dollar value of a store and forward transaction.
+* **ebtEnabled:** Enables EBT (SNAP) on BlockChyp terminals.
+* **tipEnabled:** Enables tips entry on the terminal.
+* **promptForTip:** If true, the terminal will always prompt for a tip, even if the API call does not request a tip prompt.
+* **tipDefaults:** An array of exactly three percentages that will be used to calculate default tip amounts.
+* **giftCardsDisabled:** Disables BlockChyp gift cards.  Normally only used if the merchant is using an alternate gift card system.
+* **digitalSignaturesEnabled:** Enables electronic signature capture for mag stripe cards and EMV cards with Signature CVMs.
+* **digitalSignatureReversal:** Will cause a transaction to auto-reverse if the consumer refuses to provide a signature.
+* **manualEntryEnabled:** Enables manual card entry.
+* **manualEntryPromptZip:** Requires zip code based address verification for manual card entry.
+* **manualEntryPromptStreetNumber:** Requires street/address based verification for manual card entry.
+
+**Card Brand and Transaction Settings**
+
+* **freeRangeRefundsEnabled:** Enables direct refunds that do not reference a previous transaction.
+* **partialAuthEnabled:** Indicates that partial authorizations (usually for gift card support) are enabled.
+* **splitBankAccountsEnabled:** Used for law firm merchants only.
+* **contactlessEmv:** Enables contactless/tap transactions on a terminal.  Defaults to true.
+* **visa:** Enables Visa transactions.
+* **masterCard:** Enables MasterCard transactions.
+* **amex:** Enables American Express transactions.
+* **discover:** Enables Discover transactions.
+* **jcb:** Enables JCB (Japan Card Bureau) transactions.
+* **unionPay:** Enables China UnionPay transactions.
 
 
 
@@ -3250,11 +3384,226 @@ print("Response: %r" % response)
 
 ```
 
+#### Get Merchants
+
+
+
+This is a partner or organization level API that can be used to return the merchant portfolio.
+
+Live merchants are returned by default.  Use the `test` flag to return only test merchants.  The 
+results returned include detailed settings including underwriting controlled flags.
+
+A maximum of 250 merchants are returned by default.  For large merchant portfolios, the `maxResults`
+and `startIndex` field can be used to reduce the page size and page through multiple pages of results.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.get_merchants(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Update Merchant
+
+
+
+This API can be used to update or create merchant accounts.
+
+Merchant scoped API credentials can be used to update merchant account settings.
+
+Partner scoped API credentials can be used to update merchants, create new test 
+merchants or board new gateway merchants.
+
+**Merchant Descriptive Fields**
+
+The following fields are basic descriptive fields that can be used to describe and identify merchants.
+
+* **companyName:** The merchant's official corporate entity name.
+* **dbaName:** The businesses DBA (doing business as) name.
+* **contactName:** Name of the merchant's primary control contact.
+* **contactNumber:** Primary control contact's phone number.
+* **locationName:** Optional location name for multi location operators.
+* **storeNumber:** Optional store number for multi location operators.
+* **partnerRef:** Optional reference number partners can add to a merchant record.  Usually the partner's own identifier for the merchant.
+* **timeZone:** Unix style local time zone for the merchant. Example: America/New_York.
+* **publicKey:** Read only field.  The merchant's blockchain public key.  Generated and assigned when a merchant account is first created.
+* **billingAddress:** Address for billing and written correspondence.
+* **shippingAddress:** Physical shipping address. Usually the actual street address of the business.
+* **status:** Current status of the merchant account.
+* **tcDisabled:** Disables all terms and conditions features in the merchant dashboard.  Used to hide the feature if a partner has not chosen to support it.
+* **gatewayOnly:** Indicates that a merchant has been boarded in gateway only mode.  Not common.
+
+**Batch and Terminal Settings**
+
+The following fields are used to control batch closure and high level terminal configuration.
+
+* **batchCloseTime:** Time in 24 hour HH:MM format when batches will automatically close in the merchant's local time.  Defaults to 3 AM.
+* **autoBatchClose:** Flag the determines whether or not batches will automatically close.  Defaults to true.
+* **disableBatchEmails:** Flag that optionally turns off automatic batch closure notification emails.
+* **cooldownTimeout:** The amount of time in seconds after a transactions for which the transaction response is displayed on the terminal.  After the cooldown period elapses, the terminal will revert to the idle state and display the currently active terminal branding.
+* **surveyTimeout:** The amount of time in seconds a survey question should be displayed on a terminal before reverting to the idle screen.
+* **pinEnabled:** Enables pin code entry for debit cards, EBT cards, and EMV cards with pin CVMs.  Will be ignored if terminals are not injected with the proper encryption keys.
+* **pinBypassEnabled:** Enable pin bypass for debit transactions.
+* **cashBackEnabled:** Enables cash back for debit transactions.
+* **cashbackPresets:** An array of four default values for cashback amounts when cashback is enabled.
+* **storeAndForwardEnabled:** Enables automatic store and forward during network outages.  Store and Forward does not support cash back, refunds, EBT, or gift card transactions.
+* **storeAndForwardFloorLimit:** Maximum dollar value of a store and forward transaction.
+* **ebtEnabled:** Enables EBT (SNAP) on BlockChyp terminals.
+* **tipEnabled:** Enables tips entry on the terminal.
+* **promptForTip:** If true, the terminal will always prompt for a tip, even if the API call does not request a tip prompt.
+* **tipDefaults:** An array of exactly three percentages that will be used to calculate default tip amounts.
+* **giftCardsDisabled:** Disables BlockChyp gift cards.  Normally only used if the merchant is using an alternate gift card system.
+* **digitalSignaturesEnabled:** Enables electronic signature capture for mag stripe cards and EMV cards with Signature CVMs.
+* **digitalSignatureReversal:** Will cause a transaction to auto-reverse if the consumer refuses to provide a signature.
+* **manualEntryEnabled:** Enables manual card entry.
+* **manualEntryPromptZip:** Requires zip code based address verification for manual card entry.
+* **manualEntryPromptStreetNumber:** Requires street/address based verification for manual card entry.
+
+**Card Brand and Transaction Settings**
+
+* **freeRangeRefundsEnabled:** Enables direct refunds that do not reference a previous transaction.
+* **partialAuthEnabled:** Indicates that partial authorizations (usually for gift card support) are enabled.
+* **splitBankAccountsEnabled:** Used for law firm merchants only.
+* **contactlessEmv:** Enables contactless/tap transactions on a terminal.  Defaults to true.
+* **visa:** Enables Visa transactions.
+* **masterCard:** Enables MasterCard transactions.
+* **amex:** Enables American Express transactions.
+* **discover:** Enables Discover transactions.
+* **jcb:** Enables JCB (Japan Card Bureau) transactions.
+* **unionPay:** Enables China UnionPay transactions.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+}
+
+# run the transaction.
+response = client.update_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Merchant Users
+
+
+
+This API returns all users and pending invites associated with a merchant account including any assigned role codes.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "merchantId": "XXXXXXXXXXXXX",
+}
+
+# run the transaction.
+response = client.merchant_users(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Invite Merchant User
+
+
+
+Invites a new user to join a merchant account.  `email`, `firstName`, and `lastName` are required.
+
+The user will be sent an invite email with steps for creating a BlockChyp account and linking it to
+a merchant account.  If the user already has a BlockChyp user account, the new user signup wil be skipped
+and the existing user account will be linked to the merchant account.
+
+Developers can optionally restrict the user's access level by sending one or more role codes.
+Otherwise, the user will be given the default merchant user role. (STDMERCHANT)
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "email": "Email address for the invite",
+}
+
+# run the transaction.
+response = client.invite_merchant_user(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Add Test Merchant
 
 
 
-This is a partner level API that can be used to create test merchant accounts.
+This is a partner level API that can be used to create test merchant accounts.  This creates
+a basic test merchant with default settings.
+
+Settings can be changed by using the Update Merchant API.
 
 
 
@@ -3285,84 +3634,11 @@ print("Response: %r" % response)
 
 ```
 
-#### Get Merchants
-
-
-
-This is a partner or organization level API that can be used to return the merchant portfolio.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-}
-
-# run the transaction.
-response = client.get_merchants(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Update Or Create Merchant
-
-
-
-This API can be used to update or create merchant accounts.
-
-Merchant scoped API credentials can be used to update merchant account settings.
-
-Partner scoped API credentials can be used to update merchants, create new test 
-merchants or board new gateway merchants. 
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "test": True,
-}
-
-# run the transaction.
-response = client.update_merchant(request)
-
-print("Response: %r" % response)
-
-
-```
-
 #### Delete Test Merchant
 
 
 
-This partner API can be used to deleted unused test merchant accounts.
+This partner API can be used to deleted unused test merchant accounts. `merchantId` is a required parameter.
 
 
 
@@ -3386,74 +3662,6 @@ request = {
 
 # run the transaction.
 response = client.delete_test_merchant(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Invite Merchant User
-
-
-
-Invites a new user to join a merchant account.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "email": "Email address for the invite",
-}
-
-# run the transaction.
-response = client.invite_merchant_user(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Merchant Users
-
-
-
-This API returns all users and pending invites associated with a merchant account.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-    "merchantId": "XXXXXXXXXXXXX",
-}
-
-# run the transaction.
-response = client.merchant_users(request)
 
 print("Response: %r" % response)
 

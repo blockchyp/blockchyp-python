@@ -32,6 +32,9 @@ def test_invite_merchant_user():
 
 
     request = {
+        "email": "doublea@blockchypteam.m8r.co",
+        "firstName": "Aaron",
+        "lastName": "Anderson",
     }
 
     response = client.invite_merchant_user(request)

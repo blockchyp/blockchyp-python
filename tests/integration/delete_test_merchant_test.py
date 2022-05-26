@@ -31,7 +31,19 @@ def test_delete_test_merchant():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "dbaName": "Test Merchant",
+        "companyName": "Test Merchant",
+    }
+
+    setup_response = client.add_test_merchant(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "merchantId": ,
     }
 
     response = client.delete_test_merchant(request)

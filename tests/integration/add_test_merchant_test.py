@@ -41,3 +41,6 @@ def test_add_test_merchant():
     print("Response: %r" % response)
 
     assert response.get("success") is True
+    assert response.get("dbaName") == "Test Merchant"
+    assert response.get("companyName") == "Test Merchant"
+    assert response.get("visa") is True
