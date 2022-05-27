@@ -31,7 +31,21 @@ def test_update_merchant_platforms():
         time.sleep(int(delay))
 
 
+    setup_request = {
+        "dbaName": "Test Merchant",
+        "companyName": "Test Merchant",
+    }
+
+    setup_response = client.add_test_merchant(setup_request)
+
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
     request = {
+        "merchantId": ,
+        "platformCode": "SIM",
+        "notes": "platform simulator",
     }
 
     response = client.update_merchant_platforms(request)
