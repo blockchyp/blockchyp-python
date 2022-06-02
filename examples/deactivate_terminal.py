@@ -11,8 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "terminalId": str(uuid.uuid4()),
-    "timeout": 120,
+    "terminalId": "<TERMINAL ID>",
 }
 
 # run the transaction.

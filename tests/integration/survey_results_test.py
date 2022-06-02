@@ -41,6 +41,7 @@ def test_survey_results():
     assert setup_response.get("success")
 
     request = {
+        "questionId": ,
     }
 
     response = client.survey_results(request)
