@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_send_payment_link():
     """Can generate a payment link."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running send_payment_link in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     request = {
         "amount": "199.99",
@@ -59,7 +54,6 @@ def test_send_payment_link():
     }
 
     response = client.send_payment_link(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

@@ -17,6 +17,9 @@ request = {
 }
 
 # run the transaction.
-response = client.upload_media(request)
+f = open("aviato.png", "rb")
+content = f.read()
+response = client.upload_media(request, content)
+f.close()
 
 print("Response: %r" % response)

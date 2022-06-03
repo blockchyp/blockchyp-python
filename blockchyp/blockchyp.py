@@ -46,6 +46,7 @@ class Client:
         # Default gateway configuration
         self.gateway_url = "https://api.blockchyp.com"
         self.gateway_test_url = "https://test.blockchyp.com"
+        self.dashboard_url = "https://dashboard.blockchyp.com"
 
         self.gateway_timeout = 20 # Seconds
 
@@ -55,6 +56,7 @@ class Client:
         self.terminal_timeout = 60 * 2 # Seconds
 
         self.internet_session = self._build_session()
+        self.upload_session = self._build_upload_session()
         self.terminal_session = self._build_session(crypto.TerminalAdapter())
         self.route_cache = TerminalRouteCache()
 
@@ -780,6 +782,364 @@ class Client:
             test=request.get("test", False),
         )
 
+
+    def get_merchants(self, request):
+        # type: (dict) -> dict
+        """Adds a test merchant account."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/get-merchants",
+            body=request,
+        )
+
+    def update_merchant(self, request):
+        # type: (dict) -> dict
+        """Adds or updates a merchant account. Can be used to create or update test
+        merchants. Only gateway only partners may create new live merchants.
+        """
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/update-merchant",
+            body=request,
+        )
+
+    def merchant_users(self, request):
+        # type: (dict) -> dict
+        """List all active users and pending invites for a merchant account."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/merchant-users",
+            body=request,
+        )
+
+    def invite_merchant_user(self, request):
+        # type: (dict) -> dict
+        """Invites a user to join a merchant account."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/invite-merchant-user",
+            body=request,
+        )
+
+    def add_test_merchant(self, request):
+        # type: (dict) -> dict
+        """Adds a test merchant account."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/add-test-merchant",
+            body=request,
+        )
+
+    def delete_test_merchant(self, request):
+        # type: (dict) -> dict
+        """Deletes a test merchant account. Supports partner scoped API credentials only.
+        Live merchant accounts cannot be deleted.
+        """
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/test-merchant/" + request["merchantId"],
+            body=request,
+        )
+
+    def merchant_platforms(self, request):
+        # type: (dict) -> dict
+        """List all merchant platforms configured for a gateway merchant."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/plugin-configs/" + request["merchantId"],
+            body=request,
+        )
+
+    def update_merchant_platforms(self, request):
+        # type: (dict) -> dict
+        """List all merchant platforms configured for a gateway merchant."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/plugin-configs",
+            body=request,
+        )
+
+    def delete_merchant_platforms(self, request):
+        # type: (dict) -> dict
+        """Deletes a boarding platform configuration."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/plugin-config/" + request["platformId"],
+            body=request,
+        )
+
+    def terminals(self, request):
+        # type: (dict) -> dict
+        """Returns all terminals associated with the merchant account."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/terminals",
+            body=request,
+        )
+
+    def deactivate_terminal(self, request):
+        # type: (dict) -> dict
+        """Deactivates a terminal."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/terminal/" + request["terminalId"],
+            body=request,
+        )
+
+    def activate_terminal(self, request):
+        # type: (dict) -> dict
+        """Activates a terminal."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/terminal-activate",
+            body=request,
+        )
+
+    def tc_templates(self, request):
+        # type: (dict) -> dict
+        """Returns a list of terms and conditions templates associated with a merchant
+        account.
+        """
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/tc-templates",
+            body=request,
+        )
+
+    def tc_template(self, request):
+        # type: (dict) -> dict
+        """Returns a single terms and conditions template."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/tc-templates/" + request["templateId"],
+            body=request,
+        )
+
+    def tc_update_template(self, request):
+        # type: (dict) -> dict
+        """Updates or creates a terms and conditions template."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/tc-templates",
+            body=request,
+        )
+
+    def tc_delete_template(self, request):
+        # type: (dict) -> dict
+        """Deletes a single terms and conditions template."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/tc-templates/" + request["templateId"],
+            body=request,
+        )
+
+    def tc_log(self, request):
+        # type: (dict) -> dict
+        """Returns up to 250 entries from the Terms and Conditions log."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/tc-log",
+            body=request,
+        )
+
+    def tc_entry(self, request):
+        # type: (dict) -> dict
+        """Returns a single detailed Terms and Conditions entry."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/tc-entry/" + request["logEntryId"],
+            body=request,
+        )
+
+    def survey_questions(self, request):
+        # type: (dict) -> dict
+        """Returns all survey questions for a given merchant."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/survey-questions",
+            body=request,
+        )
+
+    def survey_question(self, request):
+        # type: (dict) -> dict
+        """Returns a single survey question with response data."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/survey-questions/" + request["questionId"],
+            body=request,
+        )
+
+    def update_survey_question(self, request):
+        # type: (dict) -> dict
+        """Updates or creates a survey question."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/survey-questions",
+            body=request,
+        )
+
+    def delete_survey_question(self, request):
+        # type: (dict) -> dict
+        """Deletes a survey question."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/survey-questions/" + request["questionId"],
+            body=request,
+        )
+
+    def survey_results(self, request):
+        # type: (dict) -> dict
+        """Returns results for a single survey question."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/survey-results",
+            body=request,
+        )
+
+    def media(self, request):
+        # type: (dict) -> dict
+        """Returns the media library for a given partner, merchant, or organization."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/media",
+            body=request,
+        )
+
+    def upload_media(self, request, content):
+        # type: (dict) -> dict
+        """Uploads a media asset to the media library."""
+
+        return self._upload_request(
+            path="/api/upload-media",
+            request=request,
+            content=content,
+        )
+
+
+    def upload_status(self, request):
+        # type: (dict) -> dict
+        """Retrieves the current status of a file upload."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/media-upload/" + request["uploadId"],
+            body=request,
+        )
+
+    def media_asset(self, request):
+        # type: (dict) -> dict
+        """Returns the media details for a single media asset."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/media/" + request["mediaId"],
+            body=request,
+        )
+
+    def delete_media_asset(self, request):
+        # type: (dict) -> dict
+        """Deletes a media asset."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/media/" + request["mediaId"],
+            body=request,
+        )
+
+    def slide_shows(self, request):
+        # type: (dict) -> dict
+        """Returns a collection of slide shows."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/slide-shows",
+            body=request,
+        )
+
+    def slide_show(self, request):
+        # type: (dict) -> dict
+        """Returns a single slide show with slides."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/slide-shows/" + request["slideShowId"],
+            body=request,
+        )
+
+    def update_slide_show(self, request):
+        # type: (dict) -> dict
+        """Updates or creates a slide show."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/slide-shows",
+            body=request,
+        )
+
+    def delete_slide_show(self, request):
+        # type: (dict) -> dict
+        """Deletes a single slide show."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/slide-shows/" + request["slideShowId"],
+            body=request,
+        )
+
+    def terminal_branding(self, request):
+        # type: (dict) -> dict
+        """Returns the terminal branding stack for a given set of API credentials."""
+
+        return self._dashboard_request(
+            method="GET",
+            path="/api/terminal-branding",
+            body=request,
+        )
+
+    def update_branding_asset(self, request):
+        # type: (dict) -> dict
+        """Updates a branding asset."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/terminal-branding",
+            body=request,
+        )
+
+    def delete_branding_asset(self, request):
+        # type: (dict) -> dict
+        """Deletes a branding asset."""
+
+        return self._dashboard_request(
+            method="DELETE",
+            path="/api/terminal-branding/" + request["assetId"],
+            body=request,
+        )
+
     def _terminal_request(self, method, path, body, terminal, query=None):
         """Sends a request to a terminal."""
         route = self._resolve_terminal_route(terminal)
@@ -865,12 +1225,61 @@ class Client:
         route = self._resolve_terminal_route(terminal)
         return route and route.get("success") and not route.get("cloudRelayEnabled")
 
+
     def _gateway_request(self, method, path, body=None, query=None, test=False, relay=False):
         """Sends a request to the gateway."""
         url = self._assemble_gateway_url(path, test)
         auth = crypto.auth_headers(self.api_key, self.bearer_token, self.signing_key)
 
         timeout = self._get_timeout(body, self.terminal_timeout if relay else self.gateway_timeout)
+
+        response = self.internet_session.request(
+            method,
+            url,
+            params=query,
+            json=body,
+            headers=auth,
+            timeout=timeout,
+        )
+
+        return self._decode_response(response)
+
+    def _upload_request(self, path, request, content, query=None):
+        """Sends a request to the dashboard."""
+        url = self._assemble_dashboard_url(path)
+        auth = crypto.auth_headers(self.api_key, self.bearer_token, self.signing_key)
+
+        if request["fileName"]:
+            auth["X-Upload-File-Name"] = request["fileName"]
+
+        if request["uploadId"]:
+            auth["X-Upload-ID"] = request["uploadId"]
+
+        if request["fileSize"]:
+            auth["X-File-Size"] = str(request["fileSize"])
+            auth["Content-Length"] = str(request["fileSize"])
+
+
+        timeout = self._get_timeout(request, self.gateway_timeout)
+
+        response = self.upload_session.request(
+            "POST",
+            url,
+            params=query,
+            data=content,
+            headers=auth,
+            timeout=timeout,
+        )
+
+        return self._decode_response(response)
+
+
+    def _dashboard_request(self, method, path, body=None, query=None):
+        """Sends a request to the dashboard."""
+        url = self._assemble_dashboard_url(path)
+        auth = crypto.auth_headers(self.api_key, self.bearer_token, self.signing_key)
+
+        timeout = self._get_timeout(body, self.gateway_timeout)
 
         response = self.internet_session.request(
             method,
@@ -891,6 +1300,11 @@ class Client:
 
         return urllib.parse.urljoin(base, path)
 
+    def _assemble_dashboard_url(self, path):
+        # type: (str, bool) -> str
+        base = self.dashboard_url
+        return urllib.parse.urljoin(base, path)
+
     def _build_session(self, adapter=None):
         session = requests.session()
 
@@ -900,6 +1314,20 @@ class Client:
         session.headers.update({
             "Accept": "application/json",
             "Content-Type": "application/json",
+            "User-Agent": self.user_agent(),
+        })
+
+        return session
+
+    def _build_upload_session(self, adapter=None):
+        session = requests.session()
+
+        if adapter:
+            session.mount("https://", adapter)
+
+        session.headers.update({
+            "Accept": "application/json",
+            "Content-Type": "application/octet-stream",
             "User-Agent": self.user_agent(),
         })
 

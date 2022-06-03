@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,9 +20,10 @@ from .util import _get_test_client, _get_test_config
 def test_partial_refund():
     """Can execute a partial refund."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
+    client = _get_test_client("")
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
@@ -30,6 +33,7 @@ def test_partial_refund():
         })
         time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     setup_request = {
         "pan": "4111111111111111",
@@ -41,7 +45,6 @@ def test_partial_refund():
     }
 
     setup_response = client.charge(setup_request)
-
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
@@ -53,7 +56,6 @@ def test_partial_refund():
     }
 
     response = client.refund(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

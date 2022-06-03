@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,9 +20,10 @@ from .util import _get_test_client, _get_test_config
 def test_pan_enroll():
     """Can enroll the consumer in the payment token vault by PAN."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
+    client = _get_test_client("")
     delay = os.environ.get("BC_TEST_DELAY")
     if delay:
         client.message({
@@ -30,6 +33,7 @@ def test_pan_enroll():
         })
         time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     request = {
         "pan": "4111111111111111",
@@ -42,7 +46,6 @@ def test_pan_enroll():
     }
 
     response = client.enroll(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

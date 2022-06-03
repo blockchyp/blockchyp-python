@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_tc_delete_template():
     """Deletes a terms and conditions template."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running tc_delete_template in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     setup_request = {
         "alias": str(uuid.uuid4()),
@@ -38,17 +33,15 @@ def test_tc_delete_template():
     }
 
     setup_response = client.tc_update_template(setup_request)
-
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
 
     request = {
-        "templateId": ,
+        "templateId": setup_response["id"],
     }
 
     response = client.tc_delete_template(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

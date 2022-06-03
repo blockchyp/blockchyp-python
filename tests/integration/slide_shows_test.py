@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_slide_shows():
     """Returns a collection of slide shows."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running slide_shows in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     setup_request = {
         "name": "Test Slide Show",
@@ -37,7 +32,6 @@ def test_slide_shows():
     }
 
     setup_response = client.update_slide_show(setup_request)
-
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
@@ -46,7 +40,6 @@ def test_slide_shows():
     }
 
     response = client.slide_shows(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_simple_locate():
     """Can test location lookup for a terminal."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running simple_locate in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     request = {
         "test": True,
@@ -37,7 +32,6 @@ def test_simple_locate():
     }
 
     response = client.locate(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

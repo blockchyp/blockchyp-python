@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_delete_token():
     """Can delete a token."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running delete_token in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     setup_request = {
         "pan": "4111111111111111",
@@ -42,7 +37,6 @@ def test_delete_token():
     }
 
     setup_response = client.enroll(setup_request)
-
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
@@ -52,7 +46,6 @@ def test_delete_token():
     }
 
     response = client.delete_token(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

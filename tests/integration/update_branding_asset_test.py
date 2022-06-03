@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_update_branding_asset():
     """Updates a terminal branding asset."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running update_branding_asset in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     setup_request = {
         "fileName": "aviato.png",
@@ -37,14 +32,17 @@ def test_update_branding_asset():
         "uploadId": str(uuid.uuid4()),
     }
 
-    setup_response = client.upload_media(setup_request)
-
+    file_name = pkg_resources.resource_filename("tests", "resources/aviato.png")
+    f = open(file_name, "rb")
+    content = f.read()
+    setup_response = client.upload_media(setup_request, content)
+    f.close()
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
 
     request = {
-        "mediaId": ,
+        "mediaId": setup_response["id"],
         "padded": True,
         "ordinal": 10,
         "startDate": "01/06/2021",
@@ -57,7 +55,6 @@ def test_update_branding_asset():
     }
 
     response = client.update_branding_asset(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

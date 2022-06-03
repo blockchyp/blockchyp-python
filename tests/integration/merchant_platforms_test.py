@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_merchant_platforms():
     """Returns all platforms configured for a gateway only merchant."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running merchant_platforms in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("partner")
 
     setup_request = {
         "dbaName": "Test Merchant",
@@ -37,17 +32,15 @@ def test_merchant_platforms():
     }
 
     setup_response = client.add_test_merchant(setup_request)
-
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
 
     request = {
-        "merchantId": ,
+        "merchantId": setup_response["merchantId"],
     }
 
     response = client.merchant_platforms(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

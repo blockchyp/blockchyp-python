@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_invite_merchant_user():
     """Invites a user to join a merchant account."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running invite_merchant_user in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     request = {
         "email": "doublea@blockchypteam.m8r.co",
@@ -38,7 +33,6 @@ def test_invite_merchant_user():
     }
 
     response = client.invite_merchant_user(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

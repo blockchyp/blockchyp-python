@@ -4,8 +4,10 @@
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
 # to this file will be lost every time the code is regenerated.
 import os
+import os.path
 import time
 import uuid
+import pkg_resources
 
 import pytest
 
@@ -18,18 +20,11 @@ from .util import _get_test_client, _get_test_config
 def test_survey_questions():
     """Returns survey questions for a given merchant."""
 
-    client = _get_test_client()
+
     terminal = _get_test_config().get("defaultTerminalName")
 
-    delay = os.environ.get("BC_TEST_DELAY")
-    if delay:
-        client.message({
-            "terminalName": terminal,
-            "test": True,
-            "message": f"Running survey_questions in {delay}s",
-        })
-        time.sleep(int(delay))
 
+    client = _get_test_client("")
 
     setup_request = {
         "ordinal": 1,
@@ -38,7 +33,6 @@ def test_survey_questions():
     }
 
     setup_response = client.update_survey_question(setup_request)
-
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
@@ -47,7 +41,6 @@ def test_survey_questions():
     }
 
     response = client.survey_questions(request)
-
     print("Response: %r" % response)
 
     assert response.get("success") is True

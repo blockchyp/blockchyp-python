@@ -24,7 +24,7 @@ def _get_test_config():
     return content
 
 
-def _get_test_client():
+def _get_test_client(profile):
     # type: () -> blockchyp.Client
 
     config = _get_test_config()
@@ -37,5 +37,12 @@ def _get_test_client():
 
     client.gateway_url = config.get("gatewayHost")
     client.gateway_test_url = config.get("testGatewayHost")
+    client.dashboard_url = config.get("dashboardHost")
+
+    if len(profile) > 0:
+        profile_config = config["profiles"][profile]
+        client.api_key = profile_config["apiKey"]
+        client.bearer_token = profile_config["bearerToken"]
+        client.signing_key = profile_config["signingKey"]
 
     return client
