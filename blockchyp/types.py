@@ -11,6 +11,7 @@ class CardType:
     DEBIT = 1
     EBT = 2
     GIFT = 3
+    HEALTHCARE = 4
 
 
 class SignatureFormat:
@@ -53,3 +54,12 @@ class CVMType:
     ONLINE_PIN = "Online PIN"
     CDCVM = "CDCVM"
     NO_CVM = "No CVM"
+
+class HealthcareType:
+    """Contains categories of healthcare amounts."""
+
+    HEALTHCARE = "healthcare"
+    PRESCRIPTION = "prescription"
+    VISION = "vision"
+    CLINIC = "clinic"
+    DENTAL = "dental"
