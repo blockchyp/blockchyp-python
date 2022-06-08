@@ -11,7 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "token": "Token to delete",
+    "token": "<TOKEN>",
 }
 
 # run the transaction.

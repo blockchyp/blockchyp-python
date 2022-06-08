@@ -11,7 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "batchId": "BATCHID",
+    "batchId": "<BATCH ID>",
 }
 
 # run the transaction.

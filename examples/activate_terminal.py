@@ -12,7 +12,7 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "terminalName": "Test Terminal",
-    "timeout": 120,
+    "activationCode": "<ACTIVATION CODE>",
 }
 
 # run the transaction.

@@ -11,8 +11,8 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "token": "Token to link",
-    "customerId": "Customer to link",
+    "token": "<TOKEN>",
+    "customerId": "<CUSTOMER ID>",
 }
 
 # run the transaction.

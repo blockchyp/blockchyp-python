@@ -11,7 +11,16 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "merchantId": "<MERCHANT ID>",
     "test": True,
+    "dbaName": "Test Merchant",
+    "companyName": "Test Merchant",
+    "billingAddress": {
+        "address1": "1060 West Addison",
+        "city": "Chicago",
+        "stateOrProvince": "IL",
+        "postalCode": "60613",
+    },
 }
 
 # run the transaction.

@@ -11,7 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "customerId": "ID of the customer to retrieve",
+    "customerId": "<CUSTOMER ID>",
 }
 
 # run the transaction.

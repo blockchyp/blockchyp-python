@@ -12,7 +12,8 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "test": True,
-    "transactionId": "<PREAUTH TRANSACTION ID>",
+    "transactionId": "<ORIGINAL TRANSACTION ID>",
+    "amount": "32.00",
 }
 
 # run the transaction.

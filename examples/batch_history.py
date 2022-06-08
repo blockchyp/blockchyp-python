@@ -12,7 +12,7 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "maxResults": 250,
-    "startIndex": 1,
+    "startIndex": 0,
 }
 
 # run the transaction.

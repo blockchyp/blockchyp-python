@@ -11,6 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "transactionRef": "<TX REF>",
     "amount": "199.99",
     "description": "Widget",
     "subject": "Widget invoice",

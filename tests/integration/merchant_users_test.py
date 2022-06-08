@@ -27,7 +27,6 @@ def test_merchant_users():
     client = _get_test_client("")
 
     request = {
-        "timeout": 120,
     }
 
     response = client.merchant_users(request)

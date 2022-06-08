@@ -11,7 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "merchantId": "ID for the test merchant being deleted.",
+    "merchantId": "<MERCHANT ID>",
 }
 
 # run the transaction.

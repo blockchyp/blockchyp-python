@@ -214,7 +214,8 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "test": True,
-    "transactionId": "<PREAUTH TRANSACTION ID>",
+    "transactionId": "<ORIGINAL TRANSACTION ID>",
+    "amount": "32.00",
 }
 
 # run the transaction.
@@ -706,6 +707,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "transactionRef": "<TX REF>",
     "amount": "199.99",
     "description": "Widget",
     "subject": "Widget invoice",
@@ -763,7 +765,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "linkCode": "Payment link code to cancel",
+    "linkCode": "<PAYMENT LINK CODE>",
 }
 
 # run the transaction.
@@ -802,7 +804,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "transactionId": "ID of transaction to retrieve",
+    "transactionId": "<TRANSACTION ID>",
 }
 
 # run the transaction.
@@ -897,7 +899,7 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "maxResults": 250,
-    "startIndex": 1,
+    "startIndex": 0,
 }
 
 # run the transaction.
@@ -937,7 +939,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "batchId": "BATCHID",
+    "batchId": "<BATCH ID>",
 }
 
 # run the transaction.
@@ -1017,6 +1019,7 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "maxResults": 10,
+    "batchId": "<BATCH ID>",
 }
 
 # run the transaction.
@@ -1650,7 +1653,6 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
 }
 
 # run the transaction.
@@ -1732,7 +1734,7 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "terminalName": "Test Terminal",
-    "timeout": 120,
+    "activationCode": "<ACTIVATION CODE>",
 }
 
 # run the transaction.
@@ -1878,7 +1880,6 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
 }
 
 # run the transaction.
@@ -1912,7 +1913,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "templateId": "<TEMPLATE ID>",
 }
 
 # run the transaction.
@@ -1957,7 +1958,6 @@ request = {
     "alias": "HIPPA",
     "name": "HIPPA Disclosure",
     "content": "Lorem ipsum dolor sit amet.",
-    "timeout": 120,
 }
 
 # run the transaction.
@@ -1995,7 +1995,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "templateId": "<TEMPLATE ID>",
 }
 
 # run the transaction.
@@ -2039,7 +2039,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "logEntryId": "<LOG ENTRY ID>",
 }
 
 # run the transaction.
@@ -2076,7 +2076,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "logEntryId": "<ENTRY ID>",
 }
 
 # run the transaction.
@@ -2176,7 +2176,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "token": "Token to retrieve",
+    "token": "<TOKEN>",
 }
 
 # run the transaction.
@@ -2211,8 +2211,8 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "token": "Token to link",
-    "customerId": "Customer to link",
+    "token": "<TOKEN>",
+    "customerId": "<CUSTOMER ID>",
 }
 
 # run the transaction.
@@ -2249,8 +2249,8 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "token": "Token to unlink",
-    "customerId": "Customer to unlink",
+    "token": "<TOKEN>",
+    "customerId": "<CUSTOMER ID>",
 }
 
 # run the transaction.
@@ -2285,7 +2285,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "token": "Token to delete",
+    "token": "<TOKEN>",
 }
 
 # run the transaction.
@@ -2356,7 +2356,7 @@ client = blockchyp.Client(
 # populate request parameters.
 request = {
     "customer": {
-        "id": "ID of the customer to update",
+        "id": "<CUSTOMER ID>",
         "customerRef": "Customer reference string",
         "firstName": "FirstName",
         "lastName": "LastName",
@@ -2400,7 +2400,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "customerId": "ID of the customer to retrieve",
+    "customerId": "<CUSTOMER ID>",
 }
 
 # run the transaction.
@@ -2471,7 +2471,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "customerId": "ID of the customer to delete",
+    "customerId": "<CUSTOMER ID>",
 }
 
 # run the transaction.
@@ -2554,7 +2554,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "questionId": "XXXXXXXX",
+    "questionId": "<QUESTION ID>",
 }
 
 # run the transaction.
@@ -2597,6 +2597,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "id": "<QUESTION ID>",
     "ordinal": 1,
     "questionText": "Would you shop here again?",
     "questionType": "yes_no",
@@ -2634,7 +2635,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "questionId": "XXXXXXXX",
+    "questionId": "<QUESTION ID>",
 }
 
 # run the transaction.
@@ -2680,7 +2681,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "questionId": "<SURVEY QUESTION ID>",
+    "questionId": "<QUESTION ID>",
 }
 
 # run the transaction.
@@ -2754,7 +2755,6 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
 }
 
 # run the transaction.
@@ -2865,7 +2865,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "uploadId": "<UPLOAD ID>",
 }
 
 # run the transaction.
@@ -2936,7 +2936,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "mediaId": "<MEDIA ASSET ID>",
 }
 
 # run the transaction.
@@ -3228,7 +3228,16 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "mediaId": "<MEDIA ID>",
+    "padded": True,
+    "ordinal": 10,
+    "startDate": "01/06/2021",
+    "startTime": "14:00",
+    "endDate": "11/05/2024",
+    "endTime": "16:00",
+    "notes": "Test Branding Asset",
+    "preview": False,
+    "enabled": True,
 }
 
 # run the transaction.
@@ -3512,7 +3521,16 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "merchantId": "<MERCHANT ID>",
     "test": True,
+    "dbaName": "Test Merchant",
+    "companyName": "Test Merchant",
+    "billingAddress": {
+        "address1": "1060 West Addison",
+        "city": "Chicago",
+        "stateOrProvince": "IL",
+        "postalCode": "60613",
+    },
 }
 
 # run the transaction.
@@ -3546,7 +3564,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "merchantId": "XXXXXXXXXXXXX",
+    "merchantId": "<MERCHANT ID>",
 }
 
 # run the transaction.
@@ -3624,8 +3642,8 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "dbaName": "DBA name.",
-    "companyName": "test merchant customer name.",
+    "dbaName": "DBA Name",
+    "companyName": "Corporate Entity Name",
 }
 
 # run the transaction.
@@ -3659,7 +3677,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "merchantId": "ID for the test merchant being deleted.",
+    "merchantId": "<MERCHANT ID>",
 }
 
 # run the transaction.

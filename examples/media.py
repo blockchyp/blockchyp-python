@@ -11,7 +11,6 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
 }
 
 # run the transaction.

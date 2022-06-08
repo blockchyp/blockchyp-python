@@ -11,7 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "linkCode": "Payment link code to cancel",
+    "linkCode": "<PAYMENT LINK CODE>",
 }
 
 # run the transaction.

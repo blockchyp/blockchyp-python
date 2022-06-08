@@ -11,7 +11,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "questionId": "<SURVEY QUESTION ID>",
+    "questionId": "<QUESTION ID>",
 }
 
 # run the transaction.

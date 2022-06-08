@@ -11,7 +11,16 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "timeout": 120,
+    "mediaId": "<MEDIA ID>",
+    "padded": True,
+    "ordinal": 10,
+    "startDate": "01/06/2021",
+    "startTime": "14:00",
+    "endDate": "11/05/2024",
+    "endTime": "16:00",
+    "notes": "Test Branding Asset",
+    "preview": False,
+    "enabled": True,
 }
 
 # run the transaction.

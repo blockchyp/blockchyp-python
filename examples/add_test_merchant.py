@@ -11,8 +11,8 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "dbaName": "DBA name.",
-    "companyName": "test merchant customer name.",
+    "dbaName": "DBA Name",
+    "companyName": "Corporate Entity Name",
 }
 
 # run the transaction.
