@@ -541,6 +541,32 @@ class Client:
 
         return response
 
+    def reboot(self, request):
+        # type: (dict) -> dict
+        """Reboot a payment terminal."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/reboot",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/terminal-reboot",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
 
     def locate(self, request):
         # type: (dict) -> dict
