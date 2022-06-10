@@ -19,6 +19,8 @@ import json
 import os
 import urllib.parse
 
+from typing import Any
+
 import requests
 
 from blockchyp import crypto, version
@@ -1056,7 +1058,7 @@ class Client:
         )
 
     def upload_media(self, request, content):
-        # type: (dict) -> dict
+        # type: (dict, Any) -> dict
         """Uploads a media asset to the media library."""
 
         return self._upload_request(
@@ -1327,7 +1329,7 @@ class Client:
         return urllib.parse.urljoin(base, path)
 
     def _assemble_dashboard_url(self, path):
-        # type: (str, bool) -> str
+        # type: (str) -> str
         base = self.dashboard_url
         return urllib.parse.urljoin(base, path)
 
