@@ -824,7 +824,7 @@ class Client:
     def update_merchant(self, request):
         # type: (dict) -> dict
         """Adds or updates a merchant account. Can be used to create or update test
-        merchants. Only gateway only partners may create new live merchants.
+        merchants. Only gateway partners may create new live merchants.
         """
 
         return self._dashboard_request(
