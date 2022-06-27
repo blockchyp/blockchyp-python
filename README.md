@@ -44,7 +44,7 @@ stuff you can do with the BlockChyp Python SDK and a few basic examples.
 ### Payment Endpoints
 
 
-These are the core payment APIs used to execute and work with payment transaction in BlockChyp.
+These are the core payment APIs used to execute and work with payment transactions in BlockChyp.
 
 
 
@@ -73,14 +73,14 @@ property instead.
 
 **Card Numbers and Mag Stripes**
 
-You can also pass in PANs and Mag Stripes, but you probably shouldn't. This will
-put you in PCI scope and the most common vector for POS breaches is key logging.
-If you use terminals for manual card entry, you'll bypass any key loggers that
+You can also pass in PANs and Mag Stripes, but you probably shouldn't, as this will
+put you in PCI scope and the most common vector for POS breaches is keylogging.
+If you use terminals for manual card entry, you'll bypass any keyloggers that
 might be maliciously running on the point-of-sale system.
 
 **Common Variations**
 
-* **Gift Card Redemption**:  There's no special API for gift card redemption in BlockChyp. Just execute a plain charge transaction and if the customer happens to swipe a gift card, our terminals will identify the gift card and run a gift card redemption. Also note that if for some reason the gift card's original purchase transaction is associated with fraud or a chargeback, the transaction will be rejected.
+* **Gift Card Redemption**:  There's no special API for gift card redemption in BlockChyp. Simply execute a plain charge transaction and if the customer swipes a gift card, our terminals will identify the gift card and run a gift card redemption. Also note that if for some reason the gift card's original purchase transaction is associated with fraud or a chargeback, the transaction will be rejected.
 * **EBT**: Set the `card_type` field to `blockchyp.CardType.EBT` to process an EBT SNAP transaction. Note that test EBT transactions always assume a balance of $100.00, so test EBT transactions over that amount may be declined.
 * **Cash Back**: To enable cash back for debit transactions, set the `cash_back` field. If the card presented isn't a debit card, the `cash_back` field will be ignored.
 * **Manual Card Entry**: Set the `manual_entry` field to enable manual card entry. Good as a backup when chips and MSR's don't work or for more secure phone orders. You can even combine the `manual_entry` field with the `card_type` field set to `blockchyp.CardType.EBT` for manual EBT card entry.
@@ -126,8 +126,8 @@ print("Response: %r" % response)
 * **Required Role:** Payment API Access
 
 A preauthorization puts a hold on funds and must be captured later.  This is used
-in scenarios where the final transaction amount might change.  A common examples would
-be fine dining where a tip adjustment is required prior to final settlement.
+in scenarios where the final transaction amount might change.  A common example is 
+fine dining, where a tip adjustment is required before final settlement.
 
 Another use case for preauthorization is e-commerce.  Typically, an online order
 is preauthorized at the time of the order and then captured when the order ships.
@@ -146,7 +146,7 @@ property instead.
 
 **Card Numbers and Mag Stripes**
 
-You can also pass in PANs and Mag Stripes, but you probably shouldn't.  This will
+You can also pass in PANs and Mag Stripes, but you probably shouldn't, as this will
 put you in PCI scope and the most common vector for POS breaches is key logging.
 If you use terminals for manual card entry, you'll bypass any key loggers that
 might be maliciously running on the point-of-sale system.
@@ -201,12 +201,13 @@ print("Response: %r" % response)
 
 This API allows you to capture a previously approved preauthorization.
 
-You'll need to make sure you pass in the Transaction ID returned by the original preauth transaction so we know which transaction we're capturing.  If you want to capture the transaction for the
+You'll need to make sure you pass in the Transaction ID returned by the original preauth transaction 
+so we know which transaction we're capturing.  If you want to capture the transaction for the
 exact amount of the preauth, the Transaction ID is all you need to pass in.
 
 You can adjust the total if you need to by passing in a new `amount`.  We
 also recommend you pass in updated amounts for `tax` and `tip` as it can
-reduce your interchange fees in some cases. (Level II Processing, for example.)
+sometimes reduce your interchange fees. (Level II Processing, for example.)
 
 
 
@@ -255,21 +256,21 @@ returned in a BlockChyp response.  To refund the full amount of the previous tra
 **Partial Refunds**
 
 For a partial refund, just pass in an amount along with the Transaction ID.
-The only rule is that the amount has to be equal to or less than the original
+The only rule is that the amount must be equal to or less than the original
 transaction.  You can execute multiple partial refunds against the same
 original transaction as long as the total refunded amount doesn't exceed the original amount.
 
 **Tokenized Refunds**
 
 You can also use a token to execute a refund.  Pass in a token instead
-of the Transaction ID along with the desired refund amount.
+of the Transaction ID and the desired refund amount.
 
 **Free Range Refunds**
 
 When you execute a refund without referencing a previous transaction, we
 call this a *free range refund*.
 
-We don't recommend it, but it is permitted.  If you absolutely insist on
+We don't recommend this type of refund, but it is permitted.  If you absolutely insist on
 doing it, pass in a Terminal Name and an amount.
 
 You can execute a manual or keyed refund by passing the `manual_entry` field
@@ -395,7 +396,7 @@ The only caveat is that developers must use the `transactionRef` property (`txRe
 
 The reason for this requirement is that if a system never receives a definitive
 response for a transaction, the system would never have received the BlockChyp
-generated Transaction ID.  We have to fallback to Transaction Ref to identify
+generated Transaction ID.  We have to fall back to Transaction Ref to identify
 a transaction.
 
 **Cryptocurrency**
@@ -438,14 +439,14 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-This API can be used to activate or add value to BlockChyp gift cards.
+This API activates or adds value to BlockChyp gift cards.
 Just pass in the terminal name and the amount to add to the card.
 Once the customer swipes their card, the terminal will use keys
 on the mag stripe to add value to the card.
 
 You don't need to handle a new gift card activation or a gift card recharge any
 differently.  The terminal firmware will figure out what to do on its
-own and also returns the new balance for the gift card.
+own while also returning the new balance for the gift card.
 
 This is the part of the system where BlockChyp's blockchain DNA comes
 closest to the surface.  The BlockChyp gift card system doesn't really
@@ -474,9 +475,9 @@ voiding or reversing a conventional payment transaction.
 
 BlockChyp does have the ability to import gift card liability from
 conventional gift card platforms.  Unfortunately, BlockChyp does not
-support activating cards on third party systems, but you can import
+support activating cards on third party systems.  However, you can import
 your outstanding gift cards and customers can swipe them on the
-terminals just like BlockChyp's standard gift cards.
+terminals like BlockChyp's standard gift cards.
 
 No special coding is required to access this feature.  The gateway and
 terminal firmware handle everything for you.
@@ -486,7 +487,7 @@ terminal firmware handle everything for you.
 BlockChyp does not currently provide any native support for other gift card
 platforms beyond importing gift card liability.  We do have a white listing system
 that can be used to support your own custom gift card implementations.  We have a security review
-process before we allow a BIN range to be white listed, so contact
+process before we can allow a BIN range to be white listed, so contact
 support@blockchyp.com if you need to white list a BIN range.
 
 
@@ -526,25 +527,26 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Checks a gift or EBT card balance.
+This API checks a gift or EBT card balance.
 
 **Gift Card Balance Checks**
 
-For gift cards, just pass in a terminal name and the customer will be prompted
+For gift cards, pass in a terminal name and the customer will be prompted
 to swipe a card on that terminal.  The remaining balance will be displayed
 briefly on the terminal screen and the API response will include the gift card's public key and the remaining balance.
 
 **EBT Balance Checks**
 
-All EBT transactions require a PIN, so in order to check an EBT card balance,
+All EBT transactions require a PIN, so to check an EBT card balance,
 you need to pass in the `ebt` flag just like you would for a normal EBT
 charge transaction.  The customer will be prompted to swipe their card and
-enter a PIN code.  If everything checks out, the remaining balance on the card will be displayed on the terminal for the customer and returned in the API.
+enter a PIN code.  If everything checks out, the remaining balance on the 
+card will be displayed on the terminal for the customer and returned with the API response.
 
 **Testing Gift Card Balance Checks**
 
 Test gift card balance checks work no differently than live gift cards.  You
-must activate a test gift card first in order to test balance checks.  Test
+must activate a test gift card first to test balance checks.  Test
 gift cards are real blockchain cards that live on our parallel test blockchain.
 
 **Testing EBT Gift Card Balance Checks**
@@ -646,26 +648,26 @@ you use the `cashier` flag.)
 
 **Customer Info**
 
-Unless you're using the `cashier` flag, you must specify a customer, either by
-creating a new customer record inline or by passing in an existing Customer ID or Customer Ref.
+Unless you're using the `cashier` flag, you must specify a customer; either by
+creating a new customer record inline or passing in an existing Customer ID or Customer Ref.
 
 **Line Item Level Data**
 
 It's not strictly required, but we strongly recommend sending line item level
-detail with every request.  It will make the invoice look a little more complete
+detail with every request.  It will make the invoice look more complete
 and the data format for line item level data is the exact same format used
 for terminal line item display, so the same code can be used to support both areas.
 
 **Descriptions**
 
-You can also provide a free form description or message that's displayed near
+You can also provide a free form description or message to display near
 the bottom of the invoice.  Usually this is some kind of thank you note
 or instruction.
 
 **Terms and Conditions**
 
 You can include long form contract language with a request and capture
-terms and conditions acceptance at the same time payment is captured.
+terms and conditions accepted at the same time payment is captured.
 
 The interface is identical to that used for the terminal based Terms and
 Conditions API in that you can pass in content directly via `tcContent` or via
@@ -674,15 +676,14 @@ agreement acceptance is incorporated into a send link request.
 
 **Auto Send**
 
-BlockChyp does not send the email notification automatically.  This is
-a safeguard to prevent real emails from going out when you may not expect it.
-If you want BlockChyp to send the email for you, just add the `autoSend` flag with
-all requests.
+BlockChyp does not send the email notification automatically.   This safeguard prevents real 
+emails from going out when you may not expect them If you want BlockChyp to send the email 
+for you, just add the `autoSend` flag with all requests.
 
 **Cryptocurrency**
 
 If the merchant is configured to support cryptocurrency transactions, the payment page will
-display additional UI widgets that will allow the customers to switch to a crypto payment method.
+display additional UI widgets that allowing customers to switch to a crypto payment method.
 
 **Tokenization**
 
@@ -692,10 +693,10 @@ in the token vault.
 **Cashier Facing Card Entry**
 
 BlockChyp can be used to generate internal/cashier facing card entry pages as well.  This is
-designed for situations where you might need to take a phone order and you don't
-have a terminal.
+designed for situations where you might need to take a phone order and don't
+have an available terminal.
 
-If you pass in the `cashier` flag, no email will be sent and you'll be be able to
+If you pass in the `cashier` flag, no email will be sent and you'll be able to
 load the link in a browser or iframe for payment entry.  When the `cashier` flag
 is used, the `autoSend` flag will be ignored.
 
@@ -785,7 +786,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Cancels a payment link.
+This API cancels a payment link.
 
 
 
@@ -822,7 +823,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Returns the current status for any transaction.  You can lookup a transaction
+This API returns the current status for any transaction.  You can lookup a transaction
 by its BlockChyp assigned Transaction ID or your own Transaction Ref.
 
 You should alway use globally unique Transaction Ref values, but in the event
@@ -864,10 +865,10 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Calculates the surcharge, cash discount, and total amounts for cash transactions.
+This API calculates the surcharge, cash discount, and total amounts for cash transactions.
 
 If you're using BlockChyp's cash discounting features, you can use this endpoint
-to make sure the numbers and receipts for true cash transactions are consistent
+to ensure the numbers and receipts for true cash transactions are consistent
 with transactions processed by BlockChyp.
 
 
@@ -910,7 +911,7 @@ print("Response: %r" % response)
 This endpoint allows developers to query the gateway for the merchant's batch history.
 The data will be returned in descending order of open date with the most recent
 batch returned first.  The results will include basic information about the batch.
-For more detail about a specific batch, consider using the Batch Details API.
+Consider using the Batch Details API for more detail about a specific batch.
 
 **Limiting Results**
 
@@ -918,11 +919,11 @@ This API will return a maximum of 250 results.  Use the `maxResults` property to
 limit maximum results even further and use the `startIndex` property to
 page through results that span multiple queries.
 
-For example, if you want the ten most recent batches, just pass in a value of
+For example, if you want the ten most recent batches, pass in a value of
 `10` for `maxResults`.  Also note that `startIndex` is zero based. Use a value of `0` to
 get the first batch in the dataset.
 
-**Filtering By Date Range**
+**Filtering by Date Range**
 
 You can also filter results by date.  Use the `startDate` and `endDate`
 properties to return only those batches opened between those dates.
@@ -965,12 +966,12 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-This endpoint allows developers to pull down details for a specific batch,
+This API allows developers to pull down details for a specific batch,
 including captured volume, gift card activity, expected deposit, and
 captured volume broken down by terminal.
 
 The only required request parameter is `batchId`.  Batch IDs are returned
-with every transaction response and can also be discovered using the Batch
+with every transaction response and can be discovered using the Batch
 History API.
 
 
@@ -1008,7 +1009,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-This endpoint provides a number of different methods to sift through
+This endpoint provides several different methods to sift through
 transaction history.
 
 By default with no filtering properties, this endpoint will return the 250
@@ -1020,7 +1021,7 @@ This API will return a maximum of 50 results in a single query.  Use the `maxRes
 to limit maximum results even further and use the `startIndex` property to
 page through results that span multiple queries.
 
-For example, if you want the ten most recent batches, just pass in a value of
+For example, if you want the ten most recent batches, pass in a value of
 `10` for `maxResults`.  Also note that `startIndex` is zero based. Use a value of `0` to
 get the first transaction in the dataset.
 
@@ -1037,8 +1038,7 @@ To restrict results to a single batch, pass in the `batchId` parameter.
 
 **Filtering By Terminal**
 
-To restrict results to those executed on a single terminal, just
-pass in the terminal name.
+To restrict results to those executed on a single terminal, pass in the terminal name.
 
 **Combining Filters**
 
@@ -1049,7 +1049,7 @@ narrower set of results.
 **Searching Transaction History**
 
 You can search transaction history by passing in search criteria with the 
-`query` option.  The search system will match on amount (requested and authorized),
+`query` option.  The search system will match the amount (requested and authorized),
 last four of the card number, cardholder name, and the auth code.
 
 Note that when search queries are used, terminalName or 
@@ -1167,8 +1167,8 @@ print("Response: %r" % response)
 
 
 These APIs support terminal management functions and additional terminal 
-features such as line item display, messages, and prompts that can be used
-to extend the functionality of a point of sale systems.
+features such as line item display, messages, and interactive prompts.  
+These features can be used to extend a point of sale system's functionality.
 
 
 
@@ -1179,7 +1179,8 @@ to extend the functionality of a point of sale systems.
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-This simple test transaction helps ensure you have good communication with a payment terminal and is usually the first one you'll run in development.
+This simple test transaction helps ensure good communication with a payment terminal 
+and is usually the first test you'll run in development.
 
 It tests communication with the terminal and returns a positive response if everything
 is okay.  It works the same way in local or cloud relay mode.
@@ -1225,7 +1226,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-This endpoint returns routing and location information for a terminal.
+This endpoint returns a terminal's routing and location information.
 
 The result will indicate whether or not the terminal is in cloud relay mode and will
 return the local IP address if the terminal is in local mode.
@@ -1307,11 +1308,11 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Returns the current status of a payment terminal.  This is typically used
+This API returns the current status of a payment terminal.  This is typically used
 as a way to determine if the terminal is busy before sending a new transaction.
 
 If the terminal is busy, `idle` will be false and the `status` field will return
-a short string indicating the transaction type currently in progress.  The system
+a short string that indicates the transaction type currently in progress.  The system
 will also return the timestamp of the last status change in the `since` field.
 
 If the system is running a payment transaction and you wisely passed in a
@@ -1362,7 +1363,7 @@ capture with no agreement display or signature archival.
 Under the hood, signatures are captured in a proprietary vector format and
 must be converted to a common raster format in order to be useful to most
 applications.  At a minimum, you must specify an image format using the
-`sigFormat` parameter.  As of this writing JPG and PNG are supported.
+`sigFormat` parameter.  Currently, JPG and PNG are supported.
 
 By default, images are returned in the JSON response as hex encoded binary.
 You can redirect the binary image output to a file using the `sigFile`
@@ -1413,7 +1414,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Sends totals and line item level data to the terminal.
+This API sends totals and line item level data to the terminal.
 
 At a minimum, you should send total information as part of a display request,
 including `total`, `tax`, and `subtotal`.
@@ -1422,9 +1423,9 @@ You can also send line item level data and each line item can have a `descriptio
 `qty`, `price`, and `extended` price.
 
 If you fail to send an extended price, BlockChyp will multiply the `qty` by the
-`price`, but we strongly recommend you precalculate all the fields yourself
-to ensure consistency.  Your treatment of floating-point multiplication and rounding
-may differ slightly from BlockChyp's, for example.
+`price`.  However, we strongly recommend you precalculate all the fields yourself
+to ensure consistency.  For example, your treatment of floating-point multiplication 
+and rounding may differ slightly from BlockChyp's.
 
 **Discounts**
 
@@ -1491,8 +1492,8 @@ print("Response: %r" % response)
 Similar to *New Transaction Display*, this variant allows developers to update
 line item level data currently being displayed on the terminal.
 
-This is designed for situations where you want to update the terminal display as
-items are scanned.  This variant means you only have to send information to the
+This feature is designed for situations where you want to update the terminal display as
+items are scanned.  You'll only have to send information to the
 terminal that's changed, which usually means the new line item and updated totals.
 
 If the terminal is not in line item display mode and you invoke this endpoint,
@@ -1505,9 +1506,9 @@ You can also send line item level data and each line item can have a `descriptio
 `qty`, `price`, and `extended` price.
 
 If you fail to send an extended price, BlockChyp will multiply the `qty` by the
-`price`, but we strongly recommend you precalculate all the fields yourself
-to ensure consistency.  Your treatment of floating-point multiplication and rounding
-may differ slightly from BlockChyp's, for example.
+`price`.  However, we strongly recommend you precalculate all the fields yourself
+to ensure consistency.  For example, your treatment of floating-point multiplication and rounding
+may differ slightly from BlockChyp's.
 
 **Discounts**
 
@@ -1571,7 +1572,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Displays a message on the payment terminal.
+This API displays a message on the payment terminal.
 
 Just specify the target terminal and the message using the `message` parameter.
 
@@ -1612,7 +1613,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Prompts the customer to answer a yes or no question.
+This API Pprompts the customer to answer a yes or no question.
 
 You can specify the question or prompt with the `prompt` parameter and
 the response is returned in the `response` field.
@@ -1664,9 +1665,9 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Prompts the customer to enter numeric or alphanumeric data.
+This API prompts the customer to enter numeric or alphanumeric data.
 
-Due to PCI rules, free form prompts are not permitted when the response
+Due to PCI rules, free-form prompts are not permitted when the response
 could be any valid string.  The reason for this is that a malicious
 developer (not you, of course) could use text prompts to ask the customer to
 input a card number or PIN code.
@@ -1767,8 +1768,8 @@ print("Response: %r" % response)
 
 This API deactivates a payment terminal.
 
-If the terminal exists and is currently online, the terminal will be removed from the merchant's 
-terminal inventory and the terminal will be remotely cleared and factory reset.
+If the terminal exists and is currently online, it will be removed from the merchant's 
+terminal inventory.  The terminal will be remotely cleared and factory reset.
 
 
 
@@ -1810,12 +1811,12 @@ This API activates a payment terminal.
 If successful, the payment terminal will restart, generate new encryption keys, and download any active
 branding assets for the merchant account it's been added to.
 
-Activation requests require an activation code and a unique terminal name.  Terminal names must be unique across
+Activation requests require an activation code and a unique terminal name.  All terminal names must be unique across
 a merchant account.
 
 Optional Parameters
 
-* **merchantId:** For partner scoped API credentials, a merchant ID is required.  For merchant scoped API credentials, the merchant ID is implicit and cannot be overriden.
+* **merchantId:** For partner scoped API credentials, a merchant ID is required.  For merchant scoped API credentials, the merchant ID is implicit and cannot be overridden.
 * **cloudRelay:** Activates the terminal in cloud relay mode.
 
 
@@ -1887,7 +1888,7 @@ print("Response: %r" % response)
 
 
 Developers can use BlockChyp to display and capture acceptance of contracts or agreements related to transactions.
-These agreements can be any long form contract ranging from rental agreements to HIPPA disclosures.
+These agreements can be any long-form contract ranging from rental agreements to HIPPA disclosures.
 
 There are two basic approaches to terms and conditions capture.  Merchants can store contract templates in 
 BlockChyp or they can send the full agreement text as part of every API call.  The right approach will largely 
@@ -1900,7 +1901,7 @@ and provide a signature.  Results are returned as part of the API response, but 
 record of the agreement including the signature image, timestamp, and the full text of the agreement that was 
 agreed to.
 
-The Terms and Conditions Log APIs can be used to search and retrieve acceptance records and acceptance records
+The Terms and Conditions Log APIs can be used to search and retrieve acceptance records.  Those records
 can also be linked to a transaction if a transaction id is provided with the original API request.
 
 
@@ -1922,13 +1923,13 @@ previously configured T&C template or pass in the full agreement text with every
 
 If your application doesn't keep track of agreements you can leverage BlockChyp's
 template system.  You can create any number of T&C Templates in the merchant dashboard
-and pass in the `tcAlias` flag to specify which one to display.
+and pass in the `tcAlias` flag to specify which one should display.
 
 **Raw Content**
 
 If your system keeps track of the agreement language or executes complicated merging
 and rendering logic, you can bypass our template system and pass in the full text with
-every transaction.  Use the `tcName` to pass in the agreement name and `tcContent` to
+every transaction.  Use `tcName` to pass in the agreement name and `tcContent` to
 pass in the contract text.  Note that only plain text is supported.
 
 **Bypassing Signatures**
@@ -1940,7 +1941,7 @@ the `disableSignature` flag in the request.
 **Terms & Conditions Log**
 
 Every time a user accepts an agreement on the terminal, the signature image (if captured),
-will be uploaded to the gateway and added to the log along with the full text of the
+will be uploaded to the gateway.  The image will also be added to the log along with the full text of the
 agreement.  This preserves the historical record in the event that standard agreements
 or templates change over time.
 
@@ -2082,10 +2083,10 @@ This API updates or creates a terms and conditions template.
 
 Terms and conditions templates are fairly simple and essentially consist of a name, content, and alias.
 
-The name is the caption that will be display at the top of the screen.  The alias is a code or short
-description that will be used in subsequence API calls to refere to the template.
+The name is the caption that will be displayed at the top of the screen.  The alias is a code or short
+description that will be used in subsequence API calls to refer to the template.
 
-Content is the full text of the contract or agreement.  As of this writing, no special formatting or
+Content is the full text of the contract or agreement.  Currently, no special formatting or
 merge behavior is supported.  Only plain text is supported.
 
 
@@ -2317,7 +2318,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Retrieves status and metadata information about a token, 
+This API retrieves status and metadata information about a token, 
 including any links to customer records.  
 
 This will also return any customer records related to the card
@@ -2360,7 +2361,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Links a payment token with a customer record.  Usually this would only be needed
+This API links a payment token with a customer record.  Usually this would only be needed
 to reverse a previous unlink operation.
 
 
@@ -2399,7 +2400,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Removes a payment token link from a customer record.
+This API removes a payment token link from a customer record.
 
 This will remove links between the customer record and all tokens
 for the same underlying card.
@@ -2440,7 +2441,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Deletes a payment token from the gateway.  Tokens are deleted automatically if they have not been used
+This API deletes a payment token from the gateway.  Tokens are automatically deleted if they have not been used
 for a year.
 
 
@@ -2476,7 +2477,7 @@ print("Response: %r" % response)
 
 These APIs allow developers to create and manage customer records in BlockChyp.  Developers who wish to use
 BlockChyp for tokenized recurring payments can use tokens directly if they have their own customer management
-system, but BlockChyp provides additional tools for managing customer and keeping track of a customer's saved
+system.  However, BlockChyp provides additional tools for managing customers and keeping track of a customer's saved
 payment tokens.
 
 In addition, if customer features are used, BlockChyp can detect a payment method associated with an existing
@@ -2492,7 +2493,7 @@ repeat customers.
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Adds or updates a customer record.
+This API adds or updates a customer record.
 
 If you pass in customer information including `firstName`, `lastName`, `email`,
 or `sms` without any Customer ID or Customer Ref, a new record will
@@ -2510,11 +2511,11 @@ in your systems.
 **Creating Customer Records With Payment Transactions**
 
 If you have customer information available at the time a payment transaction is
-executed, you can pass all the same customer information directly into a payment transaction and
-create a customer record at the same time payment is captured.  The advantage of this approach is
+executed, you can pass all the same customer information directly into a payment transaction.  BlockChyp
+will create a customer record at the same time payment is captured.  The advantage of this approach is
 that the customer's payment card is automatically associated with the customer record in a single step.
 If the customer uses the payment card in the future, the customer data will automatically
-be returned without needing to ask the customer to provide any additional information.
+be returned.  You won't need to ask the customer to provide any additional information.
 
 
 
@@ -2559,7 +2560,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Retrieves detailed information about a customer record, including saved payment
+With this API, you can retrieve detailed information about a customer record, including saved payment
 methods if available.
 
 Customers can be looked up by `customerId` or `customerRef`.
@@ -2599,7 +2600,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Searches the customer database and returns matching results.
+This API searches the customer database and returns matching results.
 
 Use `query` to pass in a search string and the system will return all results whose
 first or last names contain the query string.
@@ -2639,7 +2640,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Deletes a customer record.
+This API deletes a customer record.
 
 
 
@@ -2672,13 +2673,13 @@ print("Response: %r" % response)
 ### Survey Reference
 
 
-These APIs are used to work with post transaction surveys and survey data.
+These APIs are used to work with post-transaction surveys and survey data.
 
 Merchants can optionally configure scaled (1-5) or yes/no questions that can be presented to consumers
-after every approved Charge and Preauth transactions.  Surveys do not require any custom programming and
-can simply be configured by a merchant without the point-of-sale system needing any additional customization.
+after every approved Charge and Preauth transaction.  Surveys do not require any custom programming and
+merchants can simply configure them without the point-of-sale system needing any additional customization.
 
-However, these APIs allow point-of-sale or third party system developers to integrate survey question configuration
+However, these APIs allow point-of-sale or third-party system developers to integrate survey question configuration
 or result visualization into their own systems.
 
 
@@ -2769,7 +2770,7 @@ This API updates or creates survey questions.  `questionText` and `questionType`
 fields.  The following values are valid for `questionType`.
 
 * **yes_no:** Use for simple yes or no questions.
-* **scaled:** Displays the question with buttons than allow the customer to respond with values from 1 through 5.
+* **scaled:** Displays the question with buttons that allow the customer to respond with values from 1 through 5.
 
 Questions are disabled by default.  Pass in `enabled` to enable a question.
 
@@ -2861,7 +2862,7 @@ The `responses` array breaks down the results by answer, providing the total num
 the answer's percentage of the total, and the average transaction amount associated with a specific
 answer.
 
-By default, all results based on all responses are returned, but developers may optionally provide 
+By default, all results based on all responses are returned.  However, developers may optionally provide 
 `startDate` and `endDate` parameters to return only responses provided between certain dates.
 
 `startDate` and `endDate` can be provided in MM/DD/YYYY or YYYY-MM-DD format.
@@ -2899,9 +2900,9 @@ print("Response: %r" % response)
 
 BlockChyp has a sophisticated terminal media and branding control platform.  Terminals can be configured to
 display logos, images, videos, and slide shows when a terminal is idle.  Branding assets can be configured
-at the partner, organization, and merchant level with fine-grained hour by hour schedules, if desired. 
+at the partner, organization, and merchant level with fine-grained hour-by-hour schedules, if desired. 
 
-Conceptually, all branding and media starts with the media library.  Merchants, Partners, and Organization can
+Conceptually, all branding and media start with the media library.  Merchants, Partners, and Organizations can
 upload images or video and build branding assets from uploaded media.
 
 Slide shows can combine images from the media library into a timed loop of repeating images.
@@ -2909,13 +2910,13 @@ Slide shows can combine images from the media library into a timed loop of repea
 Branding Assets can then be used to combine media or slide shows with priority and timing rules to create what 
 we call the Terminal Branding Stack.
 
-We call a group of branding assets the Terminal Branding Stack because there are implicit rules about which 
-branding assets take priority. For example, a merchant with no branding assets configured will inherit the branding rules from any organization
-the merchant may belong.  If the merchant doesn't belong to an organization or the organization has no branding
-rules configured, then the system will defer to branding defaults established by the point-of-sale or software
-partner that owns the merchant.
+We call a group of branding assets the *Terminal Branding Stack* because there are implicit rules about which 
+branding assets take priority. For example, a merchant with no branding assets configured will inherit the 
+branding rules from any organization to which the merchant may belong.  If the merchant doesn't belong to an organization 
+or the organization has no branding rules configured, then the system will defer to branding defaults established 
+by the point-of-sale or software partner that owns the merchant.
 
-This enabled partners and organizations (multi-store operators and large national chains) to configure branding
+This feature enables partners and organizations (multi-store operators and large national chains) to configure branding
 for potentially thousands of terminals from a single interface.
 
 Terminal Branding can also be configured at the individual terminal level and a merchant's terminal fleet 
@@ -3255,7 +3256,7 @@ The slides property is an array of slides.  The Slide data structure has ordinal
 but these are not required when updating or creating a slide show.  Only the `mediaId` field is required
 when updating or creating a slide show.
 
-When using the CLI, slides can be specified by sending a comma separated list of media id's via the `-mediaId`
+When using the CLI, slides can be specified by sending a comma-separated list of media ids via the `-mediaId`
 parameter.
 
 
@@ -3339,7 +3340,7 @@ print("Response: %r" % response)
 This API returns the full branding stack for a given API scope in the order of priority.
 
 Consumers of this API should pay special attention to the `editable` field.  This field indicates whether or
-not a branding asset is read only from the perspective of a particular API Credential scope.
+not a branding asset is read-only from the perspective of a particular API Credential scope.
 
 The `thumbnail` and `previewImage` attributes can be used to support building user interfaces for
 managing the branding stack. `previewImage` differs from `thumbnail` in that the preview image is 
@@ -3391,7 +3392,7 @@ be a slide show, in which case `slideShowId` must be provided.  Branding Assets 
 **Visibility Flags**
 
 In order for a Branding Asset to be visible on a terminal, the `enabled` flag must be set to true and the `preview`
-must be turned off.  `preview` is intended to assist with showing how a proposed Branding Asset will behave
+must be turned off.  `preview` is intended to show how a proposed Branding Asset will behave
 without pushing it to live terminals.  The Publish button in the BlockChyp merchant portal effectively turns
 the `preview` setting off.
 
@@ -3403,16 +3404,16 @@ will be prioritized first.
 **Padding Images**
 
 For plain images, it's sometimes helpful to add margins to images.  This is especially helpful with logos
-or any image file rendered without any white space or margins between the image content and edge of image file.
+or any image file rendered without any white space or margins between the image content and edge of the image file.
 Set the `padded` flag to true if you'd like BlockChyp to auto apply margins when displaying an image on 
 the terminal.
 
 **Scheduling**
 
-By default, a Branding Asset placed on the top of the Branding Stack, if it's `enabled` and not in `preview`
+By default, a Branding Asset placed on top of the Branding Stack, if it's `enabled` and not in `preview`
 mode, will immediately be displayed on the terminal round the clock.
 
-Branding Assets can be scheduled with effective start and stop dates for seasonal campaigns.  Branding Assets can
+Branding Assets can be scheduled with effective start and stop dates for seasonal campaigns.  These assets can
 also be scheduled for specific times of day and specific days of the week.
 
 * **startDate:** Optional date after which the Branding Asset is eligible for display.  Can be provided in MM/DD/YYYY or YYYY-MM-DD format.
@@ -3424,7 +3425,7 @@ also be scheduled for specific times of day and specific days of the week.
 **Read Only Fields**
 
 The Branding Asset data structure has a number of read only fields that are returned when Branding Assets are 
-retrieved, but these fields are ignored when you try to send them as part of an update.  These are derived
+retrieved.  But these fields are ignored when you try to send them as part of an update.  These are derived
 or calculated fields and are helpful for displaying branding assets in a management user interface, but 
 cannot be changed via an API call.
 
@@ -3531,7 +3532,7 @@ These APIs allow partners to manage and configure their merchant portfolios.
 Use of these APIs (other than the Merchant Profile API) requires partner scoped API credentials
 with special roles and permissions that may require a special arrangement with BlockChyp.
 
-For example, Partners can usually not board merchants directly, but must board merchants using
+For example, Partners usually can't board merchants directly, but must board merchants using
 the standard underwriting process via offer codes and invitations.
 
 
@@ -3543,7 +3544,7 @@ the standard underwriting process via offer codes and invitations.
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-Returns detailed metadata about the merchant's configuraton, including
+The API returns detailed metadata about the merchant's configuration, including
 basic identity information, terminal settings, store and forward settings,
 and bank account information for merchants that support split settlement.
 
@@ -3556,11 +3557,11 @@ underwriting and risk processes.
 The following fields are basic descriptive fields that can be used to describe and identify merchants.
 
 * **companyName:** The merchant's official corporate entity name.
-* **dbaName:** The businesses DBA (doing business as) name.
+* **dbaName:** The business's DBA (doing business as) name.
 * **contactName:** Name of the merchant's primary control contact.
 * **contactNumber:** Primary control contact's phone number.
-* **locationName:** Optional location name for multi location operators.
-* **storeNumber:** Optional store number for multi location operators.
+* **locationName:** Optional location name for multi-location operators.
+* **storeNumber:** Optional store number for multi-location operators.
 * **partnerRef:** Optional reference number partners can add to a merchant record.  Usually the partner's own identifier for the merchant.
 * **timeZone:** Unix style local time zone for the merchant. Example: America/New_York.
 * **publicKey:** Read only field.  The merchant's blockchain public key.  Generated and assigned when a merchant account is first created.
@@ -3917,7 +3918,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Partner
 * **Required Role:** Merchant Management
 
-This partner API can be used to deleted unused test merchant accounts. `merchantId` is a required parameter.
+This partner API can be used to delete unused test merchant accounts. `merchantId` is a required parameter.
 
 
 
