@@ -1,0 +1,71 @@
+name: blockchyp-python
+on:
+  push:
+    branches:
+      - "develop"
+      - "master"
+    tags:
+      - "*"
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
+  PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.7-buster
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: starting
+          channel: '#gitactivity'
+        if: always()
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Requirements
+        run: pip install --user -r requirements-dev.txt
+      - name: Run Build
+        run: make build
+      - name: Run Tests
+        run: make test
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          channel: '#gitactivity'
+        if: always()
+  publish:
+    runs-on: ubuntu-latest
+    container:
+      image: python:3.7-buster
+    if: ${{ always() && contains(join(needs.*.result, ','), 'success') && startsWith(github.ref_name, 'v') }}
+    needs: [ test ]
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: starting
+          channel: '#gitactivity'
+        if: always()
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Requirements
+        run: pip install --user -r requirements-dev.txt
+      - name: Run Build
+        run: make build
+      - name: Stage Credentials
+        run: |
+          echo "[pypi]" > ~/.pypirc
+          echo "username = $PYPI_USERNAME" >> ~/.pypirc
+          echo "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - name: Publish to PyPi
+        run: make publish
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          channel: '#gitactivity'
+        if: always()
