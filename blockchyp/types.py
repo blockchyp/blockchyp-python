@@ -63,3 +63,10 @@ class HealthcareType:
     VISION = "vision"
     CLINIC = "clinic"
     DENTAL = "dental"
+
+class RoundingMode:
+    """Rounding mode options for fractional pennies."""
+
+    UP = "up"
+    NEAREST = "nearest"
+    DOWN = "down"

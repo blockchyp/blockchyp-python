@@ -1323,24 +1323,24 @@ transaction.
 
 The table below lists all possible status responses.
 
-| Status Code          | Description                                                                                |
-|----------------------|--------------------------------------------------------------------------------------------|
+| Status Code          | Description                                                                             |
+|----------------------|-----------------------------------------------------------------------------------------|
 | idle                 | The terminal is idle and ready for transactions.  The default branding is being displayed. |
-| activate             | The terminal is the processing of activating and pairing with the merchant account.        |
-| balance              | A balance check (EBT or Gift Card) is pending on the terminal.                             |
-| boolean-prompt       | A boolean prompt (yes/no) operation is pending on the terminal.                            |      
-| signature            | A signature capture is pending.                                                            |
-| crypto               | A cryptocurrency transaction is pending.                                                   |
-| enroll               | A token vault enrollment operation is pending.                                             |
-| gift-activate        | A gift card activation operation is in progress.                                           | 
-| message              | The terminal is displaying a custom message.                                               |
-| charge               | The terminal is executing a charge transaction.                      |
-| preauth              | The terminal is executing a preauth transaction. |
-| refund               | The terminal is executing a refund transaction. |
-| survey               | The terminal is displaying post transaction survey questions. |
-| terms-and-conditions | The terminal is pending terms and conditions acceptance and signature. |
-| text-prompt          | The terminal is awaiting response to a text input prompt. |
-| txdisplay            | The terminal is displaying transaction and/or line item level details. |
+| activate             | The terminal is in the process of activating and pairing with the merchant account.     |
+| balance              | A balance check (EBT or Gift Card) is pending on the terminal.                          |
+| boolean-prompt       | A boolean prompt (yes/no) operation is pending on the terminal.                         |      
+| signature            | A signature capture is pending.                                                         |
+| crypto               | A cryptocurrency transaction is pending.                                                |
+| enroll               | A token vault enrollment operation is pending.                                          |
+| gift-activate        | A gift card activation operation is in progress.                                        | 
+| message              | The terminal is displaying a custom message.                                            |
+| charge               | The terminal is executing a charge transaction.                                         |
+| preauth              | The terminal is executing a preauth transaction.                                        |
+| refund               | The terminal is executing a refund transaction.                                         |
+| survey               | The terminal is displaying post transaction survey questions.                           |
+| terms-and-conditions | The terminal is pending terms and conditions acceptance and signature.                  |
+| text-prompt          | The terminal is awaiting response to a text input prompt.                               |
+| txdisplay            | The terminal is displaying transaction and/or line item level details.                  |
 
 
 
