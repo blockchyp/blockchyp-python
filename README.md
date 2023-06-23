@@ -1,6 +1,6 @@
 # BlockChyp Python SDK
 
-[![Build Status](https://circleci.com/gh/blockchyp/blockchyp-python/tree/master.svg?style=shield)](https://circleci.com/gh/blockchyp/blockchyp-python/tree/master)
+[![Build Status](https://github.com/blockchyp/blockchyp-python/actions/workflows/main.yml/badge.svg)](https://github.com/blockchyp/blockchyp-python/actions/workflows/main.yml)
 [![PyPI](https://img.shields.io/pypi/v/blockchyp.svg)](https://pypi.org/project/blockchyp/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/blockchyp/blockchyp-python/blob/master/LICENSE)
 
