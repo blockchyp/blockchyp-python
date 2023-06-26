@@ -71,6 +71,8 @@ stage:
 # Publish packages
 .PHONY: publish
 publish:
+	@echo $(TAG)
+	@echo $(VERSION)
 	$(TWINE) check dist/*
 	$(TWINE) upload dist/*
 
