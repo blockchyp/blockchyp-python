@@ -690,6 +690,8 @@ display additional UI widgets that allowing customers to switch to a crypto paym
 Add the `enroll` flag to a send link request to enroll the payment method
 in the token vault.
 
+Add the `enrollOnly` flag to enroll the payment method in the token vault without any immediate payment taking place. The payment link will ask the user for their payment information and inform them that they will not be charged immediately, but that their payment may be used for future transactions.
+
 **Cashier Facing Card Entry**
 
 BlockChyp can be used to generate internal/cashier facing card entry pages as well.  This is
@@ -1636,7 +1638,7 @@ print("Response: %r" % response)
 * **API Credential Types:** Merchant
 * **Required Role:** Payment API Access
 
-This API Pprompts the customer to answer a yes or no question.
+This API prompts the customer to answer a yes or no question.
 
 You can specify the question or prompt with the `prompt` parameter and
 the response is returned in the `response` field.
