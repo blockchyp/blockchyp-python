@@ -818,6 +818,44 @@ print("Response: %r" % response)
 
 ```
 
+#### Payment Link Status
+
+
+
+* **API Credential Types:** Merchant
+* **Required Role:** Payment API Access
+
+This API allows you to check on the status of a payment link, including transaction data
+and the full history of attempted transactions.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "linkCode": setup_response["linkCode"],
+}
+
+# run the transaction.
+response = client.payment_link_status(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Transaction Status
 
 

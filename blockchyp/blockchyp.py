@@ -656,6 +656,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def payment_link_status(self, request):
+        # type: (dict) -> dict
+        """Retrieves the status of a payment link."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/payment-link-status",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def transaction_status(self, request):
         # type: (dict) -> dict
         """Retrieves the current status of a transaction."""
