@@ -645,6 +645,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def resend_payment_link(self, request):
+        # type: (dict) -> dict
+        """Resends payment link."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/resend-payment-link",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def cancel_payment_link(self, request):
         # type: (dict) -> dict
         """Cancels a payment link."""
