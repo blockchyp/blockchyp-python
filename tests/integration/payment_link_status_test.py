@@ -17,8 +17,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_send_payment_link():
-    """Can generate a payment link."""
+def test_payment_link_status():
+    """Can return the status of a payment link."""
 
 
     terminal = _get_test_config().get("defaultTerminalName")
@@ -26,7 +26,7 @@ def test_send_payment_link():
 
     client = _get_test_client("")
 
-    request = {
+    setup_request = {
         "amount": "199.99",
         "description": "Widget",
         "subject": "Widget invoice",
@@ -53,8 +53,16 @@ def test_send_payment_link():
         },
     }
 
-    response = client.send_payment_link(request)
+    setup_response = client.send_payment_link(setup_request)
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
+
+    request = {
+        "transactionRef": setup_response["transactionRef"],
+    }
+
+    response = client.payment_link_status(request)
     print("Response: %r" % response)
 
     assert response.get("success") is True
-    assert response.get("url")

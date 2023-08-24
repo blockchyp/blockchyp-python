@@ -1,4 +1,4 @@
-# Copyright 2019-2022 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2023 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
@@ -645,6 +645,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def resend_payment_link(self, request):
+        # type: (dict) -> dict
+        """Resends payment link."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/resend-payment-link",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def cancel_payment_link(self, request):
         # type: (dict) -> dict
         """Cancels a payment link."""
@@ -652,6 +663,17 @@ class Client:
         return self._gateway_request(
             method="POST",
             path="/api/cancel-payment-link",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def payment_link_status(self, request):
+        # type: (dict) -> dict
+        """Retrieves the status of a payment link."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/payment-link-status",
             body=request,
             test=request.get("test", False),
         )

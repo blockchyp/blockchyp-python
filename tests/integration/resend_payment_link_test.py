@@ -17,8 +17,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_tc_entry():
-    """Returns a detailed terms and conditions entry."""
+def test_resend_payment_link():
+    """Can resend a payment link."""
 
 
     terminal = _get_test_config().get("defaultTerminalName")
@@ -27,26 +27,19 @@ def test_tc_entry():
     client = _get_test_client("")
 
     setup_request = {
+        "linkCode": setup_response["linkCode"],
     }
 
-    setup_response = client.tc_log(setup_request)
+    setup_response = client.resend_payment_link(setup_request)
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
 
     request = {
-        "logEntryId": setup_response["results"][0]["id"],
+        "linkCode": setup_response["linkCode"],
     }
 
-    response = client.tc_entry(request)
+    response = client.resend_payment_link(request)
     print("Response: %r" % response)
 
     assert response.get("success") is True
-    assert response.get("id")
-    assert response.get("terminalId")
-    assert response.get("terminalName")
-    assert response.get("timestamp")
-    assert response.get("name")
-    assert response.get("content")
-    assert response.get("hasSignature") is True
-    assert response.get("signature")
