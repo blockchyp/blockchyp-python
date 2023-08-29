@@ -59,7 +59,7 @@ def test_payment_link_status():
     assert setup_response.get("success")
 
     request = {
-        "transactionRef": setup_response["transactionRef"],
+        "linkCode": setup_response["linkCode"],
     }
 
     response = client.payment_link_status(request)

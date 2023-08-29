@@ -27,10 +27,33 @@ def test_resend_payment_link():
     client = _get_test_client("")
 
     setup_request = {
-        "linkCode": setup_response["linkCode"],
+        "amount": "199.99",
+        "description": "Widget",
+        "subject": "Widget invoice",
+        "transaction": {
+            "subtotal": "195.00",
+            "tax": "4.99",
+            "total": "199.99",
+            "items": [
+                {
+                    "description": "Widget",
+                    "price": "195.00",
+                    "quantity": 1,
+                },
+            ],
+        },
+        "autoSend": True,
+        "customer": {
+            "customerRef": "Customer reference string",
+            "firstName": "FirstName",
+            "lastName": "LastName",
+            "companyName": "Company Name",
+            "emailAddress": "notifications@blockchypteam.m8r.co",
+            "smsNumber": "(123) 123-1231",
+        },
     }
 
-    setup_response = client.resend_payment_link(setup_request)
+    setup_response = client.send_payment_link(setup_request)
     print("Setup response: %r" % setup_response)
 
     assert setup_response.get("success")
