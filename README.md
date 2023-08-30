@@ -892,7 +892,7 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "linkCode": setup_response["linkCode"],
+    "linkCode": "<PAYMENT LINK CODE>",
 }
 
 # run the transaction.
