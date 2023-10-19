@@ -766,6 +766,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def partner_statements(self, request):
+        # type: (dict) -> dict
+        """Returns pricing policy for a merchant."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-statement-list",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def pricing_policy(self, request):
         # type: (dict) -> dict
         """Returns pricing policy for a merchant."""
