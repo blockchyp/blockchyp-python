@@ -768,11 +768,22 @@ class Client:
 
     def partner_statements(self, request):
         # type: (dict) -> dict
-        """Returns pricing policy for a merchant."""
+        """Returns a list of partner statements."""
 
         return self._gateway_request(
             method="POST",
             path="/api/partner-statement-list",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def partner_statement_detail(self, request):
+        # type: (dict) -> dict
+        """Returns detail for a single partner statement."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-statement-detail",
             body=request,
             test=request.get("test", False),
         )

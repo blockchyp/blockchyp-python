@@ -4073,7 +4073,7 @@ with special roles and permissions that may require a special arrangement with B
 
 
 * **API Credential Types:** Partner
-* **Required Role:** Merchant Management
+* **Required Role:** Partner API Access
 
 The API returns a list of partner residual statements.  By default, all statements are returned with the most recent
 statements listed first.  Optional date parameters can filter statements to a specific date range.
@@ -4105,12 +4105,50 @@ print("Response: %r" % response)
 
 ```
 
+#### Partner Statement Detail
+
+
+
+* **API Credential Types:** Partner
+* **Required Role:** Partner API Access
+
+The API returns detailed information about a specific partner statement.  The optional `includeMerchantStatement` and
+`includeInterchange` parameters can be used to return low level detail about how the 
+residuals or commissions were computed.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.partner_statement_detail(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Retrieve Pricing Policy
 
 
 
 * **API Credential Types:** Partner
-* **Required Role:** Read Pricing API
+* **Required Role:** Partner API Access
 
 The API returns the current pricing policy for a merchant.  This API is valid for partner scoped API credentials
 and `merchantId` is a required parameter.  By default this API returns the currently in-force pricing policy for a merchant,
