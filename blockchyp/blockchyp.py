@@ -777,6 +777,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def merchant_invoices(self, request):
+        # type: (dict) -> dict
+        """Returns a list of merchant invoices."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/merchant-invoice-list",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def partner_statement_detail(self, request):
         # type: (dict) -> dict
         """Returns detail for a single partner statement."""

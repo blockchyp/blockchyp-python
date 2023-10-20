@@ -4105,6 +4105,45 @@ print("Response: %r" % response)
 
 ```
 
+#### Merchant Invoices
+
+
+
+* **API Credential Types:** Partner or Merchant
+* **Required Role:** Partner API Access or Merchant API 
+
+The API returns a list of partner residual statements.  By default, all statements are returned with the most recent
+statements listed first.  Optional date parameters can filter statements to a specific date range.
+
+
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.merchant_invoices(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Partner Statement Detail
 
 

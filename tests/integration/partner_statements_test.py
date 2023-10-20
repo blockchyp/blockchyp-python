@@ -30,7 +30,7 @@ def test_partner_statements():
         "test": True,
     }
 
-    response = client.partner_statements(request)
+    response = client.merchant_invoices(request)
     print("Response: %r" % response)
 
     assert response.get("success") is True
