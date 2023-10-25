@@ -821,6 +821,19 @@ class Client:
             test=request.get("test", False),
         )
 
+    def partner_commission_breakdown(self, request):
+        # type: (dict) -> dict
+        """Returns low level details for how partner commissions were calculated for a
+        specific merchant statement.
+        """
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-commission-breakdown",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def merchant_profile(self, request):
         # type: (dict) -> dict
         """Returns profile information for a merchant."""
