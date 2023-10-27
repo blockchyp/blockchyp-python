@@ -4096,6 +4096,13 @@ The API returns the current pricing policy for a merchant.  This API is valid fo
 and `merchantId` is a required parameter.  By default this API returns the currently in-force pricing policy for a merchant,
 but other inactive policies can be returned by providing the `id` parameter.
 
+Buy rates for interchange plus and fixed rate pricing are always returned, but only the pricing related to the 
+pricing model type (flat rate or interchange plus) are actually used in fee calculation.
+
+Each pricing level returns three values: `buyRate`, `current`, and `limit`.  The actual price the merchant will pay is 
+given in the `current` field.  The other values reflect the contract minimum (`buyRate`) and maximum (`limit`) range
+the partner can use when changing prices.
+
 
 
 
