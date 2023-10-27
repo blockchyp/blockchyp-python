@@ -4178,10 +4178,12 @@ print("Response: %r" % response)
 * **API Credential Types:** Partner or Merchant
 * **Required Role:** Partner API Access or Merchant API 
 
-The API returns a list of partner residual statements.  By default, all statements are returned with the most recent
-statements listed first.  Optional date parameters can filter statements to a specific date range.
+The API returns a list of merchant statements and invoices.  By default, all invoices are returned with the most recent
+statements listed first.  Optional date parameters (`startDate` and `endDate`) can be used to filter statements by date
+range. 
 
-
+The `invoiceType` parameter can also be used to filter invoices by type.  Invoices could be conventional invoices, such
+as those generated when ordering terminals or gift cards, or invoices could be merchant statements.
 
 
 

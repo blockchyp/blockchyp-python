@@ -17,8 +17,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_partner_statements():
-    """Can list partner statements."""
+def test_merchant_invoices():
+    """Can list merchant statements and invoices."""
 
 
     terminal = _get_test_config().get("defaultTerminalName")
@@ -30,7 +30,7 @@ def test_partner_statements():
         "test": True,
     }
 
-    response = client.partner_statements(request)
+    response = client.merchant_invoices(request)
     print("Response: %r" % response)
 
     assert response.get("success") is True
