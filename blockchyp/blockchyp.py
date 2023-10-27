@@ -788,6 +788,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def partner_statement_detail(self, request):
+        # type: (dict) -> dict
+        """Returns detail for a single partner statement."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-statement-detail",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def merchant_invoices(self, request):
         # type: (dict) -> dict
         """Returns a list of merchant invoices."""
@@ -806,17 +817,6 @@ class Client:
         return self._gateway_request(
             method="POST",
             path="/api/merchant-invoice-detail",
-            body=request,
-            test=request.get("test", False),
-        )
-
-    def partner_statement_detail(self, request):
-        # type: (dict) -> dict
-        """Returns detail for a single partner statement."""
-
-        return self._gateway_request(
-            method="POST",
-            path="/api/partner-statement-detail",
             body=request,
             test=request.get("test", False),
         )

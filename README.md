@@ -4171,6 +4171,46 @@ print("Response: %r" % response)
 
 ```
 
+#### Partner Statement Detail
+
+
+
+* **API Credential Types:** Partner
+* **Required Role:** Partner API Access
+
+The API returns detailed information about a specific partner statement.  Aggregate data is returned along with
+line item level data for each underlying merchant statement.
+
+Use the merchant statement id with the *Merchant Statement Detail* API and the *Partner Commission Breakdown* API 
+to get the merchant statement and the card brand fee and misc cost breakdown respectively.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.partner_statement_detail(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Merchant Invoices
 
 
@@ -4242,44 +4282,6 @@ request = {
 
 # run the transaction.
 response = client.merchant_invoice_detail(request)
-
-print("Response: %r" % response)
-
-
-```
-
-#### Partner Statement Detail
-
-
-
-* **API Credential Types:** Partner
-* **Required Role:** Partner API Access
-
-The API returns detailed information about a specific partner statement.  The optional `includeMerchantStatement` and
-`includeInterchange` parameters can be used to return low level detail about how the 
-residuals or commissions were computed.
-
-
-
-
-```python
-import os
-
-import blockchyp
-
-# initialize a client.
-client = blockchyp.Client(
-    api_key=os.environ["BC_API_KEY"],
-    bearer_token=os.environ["BC_BEARER_TOKEN"],
-    signing_key=os.environ["BC_SIGNING_KEY"],
-)
-
-# populate request parameters.
-request = {
-}
-
-# run the transaction.
-response = client.partner_statement_detail(request)
 
 print("Response: %r" % response)
 
