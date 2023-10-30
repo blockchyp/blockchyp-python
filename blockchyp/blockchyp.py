@@ -766,6 +766,74 @@ class Client:
             test=request.get("test", False),
         )
 
+    def pricing_policy(self, request):
+        # type: (dict) -> dict
+        """Returns pricing policy for a merchant."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/read-pricing-policy",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def partner_statements(self, request):
+        # type: (dict) -> dict
+        """Returns a list of partner statements."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-statement-list",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def partner_statement_detail(self, request):
+        # type: (dict) -> dict
+        """Returns detail for a single partner statement."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-statement-detail",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def merchant_invoices(self, request):
+        # type: (dict) -> dict
+        """Returns a list of merchant invoices."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/merchant-invoice-list",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def merchant_invoice_detail(self, request):
+        # type: (dict) -> dict
+        """Returns detail for a single merchant-invoice statement."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/merchant-invoice-detail",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def partner_commission_breakdown(self, request):
+        # type: (dict) -> dict
+        """Returns low level details for how partner commissions were calculated for a
+        specific merchant statement.
+        """
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/partner-commission-breakdown",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def merchant_profile(self, request):
         # type: (dict) -> dict
         """Returns profile information for a merchant."""
