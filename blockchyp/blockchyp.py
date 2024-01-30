@@ -834,6 +834,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def merchant_credential_generation(self, request):
+        # type: (dict) -> dict
+        """Generates and returns api credentials for a given merchant."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/creds/generateMerchant",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def merchant_profile(self, request):
         # type: (dict) -> dict
         """Returns profile information for a merchant."""

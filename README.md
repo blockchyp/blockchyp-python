@@ -4332,6 +4332,50 @@ print("Response: %r" % response)
 
 ```
 
+#### Merchant Credential Generation
+
+
+
+* **API Credential Types:** Partner
+* **Required Role:** Partner API Access
+
+This API allows partners to generate API credentials for a merchant.
+
+The `merchantId` is required and must be the id of a valid merchant.
+
+Credentials are not delete protected by default. Pass in `deleteProtected` to enable delete protection.
+
+The optional `notes` field will populate the notes in the credentials.
+
+By default no roles will be assigned unless valid, comma-delimited, role codes are passed in the `roles` field.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.merchant_credential_generation(request)
+
+print("Response: %r" % response)
+
+
+```
+
 
 
 
