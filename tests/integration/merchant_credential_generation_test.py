@@ -17,8 +17,8 @@ from .util import _get_test_client, _get_test_config
 
 
 @pytest.mark.itest
-def test_update_customer():
-    """Can update a customer."""
+def test_merchant_credential_generation():
+    """Can generate merchant api credentials."""
 
 
     terminal = _get_test_config().get("defaultTerminalName")
@@ -27,16 +27,11 @@ def test_update_customer():
     client = _get_test_client("")
 
     request = {
-        "customer": {
-            "firstName": "Test",
-            "lastName": "Customer",
-            "companyName": "Test Company",
-            "emailAddress": "support@blockchyp.com",
-            "smsNumber": "(123) 123-1234",
-        },
+        "test": True,
+        "merchantId": "<MERCHANT ID>",
     }
 
-    response = client.update_customer(request)
+    response = client.merchant_credential_generation(request)
     print("Response: %r" % response)
 
     assert response.get("success") is True

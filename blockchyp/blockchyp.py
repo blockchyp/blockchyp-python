@@ -1,4 +1,4 @@
-# Copyright 2019-2023 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2024 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
@@ -830,6 +830,17 @@ class Client:
         return self._gateway_request(
             method="POST",
             path="/api/partner-commission-breakdown",
+            body=request,
+            test=request.get("test", False),
+        )
+
+    def merchant_credential_generation(self, request):
+        # type: (dict) -> dict
+        """Generates and returns api credentials for a given merchant."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/creds/generateMerchant",
             body=request,
             test=request.get("test", False),
         )
