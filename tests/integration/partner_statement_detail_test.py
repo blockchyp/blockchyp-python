@@ -18,13 +18,13 @@ from .util import _get_test_client, _get_test_config
 
 @pytest.mark.itest
 def test_partner_statement_detail():
-    """Can list partner statements."""
+    """Can retrieve a single partner statement."""
 
 
     terminal = _get_test_config().get("defaultTerminalName")
 
 
-    client = _get_test_client("")
+    client = _get_test_client("partner")
 
     request = {
         "test": True,

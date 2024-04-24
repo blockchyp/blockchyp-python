@@ -59,6 +59,7 @@ def test_cancel_payment_link():
     assert setup_response.get("success")
 
     request = {
+        "test": True,
         "linkCode": setup_response["linkCode"],
     }
 
