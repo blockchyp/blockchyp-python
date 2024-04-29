@@ -1,4 +1,4 @@
-# Copyright 2019-2023 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2024 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
@@ -24,11 +24,21 @@ def test_pricing_policy():
     terminal = _get_test_config().get("defaultTerminalName")
 
 
-    client = _get_test_client("")
+    client = _get_test_client("partner")
+
+    setup_request = {
+        "dbaName": "Test Merchant",
+        "companyName": "Test Merchant",
+    }
+
+    setup_response = client.add_test_merchant(setup_request)
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
 
     request = {
         "test": True,
-        "merchantId": "<MERCHANT ID>",
+        "merchantId": setup_response["merchantId"],
     }
 
     response = client.pricing_policy(request)

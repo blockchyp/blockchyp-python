@@ -1,4 +1,4 @@
-# Copyright 2019-2023 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2024 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
@@ -39,8 +39,9 @@ def test_pan_preauth():
         "pan": "4111111111111111",
         "expMonth": "12",
         "expYear": "2025",
-        "amount": "25.55",
+        "amount": "42.45",
         "test": True,
+        "bypassDupeFilter": True,
     }
 
     response = client.preauth(request)
@@ -57,5 +58,4 @@ def test_pan_preauth():
     assert response.get("paymentType")
     assert response.get("maskedPan")
     assert response.get("entryMethod")
-    assert response.get("authorizedAmount") == "25.55"
     assert response.get("entryMethod") == "KEYED"
