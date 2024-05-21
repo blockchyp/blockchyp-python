@@ -30,8 +30,9 @@ def test_simple_capture():
         "pan": "4111111111111111",
         "expMonth": "12",
         "expYear": "2025",
-        "amount": "25.55",
+        "amount": "42.45",
         "test": True,
+        "bypassDupeFilter": True,
     }
 
     setup_response = client.preauth(setup_request)

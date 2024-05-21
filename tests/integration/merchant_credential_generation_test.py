@@ -24,11 +24,21 @@ def test_merchant_credential_generation():
     terminal = _get_test_config().get("defaultTerminalName")
 
 
-    client = _get_test_client("")
+    client = _get_test_client("partner")
+
+    setup_request = {
+        "dbaName": "Test Merchant",
+        "companyName": "Test Merchant",
+    }
+
+    setup_response = client.add_test_merchant(setup_request)
+    print("Setup response: %r" % setup_response)
+
+    assert setup_response.get("success")
 
     request = {
         "test": True,
-        "merchantId": "<MERCHANT ID>",
+        "merchantId": setup_response["merchantId"],
     }
 
     response = client.merchant_credential_generation(request)

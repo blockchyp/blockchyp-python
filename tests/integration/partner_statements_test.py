@@ -24,7 +24,7 @@ def test_partner_statements():
     terminal = _get_test_config().get("defaultTerminalName")
 
 
-    client = _get_test_client("")
+    client = _get_test_client("partner")
 
     request = {
         "test": True,

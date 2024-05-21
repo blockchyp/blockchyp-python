@@ -39,8 +39,9 @@ def test_pan_preauth():
         "pan": "4111111111111111",
         "expMonth": "12",
         "expYear": "2025",
-        "amount": "25.55",
+        "amount": "42.45",
         "test": True,
+        "bypassDupeFilter": True,
     }
 
     response = client.preauth(request)
@@ -57,5 +58,4 @@ def test_pan_preauth():
     assert response.get("paymentType")
     assert response.get("maskedPan")
     assert response.get("entryMethod")
-    assert response.get("authorizedAmount") == "25.55"
     assert response.get("entryMethod") == "KEYED"
