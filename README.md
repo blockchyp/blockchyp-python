@@ -4443,3 +4443,5 @@ Here's the full list with links to their GitHub repositories.
 [Python SDK](https://github.com/blockchyp/blockchyp-python)
 
 [iOS (Objective-C/Swift) SDK](https://github.com/blockchyp/blockchyp-ios)
+
+[Rust SDK](https://github.com/blockchyp/blockchyp-rust)
