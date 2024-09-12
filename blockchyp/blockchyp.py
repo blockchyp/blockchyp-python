@@ -953,6 +953,16 @@ class Client:
             body=request,
         )
 
+    def add_gateway_merchant(self, request):
+        # type: (dict) -> dict
+        """Adds a live gateway merchant account."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/add-gateway-merchant",
+            body=request,
+        )
+
     def add_test_merchant(self, request):
         # type: (dict) -> dict
         """Adds a test merchant account."""

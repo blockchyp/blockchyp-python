@@ -3980,6 +3980,50 @@ print("Response: %r" % response)
 
 ```
 
+#### Add Gateway Merchant
+
+
+
+* **API Credential Types:** Partner
+* **Required Role:** Gateway Boarding
+
+This is a partner level API that can be used to manually board gateway merchants.  Use this API in conjunction
+with Platform Configuration to instantly board gateway merchants.  Note that most partners don't have 
+permission to do this and are unlikely to get it.
+
+Settings can be changed by using the Update Merchant API.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "profile": {
+        "dbaName": "DBA Name",
+        "companyName": "Corporate Entity Name",
+    },
+}
+
+# run the transaction.
+response = client.add_gateway_merchant(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Add Test Merchant
 
 
