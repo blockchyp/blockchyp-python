@@ -11,9 +11,13 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "profile": {
+        "dbaName": "DBA Name",
+        "companyName": "Corporate Entity Name",
+    },
 }
 
 # run the transaction.
-response = client.update_merchant_platforms(request)
+response = client.add_gateway_merchant(request)
 
 print("Response: %r" % response)
