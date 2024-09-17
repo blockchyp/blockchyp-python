@@ -911,6 +911,16 @@ class Client:
             body=request,
         )
 
+    def submit_application(self, request):
+        # type: (dict) -> dict
+        """Submits and application to add a new merchant account."""
+
+        return self._dashboard_request(
+            method="POST",
+            path="/api/submit-application",
+            body=request,
+        )
+
     def get_merchants(self, request):
         # type: (dict) -> dict
         """Adds a test merchant account."""
