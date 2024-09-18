@@ -202,6 +202,32 @@ class Client:
 
         return response
 
+    def card_metadata(self, request):
+        # type: (dict) -> dict
+        """Retrieves card metadata."""
+
+        self._populate_signature_options(request)
+
+        if self._is_terminal_routed(request.get("terminalName")):
+            response = self._terminal_request(
+                method="POST",
+                path="/api/card-metadata",
+                body=request,
+                terminal=request.get("terminalName"),
+            )
+        else:
+            response = self._gateway_request(
+                method="POST",
+                path="/api/card-metadata",
+                body=request,
+                test=request.get("test", False),
+                relay=True,
+            )
+
+        self._handle_signature(request, response)
+
+        return response
+
     def gift_activate(self, request):
         # type: (dict) -> dict
         """Activates or recharges a gift card."""
