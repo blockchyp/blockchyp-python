@@ -11,10 +11,9 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
-    "merchantId": "<MERCHANT ID>",
 }
 
 # run the transaction.
-response = client.merchant_credential_generation(request)
+response = client.submit_application(request)
 
 print("Response: %r" % response)
