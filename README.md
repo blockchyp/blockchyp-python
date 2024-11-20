@@ -375,6 +375,63 @@ print("Response: %r" % response)
 
 ```
 
+#### Card Metadata
+
+
+
+* **API Credential Types:** Merchant
+* **Required Role:** Payment API Access
+
+This API allows you to retrieve card metadata.
+
+Card metadata requests can use a payment terminal to retrieve metadata or
+use a previously enrolled payment token.
+
+**Terminal Transactions**
+
+For terminal transactions, make sure you pass in the terminal name using the `terminalName` property.
+
+**Token Transactions**
+
+If you have a payment token, omit the `terminalName` property and pass in the token with the `token`
+property instead.
+
+**Card Numbers and Mag Stripes**
+
+You can also pass in PANs and Mag Stripes, but you probably shouldn't, as this will
+put you in PCI scope and the most common vector for POS breaches is keylogging.
+If you use terminals for manual card entry, you'll bypass any keyloggers that
+might be maliciously running on the point-of-sale system.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "test": True,
+    "terminalName": "Test Terminal",
+}
+
+# run the transaction.
+response = client.card_metadata(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Time Out Reversal
 
 
@@ -4410,10 +4467,60 @@ client = blockchyp.Client(
 
 # populate request parameters.
 request = {
+    "merchantId": "<MERCHANT ID>",
 }
 
 # run the transaction.
 response = client.merchant_credential_generation(request)
+
+print("Response: %r" % response)
+
+
+```
+
+#### Submit Application
+
+
+
+* **API Credential Types:** Partner
+* **Required Role:** INVITE MERCHANT
+
+This is a partner level API that can be used to submit applications to add new merchant accounts. The application requires a significant amount of detailed information about the merchant and their business. Rather than providing an exhaustive list of required fields, we recommend submitting as much information as possible in your initial request. 
+
+If any required fields are missing or if there are any validation errors, the API will return specific error messages indicating which fields need to be addressed. Simply review these validation errors, fill in the missing information or correct any errors, and resubmit the application.
+
+Key areas of information include:
+- Business details (name, type, tax information)
+- Contact information
+- Address information (physical and mailing)
+- Owner details
+- Bank account information
+- Transaction volume estimates
+- Operational settings (timezone, batch close time, etc.)
+
+**Note:** Some fields may be conditionally required based on the values of other fields. The validation process will guide you through ensuring all necessary information is provided.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.submit_application(request)
 
 print("Response: %r" % response)
 
