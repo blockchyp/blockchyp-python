@@ -1,4 +1,4 @@
-# Copyright 2019-2024 BlockChyp, Inc. All rights reserved. Use of this code is
+# Copyright 2019-2025 BlockChyp, Inc. All rights reserved. Use of this code is
 # governed by a license that can be found in the LICENSE file.
 #
 # This file was generated automatically by the BlockChyp SDK Generator. Changes
