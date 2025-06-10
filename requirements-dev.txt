@@ -27,7 +27,7 @@ pylint==2.4.4
 pyparsing==2.4.5
 pytest==5.3.2
 readme-renderer==24.0
-requests==2.22.0
+requests==2.32.4
 requests-toolbelt==0.9.1
 SecretStorage==3.1.1
 six==1.13.0
