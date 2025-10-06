@@ -2601,6 +2601,45 @@ print("Response: %r" % response)
 
 ```
 
+#### Update Token
+
+
+
+* **API Credential Types:** Merchant
+* **Required Role:** Payment API Access
+
+This API updates a payment token in the gateway.  This can be used to update token metadata such as expiration dates, cardholder name, bank name, account holder type, account type, address, and postal code.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+    "token": "<TOKEN>",
+    "expMonth": 12,
+    "expYear": 2040,
+}
+
+# run the transaction.
+response = client.update_token(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Delete Token
 
 

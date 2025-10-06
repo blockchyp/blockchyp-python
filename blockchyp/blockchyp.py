@@ -915,6 +915,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def update_token(self, request):
+        # type: (dict) -> dict
+        """Updates a payment token."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/token/" + request["token"],
+            body=request,
+            test=request.get("test", False),
+        )
+
     def delete_token(self, request):
         # type: (dict) -> dict
         """Deletes a payment token."""
