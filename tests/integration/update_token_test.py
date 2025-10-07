@@ -43,8 +43,8 @@ def test_update_token():
 
     request = {
         "token": setup_response["token"],
-        "expMonth": 12,
-        "expYear": 2040,
+        "expiryMonth": "12",
+        "expiryYear": "2040",
     }
 
     response = client.update_token(request)
