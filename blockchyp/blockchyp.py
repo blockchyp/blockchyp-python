@@ -607,6 +607,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def surcharge_review(self, request):
+        # type: (dict) -> dict
+        """Calculates surcharge information for a payment request."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/surcharge-review",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def capture(self, request):
         # type: (dict) -> dict
         """Captures a preauthorization."""

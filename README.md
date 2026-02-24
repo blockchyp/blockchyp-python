@@ -48,6 +48,47 @@ These are the core payment APIs used to execute and work with payment transactio
 
 
 
+#### Surcharge Review
+
+
+
+* **API Credential Types:** Merchant
+* **Required Role:** Payment API Access
+
+This API calculates surcharge information for a payment request.
+
+If you're using BlockChyp's surcharging features, you can use this endpoint
+to preview the surcharge amounts before processing a transaction. This allows
+you to display accurate pricing information to customers before completing
+the payment.
+
+
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.surcharge_review(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Charge
 
 
