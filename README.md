@@ -89,6 +89,35 @@ print("Response: %r" % response)
 
 ```
 
+#### Transient Key
+
+Generates a short-lived API key scoped to terminal and payment operations.
+
+
+```python
+import os
+
+import blockchyp
+
+# initialize a client.
+client = blockchyp.Client(
+    api_key=os.environ["BC_API_KEY"],
+    bearer_token=os.environ["BC_BEARER_TOKEN"],
+    signing_key=os.environ["BC_SIGNING_KEY"],
+)
+
+# populate request parameters.
+request = {
+}
+
+# run the transaction.
+response = client.transient_key(request)
+
+print("Response: %r" % response)
+
+
+```
+
 #### Charge
 
 
