@@ -618,6 +618,17 @@ class Client:
             test=request.get("test", False),
         )
 
+    def transient_key(self, request):
+        # type: (dict) -> dict
+        """Generates a short-lived API key scoped to terminal and payment operations."""
+
+        return self._gateway_request(
+            method="POST",
+            path="/api/transient-credentials",
+            body=request,
+            test=request.get("test", False),
+        )
+
     def capture(self, request):
         # type: (dict) -> dict
         """Captures a preauthorization."""
