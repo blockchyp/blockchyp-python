@@ -8,11 +8,10 @@ on:
     tags:
       - "*"
 env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   PYPI_USERNAME: ${{ secrets.PYPI_USERNAME }}
   PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-permissions:
-  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -55,15 +54,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-      - name: Mint Stax Bot App token
-        id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ vars.STAX_BOT_APP_ID }}
-          private-key: ${{ secrets.STAX_BOT_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
       - name: Granting private modules access
-        run: git config --global url."https://x-access-token:${{ steps.app-token.outputs.token }}@stax-payments.ghe.com".insteadOf "https://stax-payments.ghe.com"
+        run: git config --global url."https://${{ secrets.SDK_GEN_REPO_TOKEN }}:x-oauth-basic@github.com/blockchyp".insteadOf "https://github.com/blockchyp"
       - name: Temporary Git Workaround
         run: git config --global --add safe.directory /__w/blockchyp-python/blockchyp-python
       - name: Install Requirements
