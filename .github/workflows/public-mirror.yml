@@ -1,0 +1,22 @@
+# One-way sync to github.com/blockchyp (CMD-5735). The tenant repo is canonical;
+# the mirrored copy of this file on github.com never runs (see the job if).
+name: public-mirror
+on:
+  push:
+    branches: [master, preview]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: push only this tag (seeding)
+        required: false
+        default: ""
+permissions:
+  contents: read
+jobs:
+  mirror:
+    if: github.server_url != 'https://github.com'
+    uses: stax-core/cicd-actions/.github/workflows/public-mirror.yaml@v2
+    with:
+      tag: ${{ inputs.tag || '' }}
+    secrets: inherit
